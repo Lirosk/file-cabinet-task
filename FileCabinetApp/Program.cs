@@ -1,4 +1,6 @@
-﻿namespace FileCabinetApp
+﻿using System.Globalization;
+
+namespace FileCabinetApp
 {
     public static class Program
     {
@@ -14,11 +16,15 @@
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
+            new Tuple<string, Action<string>>("stat", Stat),
+            new Tuple<string, Action<string>>("create", Create),
         };
 
         private static string[][] helpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
+            new string[] { "stat", "prints total count of records" },
+            new string[] { "create", "create new record" },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
@@ -55,6 +61,8 @@
                 {
                     PrintMissedCommandInfo(command);
                 }
+
+                Console.WriteLine();
             }
             while (isRunning);
         }
@@ -62,7 +70,6 @@
         private static void PrintMissedCommandInfo(string command)
         {
             Console.WriteLine($"There is no '{command}' command.");
-            Console.WriteLine();
         }
 
         private static void PrintHelp(string parameters)
@@ -102,6 +109,41 @@
         {
             var recordsCount = Program.fileCabinetService.GetStat();
             Console.WriteLine($"{recordsCount} record(s).");
+        }
+
+        private static void Create(string parameters)
+        {
+            Console.Write("First name: ");
+            var firstName = Console.ReadLine();
+
+            if (string.IsNullOrEmpty(firstName))
+            {
+                Console.WriteLine("First name cannot be empty.");
+                return;
+            }
+
+            Console.Write("Last name: ");
+            var lastName = Console.ReadLine();
+
+            if (string.IsNullOrEmpty(lastName))
+            {
+                Console.WriteLine("Last name cannot be empty.");
+                return;
+            }
+
+            Console.Write("Date of birth: ");
+            if (!DateTime.TryParseExact(
+                Console.ReadLine(),
+                "MM/dd/yyyy",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out var dateOfBirth))
+            {
+                Console.WriteLine("Correct date format: month/day/year.");
+                return;
+            }
+
+            Console.WriteLine("Record #{0} is created.", Program.fileCabinetService.CreateRecord(firstName!, lastName!, dateOfBirth));
         }
     }
 }
