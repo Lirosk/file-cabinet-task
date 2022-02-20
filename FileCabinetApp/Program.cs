@@ -1,4 +1,6 @@
-﻿namespace FileCabinetApp
+﻿using System.Globalization;
+
+namespace FileCabinetApp
 {
     public static class Program
     {
@@ -14,13 +16,21 @@
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
+            new Tuple<string, Action<string>>("stat", Stat),
+            new Tuple<string, Action<string>>("create", Create),
+            new Tuple<string, Action<string>>("list", List),
         };
 
         private static string[][] helpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
+            new string[] { "stat", "prints total count of records" },
+            new string[] { "create", "create new record" },
+            new string[] { "list", "prints all records" },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
+
+        private static FileCabinetService fileCabinetService = new ();
 
         public static void Main(string[] args)
         {
@@ -53,6 +63,8 @@
                 {
                     PrintMissedCommandInfo(command);
                 }
+
+                Console.WriteLine();
             }
             while (isRunning);
         }
@@ -60,7 +72,6 @@
         private static void PrintMissedCommandInfo(string command)
         {
             Console.WriteLine($"There is no '{command}' command.");
-            Console.WriteLine();
         }
 
         private static void PrintHelp(string parameters)
@@ -94,6 +105,84 @@
         {
             Console.WriteLine("Exiting an application...");
             isRunning = false;
+        }
+
+        private static void Stat(string parameters)
+        {
+            var recordsCount = Program.fileCabinetService.GetStat();
+            Console.WriteLine($"{recordsCount} record(s).");
+        }
+
+        private static void Create(string parameters)
+        {
+            Console.Write("First name: ");
+            var firstName = Console.ReadLine();
+
+            if (string.IsNullOrEmpty(firstName))
+            {
+                Console.WriteLine("First name cannot be empty.");
+                return;
+            }
+
+            Console.Write("Last name: ");
+            var lastName = Console.ReadLine();
+
+            if (string.IsNullOrEmpty(lastName))
+            {
+                Console.WriteLine("Last name cannot be empty.");
+                return;
+            }
+
+            Console.Write("Date of birth: ");
+            if (!DateTime.TryParseExact(
+                Console.ReadLine(),
+                "MM/dd/yyyy",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out var dateOfBirth))
+            {
+                Console.WriteLine("Correct date format: month/day/year.");
+                return;
+            }
+
+            Console.Write("Favourite short: ");
+            if (!short.TryParse(Console.ReadLine(), out var favouriteShort))
+            {
+                Console.WriteLine("Invalid favourite short.");
+                return;
+            }
+
+            Console.Write("Prefered decimal: ");
+            if (!decimal.TryParse(Console.ReadLine(), out var preferedDecimal))
+            {
+                Console.WriteLine("Invalid prefered decimal.");
+                return;
+            }
+
+            Console.Write("Hated char: ");
+            if (!char.TryParse(Console.ReadLine(), out var hatedChar))
+            {
+                Console.WriteLine("Invalid hated char.");
+                return;
+            }
+
+            Console.WriteLine(
+                "Record #{0} is created.",
+                Program.fileCabinetService.CreateRecord(
+                    firstName!,
+                    lastName!,
+                    dateOfBirth,
+                    favouriteShort,
+                    preferedDecimal,
+                    hatedChar));
+        }
+
+        private static void List(string parameters)
+        {
+            foreach (var record in Program.fileCabinetService.GetRecords())
+            {
+                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth:yyyy-MMM-dd}, {record.FavouriteShort}, {record.PreferedDecimal}, {record.HatedChar}");
+            }
         }
     }
 }
