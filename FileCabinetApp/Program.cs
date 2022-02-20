@@ -22,6 +22,8 @@
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
+        private static FileCabinetService fileCabinetService = new ();
+
         public static void Main(string[] args)
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -94,6 +96,12 @@
         {
             Console.WriteLine("Exiting an application...");
             isRunning = false;
+        }
+
+        private static void Stat(string parameters)
+        {
+            var recordsCount = Program.fileCabinetService.GetStat();
+            Console.WriteLine($"{recordsCount} record(s).");
         }
     }
 }
