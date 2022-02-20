@@ -1,4 +1,4 @@
-namespace FileCabinetApp
+﻿namespace FileCabinetApp
 {
     public class FileCabinetRecord
     {
@@ -9,5 +9,11 @@ namespace FileCabinetApp
         public string LastName { get; set; }
 
         public DateTime DateOfBirth { get; set; }
+
+        public short FavouriteShort { get; set; }
+
+        public decimal PreferedDecimal { get; set; }
+
+        public char HatedChar { get; set; }
     }
 }

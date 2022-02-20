@@ -145,14 +145,43 @@ namespace FileCabinetApp
                 return;
             }
 
-            Console.WriteLine("Record #{0} is created.", Program.fileCabinetService.CreateRecord(firstName!, lastName!, dateOfBirth));
+            Console.Write("Favourite short: ");
+            if (!short.TryParse(Console.ReadLine(), out var favouriteShort))
+            {
+                Console.WriteLine("Invalid favourite short.");
+                return;
+            }
+
+            Console.Write("Prefered decimal: ");
+            if (!decimal.TryParse(Console.ReadLine(), out var preferedDecimal))
+            {
+                Console.WriteLine("Invalid prefered decimal.");
+                return;
+            }
+
+            Console.Write("Hated char: ");
+            if (!char.TryParse(Console.ReadLine(), out var hatedChar))
+            {
+                Console.WriteLine("Invalid hated char.");
+                return;
+            }
+
+            Console.WriteLine(
+                "Record #{0} is created.",
+                Program.fileCabinetService.CreateRecord(
+                    firstName!,
+                    lastName!,
+                    dateOfBirth,
+                    favouriteShort,
+                    preferedDecimal,
+                    hatedChar));
         }
 
         private static void List(string parameters)
         {
             foreach (var record in Program.fileCabinetService.GetRecords())
             {
-                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth:yyyy-MMM-dd}");
+                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth:yyyy-MMM-dd}, {record.FavouriteShort}, {record.PreferedDecimal}, {record.HatedChar}");
             }
         }
     }

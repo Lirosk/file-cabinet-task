@@ -1,10 +1,16 @@
-namespace FileCabinetApp
+﻿namespace FileCabinetApp
 {
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
-        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth)
+        public int CreateRecord(
+                                string firstName,
+                                string lastName,
+                                DateTime dateOfBirth,
+                                short favouriteShort,
+                                decimal preferedDecimal,
+                                char hatedChar)
         {
             if (string.IsNullOrEmpty(firstName))
             {
@@ -22,6 +28,9 @@ namespace FileCabinetApp
                 FirstName = firstName,
                 LastName = lastName,
                 DateOfBirth = dateOfBirth,
+                FavouriteShort = favouriteShort,
+                PreferedDecimal = preferedDecimal,
+                HatedChar = hatedChar,
             };
 
             this.list.Add(record);
