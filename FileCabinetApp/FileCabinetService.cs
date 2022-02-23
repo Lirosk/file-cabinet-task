@@ -5,12 +5,12 @@
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
         public int CreateRecord(
-                                string firstName,
-                                string lastName,
-                                DateTime dateOfBirth,
-                                short favouriteShort,
-                                decimal preferedDecimal,
-                                char hatedChar)
+            string firstName,
+            string lastName,
+            DateTime dateOfBirth,
+            short schoolGrade,
+            decimal averageMark,
+            char classLetter)
         {
             if (string.IsNullOrEmpty(firstName))
             {
@@ -28,9 +28,9 @@
                 FirstName = firstName,
                 LastName = lastName,
                 DateOfBirth = dateOfBirth,
-                FavouriteShort = favouriteShort,
-                PreferedDecimal = preferedDecimal,
-                HatedChar = hatedChar,
+                SchoolGrade = schoolGrade,
+                AverageMark = averageMark,
+                ClassLetter = classLetter,
             };
 
             this.list.Add(record);

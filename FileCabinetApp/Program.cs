@@ -12,6 +12,8 @@ namespace FileCabinetApp
 
         private static bool isRunning = true;
 
+        private static FileCabinetService fileCabinetService = new ();
+
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
@@ -29,8 +31,6 @@ namespace FileCabinetApp
             new string[] { "list", "prints all records" },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
-
-        private static FileCabinetService fileCabinetService = new ();
 
         public static void Main(string[] args)
         {
@@ -145,24 +145,24 @@ namespace FileCabinetApp
                 return;
             }
 
-            Console.Write("Favourite short: ");
-            if (!short.TryParse(Console.ReadLine(), out var favouriteShort))
+            Console.Write("School grade: ");
+            if (!short.TryParse(Console.ReadLine(), out var schoolGrade))
             {
-                Console.WriteLine("Invalid favourite short.");
+                Console.WriteLine("Invalid school grade.");
                 return;
             }
 
-            Console.Write("Prefered decimal: ");
-            if (!decimal.TryParse(Console.ReadLine(), out var preferedDecimal))
+            Console.Write("Average mark: ");
+            if (!decimal.TryParse(Console.ReadLine(), out var averageMark))
             {
-                Console.WriteLine("Invalid prefered decimal.");
+                Console.WriteLine("Invalid average mark.");
                 return;
             }
 
-            Console.Write("Hated char: ");
-            if (!char.TryParse(Console.ReadLine(), out var hatedChar))
+            Console.Write("Class letter: ");
+            if (!char.TryParse(Console.ReadLine(), out var classLetter))
             {
-                Console.WriteLine("Invalid hated char.");
+                Console.WriteLine("Invalid class letter.");
                 return;
             }
 
@@ -172,16 +172,16 @@ namespace FileCabinetApp
                     firstName!,
                     lastName!,
                     dateOfBirth,
-                    favouriteShort,
-                    preferedDecimal,
-                    hatedChar));
+                    schoolGrade,
+                    averageMark,
+                    classLetter));
         }
 
         private static void List(string parameters)
         {
             foreach (var record in Program.fileCabinetService.GetRecords())
             {
-                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth:yyyy-MMM-dd}, {record.FavouriteShort}, {record.PreferedDecimal}, {record.HatedChar}");
+                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth:yyyy-MMM-dd}, {record.SchoolGrade}, {record.AverageMark}, {record.ClassLetter}");
             }
         }
     }
