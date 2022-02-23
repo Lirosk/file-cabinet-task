@@ -21,6 +21,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
+            new Tuple<string, Action<string>>("edit", Edit),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -29,6 +30,7 @@ namespace FileCabinetApp
             new string[] { "stat", "prints total count of records" },
             new string[] { "create", "create new record" },
             new string[] { "list", "prints all records" },
+            new string[] { "edit", "edit existring record via id" },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
@@ -115,66 +117,145 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            Console.Write("First name: ");
-            var firstName = Console.ReadLine();
+            string firstName,
+                   lastName;
+            DateTime dateOfBirth;
+            short schoolGrade;
+            decimal averageMark;
+            char classLetter;
 
-            if (string.IsNullOrEmpty(firstName))
+            while (isRunning)
             {
-                Console.WriteLine("First name cannot be empty.");
-                return;
+                try
+                {
+                    Console.Write("First name: ");
+                    firstName = Console.ReadLine() !;
+
+                    Console.Write("Last name: ");
+                    lastName = Console.ReadLine() !;
+
+                    Console.Write("Date of birth: ");
+                    if (!DateTime.TryParseExact(
+                        Console.ReadLine(),
+                        "MM/dd/yyyy",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.None,
+                        out dateOfBirth))
+                    {
+                        throw new ArgumentException("Correct date format: month/day/year.");
+                    }
+
+                    Console.Write("School grade: ");
+                    if (!short.TryParse(Console.ReadLine(), out schoolGrade))
+                    {
+                        throw new ArgumentException("Invalid input for school grade.");
+                    }
+
+                    Console.Write("Average mark: ");
+                    if (!decimal.TryParse(Console.ReadLine(), out averageMark))
+                    {
+                        throw new ArgumentException("Invalid input for average mark.");
+                    }
+
+                    Console.Write("Class letter: ");
+                    if (!char.TryParse(Console.ReadLine(), out classLetter))
+                    {
+                        throw new ArgumentException("Invalid input for class letter.");
+                    }
+
+                    Console.WriteLine(
+                        "Record #{0} is created.",
+                        Program.fileCabinetService.CreateRecord(
+                            firstName!,
+                            lastName!,
+                            dateOfBirth,
+                            schoolGrade,
+                            averageMark,
+                            classLetter));
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message + Environment.NewLine);
+                    continue;
+                }
+
+                break;
             }
+        }
 
-            Console.Write("Last name: ");
-            var lastName = Console.ReadLine();
+        private static void Edit(string parameters)
+        {
+            string firstName,
+                   lastName;
+            DateTime dateOfBirth;
+            short schoolGrade;
+            decimal averageMark;
+            char classLetter;
+            int id;
 
-            if (string.IsNullOrEmpty(lastName))
+            while (isRunning)
             {
-                Console.WriteLine("Last name cannot be empty.");
-                return;
-            }
+                try
+                {
+                    Console.Write("id: ");
+                    if (!int.TryParse(Console.ReadLine(), out id))
+                    {
+                        throw new ArgumentException("Invalid input for id.");
+                    }
 
-            Console.Write("Date of birth: ");
-            if (!DateTime.TryParseExact(
-                Console.ReadLine(),
-                "MM/dd/yyyy",
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.None,
-                out var dateOfBirth))
-            {
-                Console.WriteLine("Correct date format: month/day/year.");
-                return;
-            }
+                    Console.Write("First name: ");
+                    firstName = Console.ReadLine() !;
 
-            Console.Write("School grade: ");
-            if (!short.TryParse(Console.ReadLine(), out var schoolGrade))
-            {
-                Console.WriteLine("Invalid school grade.");
-                return;
-            }
+                    Console.Write("Last name: ");
+                    lastName = Console.ReadLine() !;
 
-            Console.Write("Average mark: ");
-            if (!decimal.TryParse(Console.ReadLine(), out var averageMark))
-            {
-                Console.WriteLine("Invalid average mark.");
-                return;
-            }
+                    Console.Write("Date of birth: ");
+                    if (!DateTime.TryParseExact(
+                            Console.ReadLine(),
+                            "MM/dd/yyyy",
+                            CultureInfo.InvariantCulture,
+                            DateTimeStyles.None,
+                            out dateOfBirth))
+                    {
+                        throw new ArgumentException("Correct date format: month/day/year.");
+                    }
 
-            Console.Write("Class letter: ");
-            if (!char.TryParse(Console.ReadLine(), out var classLetter))
-            {
-                Console.WriteLine("Invalid class letter.");
-                return;
-            }
+                    Console.Write("School grade: ");
+                    if (!short.TryParse(Console.ReadLine(), out schoolGrade))
+                    {
+                        throw new ArgumentException("Invalid input for school grade.");
+                    }
 
-            Console.WriteLine(
-                "Record #{0} is created.",
-                Program.fileCabinetService.CreateRecord(
-                    firstName!,
-                    lastName!,
-                    dateOfBirth,
-                    schoolGrade,
-                    averageMark,
-                    classLetter));
+                    Console.Write("Average mark: ");
+                    if (!decimal.TryParse(Console.ReadLine(), out averageMark))
+                    {
+                        throw new ArgumentException("Invalid input for average mark.");
+                    }
+
+                    Console.Write("Class letter: ");
+                    if (!char.TryParse(Console.ReadLine(), out classLetter))
+                    {
+                        throw new ArgumentException("Invalid input for class letter.");
+                    }
+
+                    fileCabinetService.EditRecord(
+                        id,
+                        firstName,
+                        lastName,
+                        dateOfBirth,
+                        schoolGrade,
+                        averageMark,
+                        classLetter);
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message + Environment.NewLine);
+                    continue;
+                }
+
+                Console.WriteLine($"Record #{id} is updated.");
+                break;
+            }
         }
 
         private static void List(string parameters)
