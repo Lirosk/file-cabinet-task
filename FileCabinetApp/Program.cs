@@ -118,20 +118,8 @@ namespace FileCabinetApp
             Console.Write("First name: ");
             var firstName = Console.ReadLine();
 
-            if (string.IsNullOrEmpty(firstName))
-            {
-                Console.WriteLine("First name cannot be empty.");
-                return;
-            }
-
             Console.Write("Last name: ");
             var lastName = Console.ReadLine();
-
-            if (string.IsNullOrEmpty(lastName))
-            {
-                Console.WriteLine("Last name cannot be empty.");
-                return;
-            }
 
             Console.Write("Date of birth: ");
             if (!DateTime.TryParseExact(
@@ -148,21 +136,21 @@ namespace FileCabinetApp
             Console.Write("School grade: ");
             if (!short.TryParse(Console.ReadLine(), out var schoolGrade))
             {
-                Console.WriteLine("Invalid school grade.");
+                Console.WriteLine("Invalid input for school grade.");
                 return;
             }
 
             Console.Write("Average mark: ");
             if (!decimal.TryParse(Console.ReadLine(), out var averageMark))
             {
-                Console.WriteLine("Invalid average mark.");
+                Console.WriteLine("Invalid input for average mark.");
                 return;
             }
 
             Console.Write("Class letter: ");
             if (!char.TryParse(Console.ReadLine(), out var classLetter))
             {
-                Console.WriteLine("Invalid class letter.");
+                Console.WriteLine("Invalid input for class letter.");
                 return;
             }
 
