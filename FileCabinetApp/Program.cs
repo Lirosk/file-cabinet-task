@@ -115,54 +115,70 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            Console.Write("First name: ");
-            var firstName = Console.ReadLine();
+            string firstName,
+                   lastName;
+            DateTime dateOfBirth;
+            short schoolGrade;
+            decimal averageMark;
+            char classLetter;
 
-            Console.Write("Last name: ");
-            var lastName = Console.ReadLine();
-
-            Console.Write("Date of birth: ");
-            if (!DateTime.TryParseExact(
-                Console.ReadLine(),
-                "MM/dd/yyyy",
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.None,
-                out var dateOfBirth))
+            while (isRunning)
             {
-                Console.WriteLine("Correct date format: month/day/year.");
-                return;
-            }
+                try
+                {
+                    Console.Write("First name: ");
+                    firstName = Console.ReadLine() !;
 
-            Console.Write("School grade: ");
-            if (!short.TryParse(Console.ReadLine(), out var schoolGrade))
-            {
-                Console.WriteLine("Invalid input for school grade.");
-                return;
-            }
+                    Console.Write("Last name: ");
+                    lastName = Console.ReadLine() !;
 
-            Console.Write("Average mark: ");
-            if (!decimal.TryParse(Console.ReadLine(), out var averageMark))
-            {
-                Console.WriteLine("Invalid input for average mark.");
-                return;
-            }
+                    Console.Write("Date of birth: ");
+                    if (!DateTime.TryParseExact(
+                        Console.ReadLine(),
+                        "MM/dd/yyyy",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.None,
+                        out dateOfBirth))
+                    {
+                        throw new ArgumentException("Correct date format: month/day/year.");
+                    }
 
-            Console.Write("Class letter: ");
-            if (!char.TryParse(Console.ReadLine(), out var classLetter))
-            {
-                Console.WriteLine("Invalid input for class letter.");
-                return;
-            }
+                    Console.Write("School grade: ");
+                    if (!short.TryParse(Console.ReadLine(), out schoolGrade))
+                    {
+                        throw new ArgumentException("Invalid input for school grade.");
+                    }
 
-            Console.WriteLine(
-                "Record #{0} is created.",
-                Program.fileCabinetService.CreateRecord(
-                    firstName!,
-                    lastName!,
-                    dateOfBirth,
-                    schoolGrade,
-                    averageMark,
-                    classLetter));
+                    Console.Write("Average mark: ");
+                    if (!decimal.TryParse(Console.ReadLine(), out averageMark))
+                    {
+                        throw new ArgumentException("Invalid input for average mark.");
+                    }
+
+                    Console.Write("Class letter: ");
+                    if (!char.TryParse(Console.ReadLine(), out classLetter))
+                    {
+                        throw new ArgumentException("Invalid input for class letter.");
+                    }
+
+                    Console.WriteLine(
+                        "Record #{0} is created.",
+                        Program.fileCabinetService.CreateRecord(
+                            firstName!,
+                            lastName!,
+                            dateOfBirth,
+                            schoolGrade,
+                            averageMark,
+                            classLetter));
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message + Environment.NewLine);
+                    continue;
+                }
+
+                break;
+            }
         }
 
         private static void List(string parameters)
