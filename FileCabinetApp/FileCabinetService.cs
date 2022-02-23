@@ -35,6 +35,32 @@
             return record.Id;
         }
 
+        public void EditRecord(
+            int id,
+            string firstName,
+            string lastName,
+            DateTime dateOfBirth,
+            short schoolGrade,
+            decimal averageMark,
+            char classLetter)
+        {
+            foreach (var record in this.list)
+            {
+                if (record.Id == id)
+                {
+                    record.FirstName = firstName;
+                    record.LastName = lastName;
+                    record.DateOfBirth = dateOfBirth;
+                    record.SchoolGrade = schoolGrade;
+                    record.AverageMark = averageMark;
+                    record.ClassLetter = classLetter;
+                    return;
+                }
+            }
+
+            throw new ArgumentException($"No record with {id} id.", nameof(id));
+        }
+
         public FileCabinetRecord[] GetRecords()
         {
             return this.list.ToArray();

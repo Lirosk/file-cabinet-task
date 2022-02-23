@@ -21,6 +21,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
+            new Tuple<string, Action<string>>("edit", Edit),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -29,6 +30,7 @@ namespace FileCabinetApp
             new string[] { "stat", "prints total count of records" },
             new string[] { "create", "create new record" },
             new string[] { "list", "prints all records" },
+            new string[] { "edit", "edit existring record via id" },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
@@ -177,6 +179,81 @@ namespace FileCabinetApp
                     continue;
                 }
 
+                break;
+            }
+        }
+
+        private static void Edit(string parameters)
+        {
+            string firstName,
+                   lastName;
+            DateTime dateOfBirth;
+            short schoolGrade;
+            decimal averageMark;
+            char classLetter;
+            int id;
+
+            while (isRunning)
+            {
+                try
+                {
+                    Console.Write("id: ");
+                    if (!int.TryParse(Console.ReadLine(), out id))
+                    {
+                        throw new ArgumentException("Invalid input for id.");
+                    }
+
+                    Console.Write("First name: ");
+                    firstName = Console.ReadLine() !;
+
+                    Console.Write("Last name: ");
+                    lastName = Console.ReadLine() !;
+
+                    Console.Write("Date of birth: ");
+                    if (!DateTime.TryParseExact(
+                            Console.ReadLine(),
+                            "MM/dd/yyyy",
+                            CultureInfo.InvariantCulture,
+                            DateTimeStyles.None,
+                            out dateOfBirth))
+                    {
+                        throw new ArgumentException("Correct date format: month/day/year.");
+                    }
+
+                    Console.Write("School grade: ");
+                    if (!short.TryParse(Console.ReadLine(), out schoolGrade))
+                    {
+                        throw new ArgumentException("Invalid input for school grade.");
+                    }
+
+                    Console.Write("Average mark: ");
+                    if (!decimal.TryParse(Console.ReadLine(), out averageMark))
+                    {
+                        throw new ArgumentException("Invalid input for average mark.");
+                    }
+
+                    Console.Write("Class letter: ");
+                    if (!char.TryParse(Console.ReadLine(), out classLetter))
+                    {
+                        throw new ArgumentException("Invalid input for class letter.");
+                    }
+
+                    fileCabinetService.EditRecord(
+                        id,
+                        firstName,
+                        lastName,
+                        dateOfBirth,
+                        schoolGrade,
+                        averageMark,
+                        classLetter);
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message + Environment.NewLine);
+                    continue;
+                }
+
+                Console.WriteLine($"Record #{id} is updated.");
                 break;
             }
         }
