@@ -1,4 +1,7 @@
-﻿namespace FileCabinetApp
+﻿using System.Globalization;
+using System.Reflection;
+
+namespace FileCabinetApp
 {
     public class FileCabinetService
     {
@@ -59,6 +62,16 @@
             }
 
             throw new ArgumentException($"No record with {id} id.", nameof(id));
+        }
+
+        public FileCabinetRecord[] FindByField(string fieldName, object value)
+        {
+            var field = typeof(FileCabinetRecord).GetProperty(fieldName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance) !;
+            _ = field ?? throw new ArgumentException($"No field named {fieldName}");
+
+            value = Convert.ChangeType(value, field.PropertyType, CultureInfo.InvariantCulture);
+
+            return this.list.Where(record => field!.GetValue(record) !.Equals(value)).ToArray();
         }
 
         public FileCabinetRecord[] GetRecords()

@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace FileCabinetApp
 {
@@ -22,6 +23,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
+            new Tuple<string, Action<string>>("find", Find),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -31,6 +33,7 @@ namespace FileCabinetApp
             new string[] { "create", "create new record" },
             new string[] { "list", "prints all records" },
             new string[] { "edit", "edit existring record via id" },
+            new string[] { "find", "find records by field value, format: 'find fieldname \"value\"'" },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
@@ -255,6 +258,45 @@ namespace FileCabinetApp
 
                 Console.WriteLine($"Record #{id} is updated.");
                 break;
+            }
+        }
+
+        private static void Find(string parameters)
+        {
+            try
+            {
+                string fieldName;
+                string stringValue;
+
+                var regexPattern = @"^\s*(\w+)\s+""(\d{4}-\w{3}-\d{2})""\s*$";
+                var regex = new Regex(regexPattern);
+
+                if (!regex.IsMatch(parameters))
+                {
+                    throw new ArgumentException("Invalid parameters input, see help.");
+                }
+
+                var match = regex.Match(parameters);
+
+                fieldName = match.Groups[1].Value;
+                stringValue = match.Groups[2].Value;
+
+                var found = fileCabinetService.FindByField(fieldName, stringValue);
+                if (found.Length > 0)
+                {
+                    foreach (var record in found)
+                    {
+                        Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth:yyyy-MMM-dd}, {record.SchoolGrade}, {record.AverageMark}, {record.ClassLetter}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No records found.");
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 
