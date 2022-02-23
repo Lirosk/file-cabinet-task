@@ -10,10 +10,10 @@
 
         public DateTime DateOfBirth { get; set; }
 
-        public short FavouriteShort { get; set; }
+        public short SchoolGrade { get; set; }
 
-        public decimal PreferedDecimal { get; set; }
+        public decimal AverageMark { get; set; }
 
-        public char HatedChar { get; set; }
+        public char ClassLetter { get; set; }
     }
 }
