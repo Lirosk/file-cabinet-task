@@ -131,23 +131,11 @@ namespace FileCabinetApp
             {
                 try
                 {
-                    ReadRecordDataFromConsole(
-                        out var firstName,
-                        out var lastName,
-                        out var dateOfBirth,
-                        out var schoolGrade,
-                        out var averageMark,
-                        out var classLetter);
+                    ReadRecordDataFromConsole(out var personalData);
 
                     Console.WriteLine(
                         "Record #{0} is created.",
-                        Program.fileCabinetService.CreateRecord(
-                            firstName!,
-                            lastName!,
-                            dateOfBirth,
-                            schoolGrade,
-                            averageMark,
-                            classLetter));
+                        Program.fileCabinetService.CreateRecord(personalData));
                 }
                 catch (ArgumentException ex)
                 {
@@ -173,22 +161,9 @@ namespace FileCabinetApp
                         throw new ArgumentException("Invalid input for id.");
                     }
 
-                    ReadRecordDataFromConsole(
-                        out var firstName,
-                        out var lastName,
-                        out var dateOfBirth,
-                        out var schoolGrade,
-                        out var averageMark,
-                        out var classLetter);
+                    ReadRecordDataFromConsole(out var personalData);
 
-                    fileCabinetService.EditRecord(
-                        id,
-                        firstName,
-                        lastName,
-                        dateOfBirth,
-                        schoolGrade,
-                        averageMark,
-                        classLetter);
+                    fileCabinetService.EditRecord(id, personalData);
                 }
                 catch (ArgumentException ex)
                 {
@@ -251,24 +226,19 @@ namespace FileCabinetApp
             }
         }
 
-        private static void ReadRecordDataFromConsole(
-            out string firstName,
-            out string lastName,
-            out DateTime dateOfBirth,
-            out short schoolGrade,
-            out decimal averageMark,
-            out char classLetter)
+        private static void ReadRecordDataFromConsole(out PersonalData personalData)
         {
+            personalData = new ();
             string dateOfBirthString;
             string schoolGradeString;
             string averageMarkString;
             string classLetterString;
 
             Console.Write("First name: ");
-            firstName = Console.ReadLine() !;
+            personalData.FirstName = Console.ReadLine() !;
 
             Console.Write("Last name: ");
-            lastName = Console.ReadLine() !;
+            personalData.LastName = Console.ReadLine() !;
 
             Console.Write("Date of birth: ");
             dateOfBirthString = Console.ReadLine() !;
@@ -287,25 +257,30 @@ namespace FileCabinetApp
                 FileCabinetRecord.InputDateTimeFormat,
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.None,
-                out dateOfBirth))
+                out var dateOfBirth))
             {
                 throw new ArgumentException($"Correct date format: {FileCabinetRecord.InputDateTimeFormat}.");
             }
 
-            if (!short.TryParse(schoolGradeString, out schoolGrade))
+            if (!short.TryParse(schoolGradeString, out var schoolGrade))
             {
                 throw new ArgumentException("Invalid input for school grade.");
             }
 
-            if (!decimal.TryParse(averageMarkString, out averageMark))
+            if (!decimal.TryParse(averageMarkString, out var averageMark))
             {
                 throw new ArgumentException("Invalid input for average mark.");
             }
 
-            if (!char.TryParse(classLetterString, out classLetter))
+            if (!char.TryParse(classLetterString, out var classLetter))
             {
                 throw new ArgumentException("Invalid input for class letter.");
             }
+
+            personalData.DateOfBirth = dateOfBirth;
+            personalData.SchoolGrade = schoolGrade;
+            personalData.AverageMark = averageMark;
+            personalData.ClassLetter = classLetter;
         }
     }
 }

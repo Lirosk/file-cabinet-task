@@ -13,38 +13,18 @@ namespace FileCabinetApp
         /// <summary>
         /// Create record from given parameters.
         /// </summary>
-        /// <param name="firstName">First name of a person in record.</param>
-        /// <param name="lastName">Last name of a person in record.</param>
-        /// <param name="dateOfBirth">Date of birth of a person in record.</param>
-        /// <param name="schoolGrade">School grade of a person in record.</param>
-        /// <param name="averageMark">Average mark of a person in record.</param>
-        /// <param name="classLetter">Class letter of a person in record.</param>
+        /// <param name="personalData">Represents data of a person.</param>
         /// <returns>Returns the id of created record.</returns>
-        public int CreateRecord(
-            string firstName,
-            string lastName,
-            DateTime dateOfBirth,
-            short schoolGrade,
-            decimal averageMark,
-            char classLetter)
+        public int CreateRecord(PersonalData personalData)
         {
-            FileCabinetRecord.ValidateFirstName(firstName);
-            FileCabinetRecord.ValidateLastName(lastName);
-            FileCabinetRecord.ValidateDateOfBirth(dateOfBirth);
-            FileCabinetRecord.ValidateSchoolGrade(schoolGrade);
-            FileCabinetRecord.ValidateAverageMark(averageMark);
-            FileCabinetRecord.ValidateClassLetter(classLetter);
+            FileCabinetRecord.ValidateFirstName(personalData.FirstName);
+            FileCabinetRecord.ValidateLastName(personalData.LastName);
+            FileCabinetRecord.ValidateDateOfBirth(personalData.DateOfBirth);
+            FileCabinetRecord.ValidateSchoolGrade(personalData.SchoolGrade);
+            FileCabinetRecord.ValidateAverageMark(personalData.AverageMark);
+            FileCabinetRecord.ValidateClassLetter(personalData.ClassLetter);
 
-            var record = new FileCabinetRecord
-            {
-                Id = this.list.Count + 1,
-                FirstName = firstName,
-                LastName = lastName,
-                DateOfBirth = dateOfBirth,
-                SchoolGrade = schoolGrade,
-                AverageMark = averageMark,
-                ClassLetter = classLetter,
-            };
+            var record = new FileCabinetRecord(this.list.Count + 1, personalData);
 
             this.list.Add(record);
             this.AddToIndex(record);
@@ -56,21 +36,9 @@ namespace FileCabinetApp
         /// Edit record with the given id.
         /// </summary>
         /// <param name="id">Id of record to edit.</param>
-        /// <param name="firstName">New first name to set.</param>
-        /// <param name="lastName">New last name to set.</param>
-        /// <param name="dateOfBirth">New date of birth to set.</param>
-        /// <param name="schoolGrade">New school grade to set.</param>
-        /// <param name="averageMark">New average mark to set.</param>
-        /// <param name="classLetter">New class letter to set.</param>
+        /// <param name="newData">New personal data for record.</param>
         /// <exception cref="ArgumentException">No record matching given id.</exception>
-        public void EditRecord(
-            int id,
-            string firstName,
-            string lastName,
-            DateTime dateOfBirth,
-            short schoolGrade,
-            decimal averageMark,
-            char classLetter)
+        public void EditRecord(int id, PersonalData newData)
         {
             foreach (var record in this.list)
             {
@@ -78,12 +46,12 @@ namespace FileCabinetApp
                 {
                     this.RemoveFromIndex(record);
 
-                    record.FirstName = firstName;
-                    record.LastName = lastName;
-                    record.DateOfBirth = dateOfBirth;
-                    record.SchoolGrade = schoolGrade;
-                    record.AverageMark = averageMark;
-                    record.ClassLetter = classLetter;
+                    record.FirstName = newData.FirstName;
+                    record.LastName = newData.LastName;
+                    record.DateOfBirth = newData.DateOfBirth;
+                    record.SchoolGrade = newData.SchoolGrade;
+                    record.AverageMark = newData.AverageMark;
+                    record.ClassLetter = newData.ClassLetter;
 
                     this.AddToIndex(record);
 

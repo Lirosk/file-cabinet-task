@@ -68,6 +68,22 @@ namespace FileCabinetApp
         protected internal static readonly DateTime DateOfBirthMaxValue = DateTime.Now;
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetRecord"/> class.
+        /// </summary>
+        /// <param name="id">Id of record.</param>
+        /// <param name="personalData">Personal information.</param>
+        public FileCabinetRecord(int id, PersonalData personalData)
+        {
+            this.Id = id;
+            this.FirstName = personalData.FirstName;
+            this.LastName = personalData.LastName;
+            this.DateOfBirth = personalData.DateOfBirth;
+            this.SchoolGrade = personalData.SchoolGrade;
+            this.AverageMark = personalData.AverageMark;
+            this.ClassLetter = personalData.ClassLetter;
+        }
+
+        /// <summary>
         /// Gets or sets <see cref="DateTime">DateTime</see> format for record input.
         /// </summary>
         /// <value><see cref="DateTime">DateTime</see> format for record input.</value>
@@ -89,13 +105,13 @@ namespace FileCabinetApp
         /// Gets or sets first name of a person in record.
         /// </summary>
         /// <value>First name of a person in record.</value>
-        public string FirstName { get; set; } = string.Empty;
+        public string FirstName { get; set; }
 
         /// <summary>
         /// Gets or sets last name of a person in record.
         /// </summary>
         /// <value>Last name of a person in record.</value>
-        public string LastName { get; set; } = string.Empty;
+        public string LastName { get; set; }
 
         /// <summary>
         /// Gets or sets date of birth of a person in record.
