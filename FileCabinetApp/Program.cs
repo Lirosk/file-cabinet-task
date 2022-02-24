@@ -3,6 +3,9 @@ using System.Text.RegularExpressions;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Interacts with user.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Kirill Basenko";
@@ -37,6 +40,10 @@ namespace FileCabinetApp
             new[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
+        /// <summary>
+        /// Entry point.
+        /// </summary>
+        /// <param name="args">Arguments passed via console.</param>
         public static void Main(string[] args)
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");

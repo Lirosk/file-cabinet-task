@@ -2,11 +2,24 @@
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Stores records with personal information; manages the creation, editing, finding the records.
+    /// </summary>
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new ();
         private readonly Dictionary<(string, string), List<FileCabinetRecord>> index = new ();
 
+        /// <summary>
+        /// Create record from given parameters.
+        /// </summary>
+        /// <param name="firstName">First name of a person in record.</param>
+        /// <param name="lastName">Last name of a person in record.</param>
+        /// <param name="dateOfBirth">Date of birth of a person in record.</param>
+        /// <param name="schoolGrade">School grade of a person in record.</param>
+        /// <param name="averageMark">Average mark of a person in record.</param>
+        /// <param name="classLetter">Class letter of a person in record.</param>
+        /// <returns>Returns the id of created record.</returns>
         public int CreateRecord(
             string firstName,
             string lastName,
@@ -39,6 +52,17 @@ namespace FileCabinetApp
             return record.Id;
         }
 
+        /// <summary>
+        /// Edit record with the given id.
+        /// </summary>
+        /// <param name="id">Id of record to edit.</param>
+        /// <param name="firstName">New first name to set.</param>
+        /// <param name="lastName">New last name to set.</param>
+        /// <param name="dateOfBirth">New date of birth to set.</param>
+        /// <param name="schoolGrade">New school grade to set.</param>
+        /// <param name="averageMark">New average mark to set.</param>
+        /// <param name="classLetter">New class letter to set.</param>
+        /// <exception cref="ArgumentException">No record matching given id.</exception>
         public void EditRecord(
             int id,
             string firstName,
@@ -70,6 +94,12 @@ namespace FileCabinetApp
             throw new ArgumentException($"No record with {id} id.", nameof(id));
         }
 
+        /// <summary>
+        /// Find record by value of given field.
+        /// </summary>
+        /// <param name="fieldName">Name of field to search.</param>
+        /// <param name="value">Value of <paramref name="fieldName"/> field to search.</param>
+        /// <returns>Array of found records.</returns>
         public FileCabinetRecord[] FindByField(string fieldName, object value)
         {
             if (this.index.TryGetValue((fieldName.ToUpperInvariant(), value as string ?? value.ToString() !), out var res))
@@ -80,11 +110,19 @@ namespace FileCabinetApp
             return Array.Empty<FileCabinetRecord>();
         }
 
+        /// <summary>
+        /// Get all stored records.
+        /// </summary>
+        /// <returns>All stored records.</returns>
         public FileCabinetRecord[] GetRecords()
         {
             return this.list.ToArray();
         }
 
+        /// <summary>
+        /// Get count of stored records.
+        /// </summary>
+        /// <returns>Count of stored records.</returns>
         public int GetStat()
         {
             return this.list.Count;
