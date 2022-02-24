@@ -268,7 +268,7 @@ namespace FileCabinetApp
                 string fieldName;
                 string stringValue;
 
-                var regexPattern = @"^\s*(\w+)\s+""(\d{4}-\w{3}-\d{2})""\s*$";
+                var regexPattern = @"^\s*(\w+)\s+""(\d{4}-\w{3}-\d{2}|\w+)""\s*$";
                 var regex = new Regex(regexPattern);
 
                 if (!regex.IsMatch(parameters))
