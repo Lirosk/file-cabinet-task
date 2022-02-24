@@ -1,8 +1,11 @@
-﻿namespace FileCabinetApp
+﻿using System.Reflection;
+
+namespace FileCabinetApp
 {
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+        private readonly Dictionary<(string, string), List<FileCabinetRecord>> index = new ();
 
         public int CreateRecord(
             string firstName,
@@ -31,6 +34,7 @@
             };
 
             this.list.Add(record);
+            this.AddToIndex(record);
 
             return record.Id;
         }
@@ -48,17 +52,32 @@
             {
                 if (record.Id == id)
                 {
+                    this.RemoveFromIndex(record);
+
                     record.FirstName = firstName;
                     record.LastName = lastName;
                     record.DateOfBirth = dateOfBirth;
                     record.SchoolGrade = schoolGrade;
                     record.AverageMark = averageMark;
                     record.ClassLetter = classLetter;
+
+                    this.AddToIndex(record);
+
                     return;
                 }
             }
 
             throw new ArgumentException($"No record with {id} id.", nameof(id));
+        }
+
+        public FileCabinetRecord[] FindByField(string fieldName, object value)
+        {
+            if (this.index.TryGetValue((fieldName.ToUpperInvariant(), value as string ?? value.ToString() !), out var res))
+            {
+                return res.ToArray();
+            }
+
+            return Array.Empty<FileCabinetRecord>();
         }
 
         public FileCabinetRecord[] GetRecords()
@@ -69,6 +88,52 @@
         public int GetStat()
         {
             return this.list.Count;
+        }
+
+        private void RemoveFromIndex(FileCabinetRecord record)
+        {
+            foreach (var (key, records) in this.index)
+            {
+                if (records.Contains(record))
+                {
+                    records.Remove(record);
+                    if (records.Count == 0)
+                    {
+                        this.index.Remove(key);
+                    }
+                }
+            }
+        }
+
+        private void AddToIndex(FileCabinetRecord record)
+        {
+            var type = record.GetType();
+            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            string fieldName;
+            object value;
+
+            foreach (var property in properties)
+            {
+                fieldName = property.Name;
+                if (fieldName.Equals("Id", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                value = property.GetValue(record) !;
+
+                var key = (fieldName.ToUpperInvariant(), value as string ?? value.ToString() !);
+
+                if (this.index.ContainsKey(key))
+                {
+                    this.index[key].Add(record);
+                }
+                else
+                {
+                    this.index.Add(key, new List<FileCabinetRecord> { record });
+                }
+            }
         }
     }
 }
