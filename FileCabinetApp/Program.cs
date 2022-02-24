@@ -17,24 +17,24 @@ namespace FileCabinetApp
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
-            new Tuple<string, Action<string>>("help", PrintHelp),
-            new Tuple<string, Action<string>>("exit", Exit),
-            new Tuple<string, Action<string>>("stat", Stat),
-            new Tuple<string, Action<string>>("create", Create),
-            new Tuple<string, Action<string>>("list", List),
-            new Tuple<string, Action<string>>("edit", Edit),
-            new Tuple<string, Action<string>>("find", Find),
+            new ("help", PrintHelp),
+            new ("exit", Exit),
+            new ("stat", Stat),
+            new ("create", Create),
+            new ("list", List),
+            new ("edit", Edit),
+            new ("find", Find),
         };
 
         private static string[][] helpMessages = new string[][]
         {
-            new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
-            new string[] { "stat", "prints total count of records" },
-            new string[] { "create", "create new record" },
-            new string[] { "list", "prints all records" },
-            new string[] { "edit", "edit existring record via id" },
-            new string[] { "find", "find records by field value, format: 'find fieldname \"value\"'" },
-            new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
+            new[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
+            new[] { "stat", "prints total count of records" },
+            new[] { "create", $"create new record, datetime format: {FileCabinetRecord.InputDateTimeFormat}" },
+            new[] { "list", "prints all records" },
+            new[] { "edit", $"edit existring record via id, datetime format: {FileCabinetRecord.InputDateTimeFormat}" },
+            new[] { "find", $"find records by field value, format: 'find fieldname \"value\"', datetime format: {FileCabinetRecord.OutputDateTimeFormat}" },
+            new[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
         public static void Main(string[] args)
@@ -120,51 +120,17 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            string firstName,
-                   lastName;
-            DateTime dateOfBirth;
-            short schoolGrade;
-            decimal averageMark;
-            char classLetter;
-
             while (isRunning)
             {
                 try
                 {
-                    Console.Write("First name: ");
-                    firstName = Console.ReadLine() !;
-
-                    Console.Write("Last name: ");
-                    lastName = Console.ReadLine() !;
-
-                    Console.Write("Date of birth: ");
-                    if (!DateTime.TryParseExact(
-                        Console.ReadLine(),
-                        "MM/dd/yyyy",
-                        CultureInfo.InvariantCulture,
-                        DateTimeStyles.None,
-                        out dateOfBirth))
-                    {
-                        throw new ArgumentException("Correct date format: month/day/year.");
-                    }
-
-                    Console.Write("School grade: ");
-                    if (!short.TryParse(Console.ReadLine(), out schoolGrade))
-                    {
-                        throw new ArgumentException("Invalid input for school grade.");
-                    }
-
-                    Console.Write("Average mark: ");
-                    if (!decimal.TryParse(Console.ReadLine(), out averageMark))
-                    {
-                        throw new ArgumentException("Invalid input for average mark.");
-                    }
-
-                    Console.Write("Class letter: ");
-                    if (!char.TryParse(Console.ReadLine(), out classLetter))
-                    {
-                        throw new ArgumentException("Invalid input for class letter.");
-                    }
+                    ReadRecordDataFromConsole(
+                        out var firstName,
+                        out var lastName,
+                        out var dateOfBirth,
+                        out var schoolGrade,
+                        out var averageMark,
+                        out var classLetter);
 
                     Console.WriteLine(
                         "Record #{0} is created.",
@@ -188,12 +154,6 @@ namespace FileCabinetApp
 
         private static void Edit(string parameters)
         {
-            string firstName,
-                   lastName;
-            DateTime dateOfBirth;
-            short schoolGrade;
-            decimal averageMark;
-            char classLetter;
             int id;
 
             while (isRunning)
@@ -206,40 +166,13 @@ namespace FileCabinetApp
                         throw new ArgumentException("Invalid input for id.");
                     }
 
-                    Console.Write("First name: ");
-                    firstName = Console.ReadLine() !;
-
-                    Console.Write("Last name: ");
-                    lastName = Console.ReadLine() !;
-
-                    Console.Write("Date of birth: ");
-                    if (!DateTime.TryParseExact(
-                            Console.ReadLine(),
-                            "MM/dd/yyyy",
-                            CultureInfo.InvariantCulture,
-                            DateTimeStyles.None,
-                            out dateOfBirth))
-                    {
-                        throw new ArgumentException("Correct date format: month/day/year.");
-                    }
-
-                    Console.Write("School grade: ");
-                    if (!short.TryParse(Console.ReadLine(), out schoolGrade))
-                    {
-                        throw new ArgumentException("Invalid input for school grade.");
-                    }
-
-                    Console.Write("Average mark: ");
-                    if (!decimal.TryParse(Console.ReadLine(), out averageMark))
-                    {
-                        throw new ArgumentException("Invalid input for average mark.");
-                    }
-
-                    Console.Write("Class letter: ");
-                    if (!char.TryParse(Console.ReadLine(), out classLetter))
-                    {
-                        throw new ArgumentException("Invalid input for class letter.");
-                    }
+                    ReadRecordDataFromConsole(
+                        out var firstName,
+                        out var lastName,
+                        out var dateOfBirth,
+                        out var schoolGrade,
+                        out var averageMark,
+                        out var classLetter);
 
                     fileCabinetService.EditRecord(
                         id,
@@ -265,10 +198,10 @@ namespace FileCabinetApp
         {
             try
             {
-                string fieldName;
-                string stringValue;
+                const int firstGroupMatchIndex = 1;
+                const int secondGroupMatchIndex = 2;
 
-                var regexPattern = @"^\s*(\w+)\s+""(\d{4}-\w{3}-\d{2}|\w+)""\s*$";
+                const string regexPattern = @"^\s*(\w+)\s+""(\d{4}-\w{3}-\d{2}|\w+)""\s*$";
                 var regex = new Regex(regexPattern);
 
                 if (!regex.IsMatch(parameters))
@@ -276,17 +209,20 @@ namespace FileCabinetApp
                     throw new ArgumentException("Invalid parameters input, see help.");
                 }
 
+                string fieldName;
+                string stringValue;
+
                 var match = regex.Match(parameters);
 
-                fieldName = match.Groups[1].Value;
-                stringValue = match.Groups[2].Value;
+                fieldName = match.Groups[firstGroupMatchIndex].Value;
+                stringValue = match.Groups[secondGroupMatchIndex].Value;
 
                 var found = fileCabinetService.FindByField(fieldName, stringValue);
                 if (found.Length > 0)
                 {
                     foreach (var record in found)
                     {
-                        Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth:yyyy-MMM-dd}, {record.SchoolGrade}, {record.AverageMark}, {record.ClassLetter}");
+                        Console.WriteLine(record);
                     }
                 }
                 else
@@ -304,7 +240,64 @@ namespace FileCabinetApp
         {
             foreach (var record in Program.fileCabinetService.GetRecords())
             {
-                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth:yyyy-MMM-dd}, {record.SchoolGrade}, {record.AverageMark}, {record.ClassLetter}");
+                Console.WriteLine(record);
+            }
+        }
+
+        private static void ReadRecordDataFromConsole(
+            out string firstName,
+            out string lastName,
+            out DateTime dateOfBirth,
+            out short schoolGrade,
+            out decimal averageMark,
+            out char classLetter)
+        {
+            string dateOfBirthString;
+            string schoolGradeString;
+            string averageMarkString;
+            string classLetterString;
+
+            Console.Write("First name: ");
+            firstName = Console.ReadLine() !;
+
+            Console.Write("Last name: ");
+            lastName = Console.ReadLine() !;
+
+            Console.Write("Date of birth: ");
+            dateOfBirthString = Console.ReadLine() !;
+
+            Console.Write("School grade: ");
+            schoolGradeString = Console.ReadLine() !;
+
+            Console.Write("Average mark: ");
+            averageMarkString = Console.ReadLine() !;
+
+            Console.Write("Class letter: ");
+            classLetterString = Console.ReadLine() !;
+
+            if (!DateTime.TryParseExact(
+                dateOfBirthString,
+                FileCabinetRecord.InputDateTimeFormat,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out dateOfBirth))
+            {
+                throw new ArgumentException($"Correct date format: {FileCabinetRecord.InputDateTimeFormat}.");
+            }
+
+            if (!short.TryParse(schoolGradeString, out schoolGrade))
+            {
+                throw new ArgumentException("Invalid input for school grade.");
+            }
+
+            if (!decimal.TryParse(averageMarkString, out averageMark))
+            {
+                throw new ArgumentException("Invalid input for average mark.");
+            }
+
+            if (!char.TryParse(classLetterString, out classLetter))
+            {
+                throw new ArgumentException("Invalid input for class letter.");
             }
         }
     }

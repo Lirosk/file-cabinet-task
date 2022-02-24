@@ -1,10 +1,11 @@
-﻿using System.Reflection;
+﻿using System.Globalization;
+using System.Reflection;
 
 namespace FileCabinetApp
 {
     public class FileCabinetService
     {
-        private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+        private readonly List<FileCabinetRecord> list = new ();
         private readonly Dictionary<(string, string), List<FileCabinetRecord>> index = new ();
 
         public int CreateRecord(

@@ -1,4 +1,6 @@
-﻿namespace FileCabinetApp
+﻿using System.Globalization;
+
+namespace FileCabinetApp
 {
     public class FileCabinetRecord
     {
@@ -15,11 +17,15 @@
         protected internal static readonly DateTime DateOfBirthMinValue = new DateTime(1950, 1, 1);
         protected internal static readonly DateTime DateOfBirthMaxValue = DateTime.Now;
 
+        public static string InputDateTimeFormat { get; protected set; } = "MM/dd/yyyy";
+
+        public static string OutputDateTimeFormat { get; protected set; } = "yyyy-MMM-dd";
+
         public int Id { get; set; }
 
-        public string FirstName { get; set; }
+        public string FirstName { get; set; } = string.Empty;
 
-        public string LastName { get; set; }
+        public string LastName { get; set; } = string.Empty;
 
         public DateTime DateOfBirth { get; set; }
 
@@ -37,14 +43,14 @@
             }
 
             if (firstName.Length < FileCabinetRecord.FirstNameMinLen ||
-                            firstName.Length > FileCabinetRecord.FirstNameMaxLen ||
-                            firstName.Contains(' ', StringComparison.Ordinal))
+                firstName.Length > FileCabinetRecord.FirstNameMaxLen ||
+                !firstName.All(c => char.IsLetter(c)))
             {
                 throw new ArgumentException(
                     $"{nameof(firstName)} must contatin " +
                     $"from {FileCabinetRecord.FirstNameMinLen} " +
                     $"to {FileCabinetRecord.FirstNameMaxLen} characters, " +
-                    "and must not contain spaces.");
+                    "and must not contain spaces, digits, special symbols.");
             }
         }
 
@@ -57,13 +63,13 @@
 
             if (lastName.Length < FileCabinetRecord.LastNameMinLen ||
                 lastName.Length > FileCabinetRecord.LastNameMaxLen ||
-                lastName.Contains(' ', StringComparison.Ordinal))
+                !lastName.All(c => char.IsLetter(c)))
             {
                 throw new ArgumentException(
                     $"{nameof(lastName)} must contatin " +
                     $"from {FileCabinetRecord.LastNameMinLen} " +
                     $"to {FileCabinetRecord.LastNameMaxLen} characters, " +
-                    "and must not contain spaces.");
+                    "and must not contain spaces, digits, special symbols.");
             }
         }
 
@@ -102,6 +108,14 @@
             {
                 throw new ArgumentOutOfRangeException(nameof(classLetter));
             }
+        }
+
+        public override string ToString()
+        {
+            return
+                $"#{this.Id}, {this.FirstName}, {this.LastName}, " +
+                $"{this.DateOfBirth.ToString(FileCabinetRecord.OutputDateTimeFormat, CultureInfo.InvariantCulture)}, " +
+                $"{this.SchoolGrade}, {this.AverageMark}, {this.ClassLetter}";
         }
     }
 }
