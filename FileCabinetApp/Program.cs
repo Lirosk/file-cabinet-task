@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
 
+using FileCabinetApp.FileCabinetServices;
+
 namespace FileCabinetApp
 {
     /// <summary>
@@ -17,6 +19,19 @@ namespace FileCabinetApp
         private static bool isRunning = true;
 
         private static FileCabinetService fileCabinetService = new FileCabinetDefaultService();
+
+        private static string usingService = string.Empty;
+
+        private static Tuple<string[], Action<string>>[] args = new Tuple<string[], Action<string>>[]
+        {
+            new (new[] { "-v", "--validation-rules" }, SetValidationRules),
+        };
+
+        private static Tuple<string, FileCabinetService>[] validationRules = new Tuple<string, FileCabinetService>[]
+        {
+            new ("default", new FileCabinetDefaultService()),
+            new ("custom", new FileCabinetCustomService()),
+        };
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -43,10 +58,26 @@ namespace FileCabinetApp
         /// <summary>
         /// Entry point.
         /// </summary>
-        /// <param name="args">Arguments passed via console.</param>
-        public static void Main(string[] args)
+        /// <param name="consoleArgs">Arguments passed via console.</param>
+        public static void Main(string[] consoleArgs)
         {
+            try
+            {
+                ProceedArgs(consoleArgs);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}{Environment.NewLine}");
+                return;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"Error: Invalid args input.{Environment.NewLine}");
+                return;
+            }
+
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
+            Console.WriteLine($"Using {usingService} validation rules.");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -281,6 +312,57 @@ namespace FileCabinetApp
             personalData.SchoolGrade = schoolGrade;
             personalData.AverageMark = averageMark;
             personalData.ClassLetter = classLetter;
+        }
+
+        private static void SetValidationRules(string rule)
+        {
+            int index;
+            if ((index = Array.FindIndex(validationRules, 0, validationRules.Length, i => i.Item1.Equals(rule, StringComparison.InvariantCultureIgnoreCase))) != -1)
+            {
+                fileCabinetService = validationRules[index].Item2;
+                usingService = validationRules[index].Item1;
+            }
+            else
+            {
+                throw new ArgumentException($"No defined rule \'{rule}\'.");
+            }
+        }
+
+        private static void ProceedArgs(string[] consoleArgs)
+        {
+            Stack<string> paramsAndArgs = new ();
+            int index;
+            foreach (var consoleArg in consoleArgs.Reverse())
+            {
+                if ((index = consoleArg.IndexOf('=', StringComparison.Ordinal)) != -1)
+                {
+                    paramsAndArgs.Push(consoleArg[(index + 1) ..]);
+                    paramsAndArgs.Push(consoleArg[..index]);
+                    continue;
+                }
+
+                paramsAndArgs.Push(consoleArg);
+            }
+
+            string param, arg;
+            while (paramsAndArgs.TryPop(out param!))
+            {
+                if ((index = Array.FindIndex(args, 0, i => i.Item1.Contains(param))) != -1)
+                {
+                    if (paramsAndArgs.TryPop(out arg!))
+                    {
+                        args[index].Item2(arg);
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"No argument for \'{param}\' parameter");
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException($"No defined parameter \'{param}\'.");
+                }
+            }
         }
     }
 }

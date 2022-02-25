@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.FileCabinetServices
 {
     /// <summary>
     /// Stores records with personal information; manages the creation, editing, finding the records.

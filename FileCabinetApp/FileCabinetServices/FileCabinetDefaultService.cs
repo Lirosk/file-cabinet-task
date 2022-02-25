@@ -1,4 +1,4 @@
-﻿namespace FileCabinetApp
+﻿namespace FileCabinetApp.FileCabinetServices
 {
     /// <summary>
     /// Service with default data validation.
