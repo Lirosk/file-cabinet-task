@@ -1,7 +1,8 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
 
-using FileCabinetApp.FileCabinetServices;
+using FileCabinetApp.Services;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp
 {
@@ -18,7 +19,7 @@ namespace FileCabinetApp
 
         private static bool isRunning = true;
 
-        private static FileCabinetService fileCabinetService = new FileCabinetDefaultService();
+        private static FileCabinetService fileCabinetService;
 
         private static string usingService = string.Empty;
 
@@ -27,10 +28,10 @@ namespace FileCabinetApp
             new (new[] { "-v", "--validation-rules" }, SetValidationRules),
         };
 
-        private static Tuple<string, FileCabinetService>[] validationRules = new Tuple<string, FileCabinetService>[]
+        private static Tuple<string, IRecordValidator>[] validationRules = new Tuple<string, IRecordValidator>[]
         {
-            new ("default", new FileCabinetDefaultService()),
-            new ("custom", new FileCabinetCustomService()),
+            new ("default", new DefaultValidator()),
+            new ("custom", new CustomValidator()),
         };
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
@@ -231,7 +232,7 @@ namespace FileCabinetApp
                 stringValue = match.Groups[secondGroupMatchIndex].Value;
 
                 var found = fileCabinetService.FindByField(fieldName, stringValue);
-                if (found.Length > 0)
+                if (found.Count > 0)
                 {
                     foreach (var record in found)
                     {
@@ -319,7 +320,7 @@ namespace FileCabinetApp
             int index;
             if ((index = Array.FindIndex(validationRules, 0, validationRules.Length, i => i.Item1.Equals(rule, StringComparison.InvariantCultureIgnoreCase))) != -1)
             {
-                fileCabinetService = validationRules[index].Item2;
+                fileCabinetService = new FileCabinetService(validationRules[index].Item2);
                 usingService = validationRules[index].Item1;
             }
             else
