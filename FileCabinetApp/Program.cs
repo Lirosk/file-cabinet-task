@@ -1,8 +1,14 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
 
+using FileCabinetApp.Services;
+using FileCabinetApp.Validators;
+
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Interacts with user.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Kirill Basenko";
@@ -13,33 +19,66 @@ namespace FileCabinetApp
 
         private static bool isRunning = true;
 
-        private static FileCabinetService fileCabinetService = new ();
+        private static IFileCabinetService? fileCabinetService;
+
+        private static int usedValidationRuleIndex;
+
+        private static Tuple<string[], Action<string>>[] args = new Tuple<string[], Action<string>>[]
+        {
+            new (new[] { "-v", "--validation-rules" }, SetValidationRules),
+        };
+
+        private static Tuple<string, IRecordValidator>[] validationRules = new Tuple<string, IRecordValidator>[]
+        {
+            new ("default", new DefaultValidator()),
+            new ("custom", new CustomValidator()),
+        };
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
-            new Tuple<string, Action<string>>("help", PrintHelp),
-            new Tuple<string, Action<string>>("exit", Exit),
-            new Tuple<string, Action<string>>("stat", Stat),
-            new Tuple<string, Action<string>>("create", Create),
-            new Tuple<string, Action<string>>("list", List),
-            new Tuple<string, Action<string>>("edit", Edit),
-            new Tuple<string, Action<string>>("find", Find),
+            new ("help", PrintHelp),
+            new ("exit", Exit),
+            new ("stat", Stat),
+            new ("create", Create),
+            new ("list", List),
+            new ("edit", Edit),
+            new ("find", Find),
         };
 
         private static string[][] helpMessages = new string[][]
         {
-            new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
-            new string[] { "stat", "prints total count of records" },
-            new string[] { "create", "create new record" },
-            new string[] { "list", "prints all records" },
-            new string[] { "edit", "edit existring record via id" },
-            new string[] { "find", "find records by field value, format: 'find fieldname \"value\"'" },
-            new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
+            new[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
+            new[] { "stat", "prints total count of records" },
+            new[] { "create", $"create new record, datetime format: {FileCabinetRecord.InputDateTimeFormat}" },
+            new[] { "list", "prints all records" },
+            new[] { "edit", $"edit existring record via id, datetime format: {FileCabinetRecord.InputDateTimeFormat}" },
+            new[] { "find", $"find records by field value, format: 'find fieldname \"value\"', datetime format: {FileCabinetRecord.OutputDateTimeFormat}" },
+            new[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
-        public static void Main(string[] args)
+        /// <summary>
+        /// Entry point.
+        /// </summary>
+        /// <param name="consoleArgs">Arguments passed via console.</param>
+        public static void Main(string[] consoleArgs)
         {
+            try
+            {
+                ProceedArgs(consoleArgs);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}{Environment.NewLine}");
+                return;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"Error: Invalid args input.{Environment.NewLine}");
+                return;
+            }
+
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
+            Console.WriteLine($"Using {validationRules[usedValidationRuleIndex].Item1} validation rules.");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -114,71 +153,25 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat();
+            var recordsCount = Program.fileCabinetService!.GetStat();
             Console.WriteLine($"{recordsCount} record(s).");
         }
 
         private static void Create(string parameters)
         {
-            string firstName,
-                   lastName;
-            DateTime dateOfBirth;
-            short schoolGrade;
-            decimal averageMark;
-            char classLetter;
-
             while (isRunning)
             {
                 try
                 {
-                    Console.Write("First name: ");
-                    firstName = Console.ReadLine() !;
-
-                    Console.Write("Last name: ");
-                    lastName = Console.ReadLine() !;
-
-                    Console.Write("Date of birth: ");
-                    if (!DateTime.TryParseExact(
-                        Console.ReadLine(),
-                        "MM/dd/yyyy",
-                        CultureInfo.InvariantCulture,
-                        DateTimeStyles.None,
-                        out dateOfBirth))
-                    {
-                        throw new ArgumentException("Correct date format: month/day/year.");
-                    }
-
-                    Console.Write("School grade: ");
-                    if (!short.TryParse(Console.ReadLine(), out schoolGrade))
-                    {
-                        throw new ArgumentException("Invalid input for school grade.");
-                    }
-
-                    Console.Write("Average mark: ");
-                    if (!decimal.TryParse(Console.ReadLine(), out averageMark))
-                    {
-                        throw new ArgumentException("Invalid input for average mark.");
-                    }
-
-                    Console.Write("Class letter: ");
-                    if (!char.TryParse(Console.ReadLine(), out classLetter))
-                    {
-                        throw new ArgumentException("Invalid input for class letter.");
-                    }
+                    ReadRecordDataFromConsole(FileCabinetRecord.InputDateTimeFormat, out var personalData);
 
                     Console.WriteLine(
                         "Record #{0} is created.",
-                        Program.fileCabinetService.CreateRecord(
-                            firstName!,
-                            lastName!,
-                            dateOfBirth,
-                            schoolGrade,
-                            averageMark,
-                            classLetter));
+                        Program.fileCabinetService!.CreateRecord(personalData));
                 }
                 catch (ArgumentException ex)
                 {
-                    Console.WriteLine(ex.Message + Environment.NewLine);
+                    Console.WriteLine($"Error: {ex.Message}{Environment.NewLine}");
                     continue;
                 }
 
@@ -188,12 +181,6 @@ namespace FileCabinetApp
 
         private static void Edit(string parameters)
         {
-            string firstName,
-                   lastName;
-            DateTime dateOfBirth;
-            short schoolGrade;
-            decimal averageMark;
-            char classLetter;
             int id;
 
             while (isRunning)
@@ -206,53 +193,13 @@ namespace FileCabinetApp
                         throw new ArgumentException("Invalid input for id.");
                     }
 
-                    Console.Write("First name: ");
-                    firstName = Console.ReadLine() !;
+                    ReadRecordDataFromConsole(FileCabinetRecord.OutputDateTimeFormat, out var personalData);
 
-                    Console.Write("Last name: ");
-                    lastName = Console.ReadLine() !;
-
-                    Console.Write("Date of birth: ");
-                    if (!DateTime.TryParseExact(
-                            Console.ReadLine(),
-                            "MM/dd/yyyy",
-                            CultureInfo.InvariantCulture,
-                            DateTimeStyles.None,
-                            out dateOfBirth))
-                    {
-                        throw new ArgumentException("Correct date format: month/day/year.");
-                    }
-
-                    Console.Write("School grade: ");
-                    if (!short.TryParse(Console.ReadLine(), out schoolGrade))
-                    {
-                        throw new ArgumentException("Invalid input for school grade.");
-                    }
-
-                    Console.Write("Average mark: ");
-                    if (!decimal.TryParse(Console.ReadLine(), out averageMark))
-                    {
-                        throw new ArgumentException("Invalid input for average mark.");
-                    }
-
-                    Console.Write("Class letter: ");
-                    if (!char.TryParse(Console.ReadLine(), out classLetter))
-                    {
-                        throw new ArgumentException("Invalid input for class letter.");
-                    }
-
-                    fileCabinetService.EditRecord(
-                        id,
-                        firstName,
-                        lastName,
-                        dateOfBirth,
-                        schoolGrade,
-                        averageMark,
-                        classLetter);
+                    fileCabinetService!.EditRecord(id, personalData);
                 }
                 catch (ArgumentException ex)
                 {
-                    Console.WriteLine(ex.Message + Environment.NewLine);
+                    Console.WriteLine($"Error: {ex.Message}{Environment.NewLine}");
                     continue;
                 }
 
@@ -265,10 +212,10 @@ namespace FileCabinetApp
         {
             try
             {
-                string fieldName;
-                string stringValue;
+                const int firstGroupMatchIndex = 1;
+                const int secondGroupMatchIndex = 2;
 
-                var regexPattern = @"^\s*(\w+)\s+""(\d{4}-\w{3}-\d{2}|\w+)""\s*$";
+                const string regexPattern = @"^\s*(\w+)\s+""(\d{4}-\w{3}-\d{2}|\w+)""\s*$";
                 var regex = new Regex(regexPattern);
 
                 if (!regex.IsMatch(parameters))
@@ -276,17 +223,20 @@ namespace FileCabinetApp
                     throw new ArgumentException("Invalid parameters input, see help.");
                 }
 
+                string fieldName;
+                string stringValue;
+
                 var match = regex.Match(parameters);
 
-                fieldName = match.Groups[1].Value;
-                stringValue = match.Groups[2].Value;
+                fieldName = match.Groups[firstGroupMatchIndex].Value;
+                stringValue = match.Groups[secondGroupMatchIndex].Value;
 
-                var found = fileCabinetService.FindByField(fieldName, stringValue);
-                if (found.Length > 0)
+                var found = fileCabinetService!.FindByField(fieldName, stringValue);
+                if (found.Count > 0)
                 {
                     foreach (var record in found)
                     {
-                        Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth:yyyy-MMM-dd}, {record.SchoolGrade}, {record.AverageMark}, {record.ClassLetter}");
+                        Console.WriteLine(record);
                     }
                 }
                 else
@@ -302,9 +252,187 @@ namespace FileCabinetApp
 
         private static void List(string parameters)
         {
-            foreach (var record in Program.fileCabinetService.GetRecords())
+            foreach (var record in fileCabinetService!.GetRecords())
             {
-                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth:yyyy-MMM-dd}, {record.SchoolGrade}, {record.AverageMark}, {record.ClassLetter}");
+                Console.WriteLine(record);
+            }
+        }
+
+        private static void ReadRecordDataFromConsole(string dateTimeFormat, out PersonalData personalData)
+        {
+            personalData = new ();
+            var usedValidationRule = validationRules[usedValidationRuleIndex].Item2;
+
+            Console.Write("First name: ");
+            personalData.FirstName =
+                ReadInput(
+                    StringConverter,
+                    Validator<string>(usedValidationRule.ValidateFirstName));
+
+            Console.Write("Last name: ");
+            personalData.LastName =
+                ReadInput(
+                    StringConverter,
+                    Validator<string>(usedValidationRule.ValidateLastName));
+
+            Console.Write("Date of birth: ");
+            personalData.DateOfBirth =
+                ReadInput(
+                    DateTimeConverter(dateTimeFormat),
+                    Validator<DateTime>(usedValidationRule.ValidateDateOfBirth));
+
+            Console.Write("School grade: ");
+            personalData.SchoolGrade =
+                ReadInput(
+                    NumericConverter<short>,
+                    Validator<short>(usedValidationRule.ValidateSchoolGrade));
+
+            Console.Write("Average mark: ");
+            personalData.AverageMark =
+                ReadInput(
+                    NumericConverter<decimal>,
+                    Validator<decimal>(usedValidationRule.ValidateAverageMark));
+
+            Console.Write("Class letter: ");
+            personalData.ClassLetter =
+                ReadInput(
+                    NumericConverter<char>,
+                    Validator<char>(usedValidationRule.ValidateClassLetter));
+        }
+
+        private static Func<T, Tuple<bool, string>> Validator<T>(Action<T> validate)
+        {
+            return (T input) =>
+            {
+                try
+                {
+                    validate(input);
+                }
+                catch (ArgumentException ex)
+                {
+                    return new Tuple<bool, string>(false, ex.Message);
+                }
+
+                return new Tuple<bool, string>(true, string.Empty);
+            };
+        }
+
+        private static Tuple<bool, string, string> StringConverter(string input)
+        {
+            return new Tuple<bool, string, string>(true, string.Empty, input);
+        }
+
+        private static Func<string, Tuple<bool, string, DateTime>> DateTimeConverter(string dateTimeFormat)
+        {
+            return (string input) =>
+            {
+                bool success = true;
+                string message = string.Empty;
+                DateTime res;
+
+                success = DateTime.TryParseExact(
+                    input,
+                    dateTimeFormat,
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out res);
+
+                if (!success)
+                {
+                    message = $"Invalid value, correct format is \'{dateTimeFormat}\'";
+                }
+
+                return new Tuple<bool, string, DateTime>(success, message, res);
+            };
+        }
+
+        private static Tuple<bool, string, T> NumericConverter<T>(string input)
+            where T : struct
+        {
+            var res = (T?)Convert.ChangeType(input, typeof(T), CultureInfo.InvariantCulture);
+            bool success = res is not null;
+            string message = success ? string.Empty : "Invalid value";
+
+            return new Tuple<bool, string, T>(success, message, (T)res!);
+        }
+
+        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
+            do
+            {
+                T value;
+
+                var input = Console.ReadLine() !;
+                var conversionResult = converter(input);
+
+                if (!conversionResult.Item1)
+                {
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Correct your input:");
+                    continue;
+                }
+
+                value = conversionResult.Item3;
+
+                var validationResult = validator(value);
+                if (!validationResult.Item1)
+                {
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Correct your input:");
+                    continue;
+                }
+
+                return value;
+            }
+            while (true);
+        }
+
+        private static void SetValidationRules(string rule)
+        {
+            int index;
+            if ((index = Array.FindIndex(validationRules, 0, validationRules.Length, i => i.Item1.Equals(rule, StringComparison.InvariantCultureIgnoreCase))) != -1)
+            {
+                fileCabinetService = new FileCabinetService(validationRules[index].Item2);
+                usedValidationRuleIndex = index;
+            }
+            else
+            {
+                throw new ArgumentException($"No defined rule \'{rule}\'.");
+            }
+        }
+
+        private static void ProceedArgs(string[] consoleArgs)
+        {
+            Stack<string> paramsAndArgs = new ();
+            int index;
+            foreach (var consoleArg in consoleArgs.Reverse())
+            {
+                if ((index = consoleArg.IndexOf('=', StringComparison.Ordinal)) != -1)
+                {
+                    paramsAndArgs.Push(consoleArg[(index + 1) ..]);
+                    paramsAndArgs.Push(consoleArg[..index]);
+                    continue;
+                }
+
+                paramsAndArgs.Push(consoleArg);
+            }
+
+            string param, arg;
+            while (paramsAndArgs.TryPop(out param!))
+            {
+                if ((index = Array.FindIndex(args, 0, i => i.Item1.Contains(param))) != -1)
+                {
+                    if (paramsAndArgs.TryPop(out arg!))
+                    {
+                        args[index].Item2(arg);
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"No argument for \'{param}\' parameter");
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException($"No defined parameter \'{param}\'.");
+                }
             }
         }
     }
