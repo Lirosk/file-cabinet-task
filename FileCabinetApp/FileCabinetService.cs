@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.ObjectModel;
+using System.Reflection;
 
 namespace FileCabinetApp.FileCabinetServices
 {
@@ -75,23 +76,23 @@ namespace FileCabinetApp.FileCabinetServices
         /// <param name="fieldName">Name of field to search.</param>
         /// <param name="value">Value of <paramref name="fieldName"/> field to search.</param>
         /// <returns>Array of found records.</returns>
-        public FileCabinetRecord[] FindByField(string fieldName, object value)
+        public ReadOnlyCollection<FileCabinetRecord> FindByField(string fieldName, object value)
         {
             if (this.index.TryGetValue((fieldName.ToUpperInvariant(), value as string ?? value.ToString() !), out var res))
             {
-                return res.ToArray();
+                return new ReadOnlyCollection<FileCabinetRecord>(res);
             }
 
-            return Array.Empty<FileCabinetRecord>();
+            return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
         }
 
         /// <summary>
         /// Get all stored records.
         /// </summary>
         /// <returns>All stored records.</returns>
-        public FileCabinetRecord[] GetRecords()
+        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            return this.list.ToArray();
+            return new ReadOnlyCollection<FileCabinetRecord>(this.list);
         }
 
         /// <summary>
