@@ -21,7 +21,7 @@ namespace FileCabinetApp
 
         private static IFileCabinetService? fileCabinetService;
 
-        private static string usingService = string.Empty;
+        private static int usedValidationRuleIndex;
 
         private static Tuple<string[], Action<string>>[] args = new Tuple<string[], Action<string>>[]
         {
@@ -78,7 +78,7 @@ namespace FileCabinetApp
             }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
-            Console.WriteLine($"Using {usingService} validation rules.");
+            Console.WriteLine($"Using {validationRules[usedValidationRuleIndex].Item1} validation rules.");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -163,7 +163,7 @@ namespace FileCabinetApp
             {
                 try
                 {
-                    ReadRecordDataFromConsole(out var personalData);
+                    ReadRecordDataFromConsole(FileCabinetRecord.InputDateTimeFormat, out var personalData);
 
                     Console.WriteLine(
                         "Record #{0} is created.",
@@ -193,7 +193,7 @@ namespace FileCabinetApp
                         throw new ArgumentException("Invalid input for id.");
                     }
 
-                    ReadRecordDataFromConsole(out var personalData);
+                    ReadRecordDataFromConsole(FileCabinetRecord.OutputDateTimeFormat, out var personalData);
 
                     fileCabinetService!.EditRecord(id, personalData);
                 }
@@ -258,61 +258,131 @@ namespace FileCabinetApp
             }
         }
 
-        private static void ReadRecordDataFromConsole(out PersonalData personalData)
+        private static void ReadRecordDataFromConsole(string dateTimeFormat, out PersonalData personalData)
         {
             personalData = new ();
-            string dateOfBirthString;
-            string schoolGradeString;
-            string averageMarkString;
-            string classLetterString;
+            var usedValidationRule = validationRules[usedValidationRuleIndex].Item2;
 
             Console.Write("First name: ");
-            personalData.FirstName = Console.ReadLine() !;
+            personalData.FirstName =
+                ReadInput(
+                    StringConverter,
+                    Validator<string>(usedValidationRule.ValidateFirstName));
 
             Console.Write("Last name: ");
-            personalData.LastName = Console.ReadLine() !;
+            personalData.LastName =
+                ReadInput(
+                    StringConverter,
+                    Validator<string>(usedValidationRule.ValidateLastName));
 
             Console.Write("Date of birth: ");
-            dateOfBirthString = Console.ReadLine() !;
+            personalData.DateOfBirth =
+                ReadInput(
+                    DateTimeConverter(dateTimeFormat),
+                    Validator<DateTime>(usedValidationRule.ValidateDateOfBirth));
 
             Console.Write("School grade: ");
-            schoolGradeString = Console.ReadLine() !;
+            personalData.SchoolGrade =
+                ReadInput(
+                    NumericConverter<short>,
+                    Validator<short>(usedValidationRule.ValidateSchoolGrade));
 
             Console.Write("Average mark: ");
-            averageMarkString = Console.ReadLine() !;
+            personalData.AverageMark =
+                ReadInput(
+                    NumericConverter<decimal>,
+                    Validator<decimal>(usedValidationRule.ValidateAverageMark));
 
             Console.Write("Class letter: ");
-            classLetterString = Console.ReadLine() !;
+            personalData.ClassLetter =
+                ReadInput(
+                    NumericConverter<char>,
+                    Validator<char>(usedValidationRule.ValidateClassLetter));
+        }
 
-            if (!DateTime.TryParseExact(
-                dateOfBirthString,
-                FileCabinetRecord.InputDateTimeFormat,
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.None,
-                out var dateOfBirth))
+        private static Func<T, Tuple<bool, string>> Validator<T>(Action<T> validate)
+        {
+            return (T input) =>
             {
-                throw new ArgumentException($"Correct date format: {FileCabinetRecord.InputDateTimeFormat}.");
-            }
+                try
+                {
+                    validate(input);
+                }
+                catch (ArgumentException ex)
+                {
+                    return new Tuple<bool, string>(false, ex.Message);
+                }
 
-            if (!short.TryParse(schoolGradeString, out var schoolGrade))
+                return new Tuple<bool, string>(true, string.Empty);
+            };
+        }
+
+        private static Tuple<bool, string, string> StringConverter(string input)
+        {
+            return new Tuple<bool, string, string>(true, string.Empty, input);
+        }
+
+        private static Func<string, Tuple<bool, string, DateTime>> DateTimeConverter(string dateTimeFormat)
+        {
+            return (string input) =>
             {
-                throw new ArgumentException("Invalid input for school grade.");
-            }
+                bool success = true;
+                string message = string.Empty;
+                DateTime res;
 
-            if (!decimal.TryParse(averageMarkString, out var averageMark))
+                success = DateTime.TryParseExact(
+                    input,
+                    dateTimeFormat,
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out res);
+
+                if (!success)
+                {
+                    message = "Invalid value";
+                }
+
+                return new Tuple<bool, string, DateTime>(success, message, res);
+            };
+        }
+
+        private static Tuple<bool, string, T> NumericConverter<T>(string input)
+            where T : struct
+        {
+            var res = (T?)Convert.ChangeType(input, typeof(T), CultureInfo.InvariantCulture);
+            bool success = res is not null;
+            string message = success ? string.Empty : "Invalid value";
+
+            return new Tuple<bool, string, T>(success, message, (T)res!);
+        }
+
+        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
+            do
             {
-                throw new ArgumentException("Invalid input for average mark.");
-            }
+                T value;
 
-            if (!char.TryParse(classLetterString, out var classLetter))
-            {
-                throw new ArgumentException("Invalid input for class letter.");
-            }
+                var input = Console.ReadLine() !;
+                var conversionResult = converter(input);
 
-            personalData.DateOfBirth = dateOfBirth;
-            personalData.SchoolGrade = schoolGrade;
-            personalData.AverageMark = averageMark;
-            personalData.ClassLetter = classLetter;
+                if (!conversionResult.Item1)
+                {
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Correct your input.{Environment.NewLine}");
+                    continue;
+                }
+
+                value = conversionResult.Item3;
+
+                var validationResult = validator(value);
+                if (validationResult.Item1)
+                {
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Correct your input.{Environment.NewLine}");
+                    continue;
+                }
+
+                return value;
+            }
+            while (true);
         }
 
         private static void SetValidationRules(string rule)
@@ -321,7 +391,7 @@ namespace FileCabinetApp
             if ((index = Array.FindIndex(validationRules, 0, validationRules.Length, i => i.Item1.Equals(rule, StringComparison.InvariantCultureIgnoreCase))) != -1)
             {
                 fileCabinetService = new FileCabinetService(validationRules[index].Item2);
-                usingService = validationRules[index].Item1;
+                usedValidationRuleIndex = index;
             }
             else
             {
