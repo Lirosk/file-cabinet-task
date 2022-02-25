@@ -4,70 +4,132 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.FileCabinetDefaultService">
+            <summary>
+            Service with custom data validation.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetDefaultService.FirstNameMinLen">
+            <summary>
+            Minimal valid first name length.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetDefaultService.FirstNameMaxLen">
+            <summary>
+            Maximun valid last name length.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetDefaultService.LastNameMinLen">
+            <summary>
+            Minimum valid last name length.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetDefaultService.LastNameMaxLen">
+            <summary>
+            Maximum valid last name length.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetDefaultService.SchoolGradeMinValue">
+            <summary>
+            Minimum valid school grade value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetDefaultService.SchoolGradeMaxValue">
+            <summary>
+            Maximum valid school grade value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetDefaultService.AverageMarkMinValue">
+            <summary>
+            Minimum valid average mark value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetDefaultService.AverageMarkMaxValue">
+            <summary>
+            Maximum valid average mark value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetDefaultService.ClassLetterMinValue">
+            <summary>
+            Minimum valid class letter value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetDefaultService.ClassLetterMaxValue">
+            <summary>
+            Maximum valid class letter value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetDefaultService.DateOfBirthMinValue">
+            <summary>
+            Minimum valid date of birth value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetDefaultService.DateOfBirthMaxValue">
+            <summary>
+            Maximum valid date of birth value.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.Validate(FileCabinetApp.PersonalData)">
+            <summary>
+            Checks for valid values in object parameter..
+            </summary>
+            <param name="personalData">Object parameter contains values to check for valid.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateFirstName(System.String)">
+            <summary>
+            Check first name for valid value.
+            </summary>
+            <param name="firstName">Value to check.</param>
+            <exception cref="T:System.ArgumentNullException">If firstName param is null.</exception>
+            <exception cref="T:System.ArgumentException">If firstName has invalid length or contains invalid symbols.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateLastName(System.String)">
+            <summary>
+            Check last name for valid value.
+            </summary>
+            <param name="lastName">Value to check.</param>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="lastName"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">If <paramref name="lastName"/> has invalid length or contains invalid symbols.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateDateOfBirth(System.DateTime)">
+            <summary>
+            Check date of birth for valid value.
+            </summary>
+            <param name="dateOfBirth">Value to check.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="dateOfBirth"/> is less than <see cref="F:FileCabinetApp.FileCabinetDefaultService.DateOfBirthMinValue"/> or more than <see cref="F:FileCabinetApp.FileCabinetDefaultService.DateOfBirthMaxValue"/>.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateSchoolGrade(System.Int16)">
+            <summary>
+            Check school grade for valid value.
+            </summary>
+            <param name="schoolGrade">Value to check.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="schoolGrade"/> is less than <see cref="F:FileCabinetApp.FileCabinetDefaultService.SchoolGradeMinValue"/> or more than <see cref="F:FileCabinetApp.FileCabinetDefaultService.SchoolGradeMaxValue"/>.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateAverageMark(System.Decimal)">
+            <summary>
+            Check average mark for valid value.
+            </summary>
+            <param name="averageMark">Value to check.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="averageMark"/> is less than <see cref="F:FileCabinetApp.FileCabinetDefaultService.AverageMarkMinValue"/> or more than <see cref="F:FileCabinetApp.FileCabinetDefaultService.AverageMarkMaxValue"/>.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateClassLetter(System.Char)">
+            <summary>
+            Check class letter for valid value.
+            </summary>
+            <param name="classLetter">Value to check.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="classLetter"/> is less than <see cref="F:FileCabinetApp.FileCabinetDefaultService.ClassLetterMinValue"/> or more than <see cref="F:FileCabinetApp.FileCabinetDefaultService.ClassLetterMaxValue"/>.</exception>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Represents the record with personal information.
             </summary>
         </member>
-        <member name="F:FileCabinetApp.FileCabinetRecord.FirstNameMinLen">
+        <member name="M:FileCabinetApp.FileCabinetRecord.#ctor(System.Int32,FileCabinetApp.PersonalData)">
             <summary>
-            Minimal valid first name length.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.
             </summary>
-        </member>
-        <member name="F:FileCabinetApp.FileCabinetRecord.FirstNameMaxLen">
-            <summary>
-            Maximun valid last name length.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FileCabinetRecord.LastNameMinLen">
-            <summary>
-            Minimum valid last name length.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FileCabinetRecord.LastNameMaxLen">
-            <summary>
-            Maximum valid last name length.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FileCabinetRecord.SchoolGradeMinValue">
-            <summary>
-            Minimum valid school grade value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FileCabinetRecord.SchoolGradeMaxValue">
-            <summary>
-            Maximum valid school grade value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FileCabinetRecord.AverageMarkMinValue">
-            <summary>
-            Minimum valid average mark value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FileCabinetRecord.AverageMarkMaxValue">
-            <summary>
-            Maximum valid average mark value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FileCabinetRecord.ClassLetterMinValue">
-            <summary>
-            Minimum valid class letter value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FileCabinetRecord.ClassLetterMaxValue">
-            <summary>
-            Maximum valid class letter value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FileCabinetRecord.DateOfBirthMinValue">
-            <summary>
-            Minimum valid date of birth value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FileCabinetRecord.DateOfBirthMaxValue">
-            <summary>
-            Maximum valid date of birth value.
-            </summary>
+            <param name="id">Id of record.</param>
+            <param name="personalData">Personal information.</param>
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.InputDateTimeFormat">
             <summary>
@@ -123,50 +185,6 @@
             </summary>
             <value>Class letter of a person in record.</value>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetRecord.ValidateFirstName(System.String)">
-            <summary>
-            Check first name for valid value.
-            </summary>
-            <param name="firstName">Value to check.</param>
-            <exception cref="T:System.ArgumentNullException">If firstName param is null.</exception>
-            <exception cref="T:System.ArgumentException">If firstName has invalid length or contains invalid symbols.</exception>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetRecord.ValidateLastName(System.String)">
-            <summary>
-            Check last name for valid value.
-            </summary>
-            <param name="lastName">Value to check.</param>
-            <exception cref="T:System.ArgumentNullException">If <paramref name="lastName"/> is null.</exception>
-            <exception cref="T:System.ArgumentException">If <paramref name="lastName"/> has invalid length or contains invalid symbols.</exception>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetRecord.ValidateDateOfBirth(System.DateTime)">
-            <summary>
-            Check date of birth for valid value.
-            </summary>
-            <param name="dateOfBirth">Value to check.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="dateOfBirth"/> is less than <see cref="F:FileCabinetApp.FileCabinetRecord.DateOfBirthMinValue"/> or more than <see cref="F:FileCabinetApp.FileCabinetRecord.DateOfBirthMaxValue"/>.</exception>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetRecord.ValidateSchoolGrade(System.Int16)">
-            <summary>
-            Check school grade for valid value.
-            </summary>
-            <param name="schoolGrade">Value to check.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="schoolGrade"/> is less than <see cref="F:FileCabinetApp.FileCabinetRecord.SchoolGradeMinValue"/> or more than <see cref="F:FileCabinetApp.FileCabinetRecord.SchoolGradeMaxValue"/>.</exception>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetRecord.ValidateAverageMark(System.Decimal)">
-            <summary>
-            Check average mark for valid value.
-            </summary>
-            <param name="averageMark">Value to check.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="averageMark"/> is less than <see cref="F:FileCabinetApp.FileCabinetRecord.AverageMarkMinValue"/> or more than <see cref="F:FileCabinetApp.FileCabinetRecord.AverageMarkMaxValue"/>.</exception>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetRecord.ValidateClassLetter(System.Char)">
-            <summary>
-            Check class letter for valid value.
-            </summary>
-            <param name="classLetter">Value to check.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="classLetter"/> is less than <see cref="F:FileCabinetApp.FileCabinetRecord.ClassLetterMinValue"/> or more than <see cref="F:FileCabinetApp.FileCabinetRecord.ClassLetterMaxValue"/>.</exception>
-        </member>
         <member name="M:FileCabinetApp.FileCabinetRecord.ToString">
             <summary>
             Convert instance to its string representation.
@@ -178,29 +196,19 @@
             Stores records with personal information; manages the creation, editing, finding the records.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(System.String,System.String,System.DateTime,System.Int16,System.Decimal,System.Char)">
+        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.PersonalData)">
             <summary>
             Create record from given parameters.
             </summary>
-            <param name="firstName">First name of a person in record.</param>
-            <param name="lastName">Last name of a person in record.</param>
-            <param name="dateOfBirth">Date of birth of a person in record.</param>
-            <param name="schoolGrade">School grade of a person in record.</param>
-            <param name="averageMark">Average mark of a person in record.</param>
-            <param name="classLetter">Class letter of a person in record.</param>
+            <param name="personalData">Represents data of a person.</param>
             <returns>Returns the id of created record.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,System.String,System.String,System.DateTime,System.Int16,System.Decimal,System.Char)">
+        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,FileCabinetApp.PersonalData)">
             <summary>
             Edit record with the given id.
             </summary>
             <param name="id">Id of record to edit.</param>
-            <param name="firstName">New first name to set.</param>
-            <param name="lastName">New last name to set.</param>
-            <param name="dateOfBirth">New date of birth to set.</param>
-            <param name="schoolGrade">New school grade to set.</param>
-            <param name="averageMark">New average mark to set.</param>
-            <param name="classLetter">New class letter to set.</param>
+            <param name="newData">New personal data for record.</param>
             <exception cref="T:System.ArgumentException">No record matching given id.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.FindByField(System.String,System.Object)">
@@ -222,6 +230,53 @@
             Get count of stored records.
             </summary>
             <returns>Count of stored records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.Validate(FileCabinetApp.PersonalData)">
+            <summary>
+            Checks for valid values in object parameter..
+            </summary>
+            <param name="personalData">Object parameter contains values to check for valid.</param>
+        </member>
+        <member name="T:FileCabinetApp.PersonalData">
+            <summary>
+            Represents parameter object for <see cref="T:FileCabinetApp.FileCabinetRecord"/>.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.PersonalData.FirstName">
+            <summary>
+            Gets or sets first name of a person in record.
+            </summary>
+            <value>First name of a person in record.</value>
+        </member>
+        <member name="P:FileCabinetApp.PersonalData.LastName">
+            <summary>
+            Gets or sets last name of a person in record.
+            </summary>
+            <value>Last name of a person in record.</value>
+        </member>
+        <member name="P:FileCabinetApp.PersonalData.DateOfBirth">
+            <summary>
+            Gets or sets date of birth of a person in record.
+            </summary>
+            <value>Date of birth of a person in record.</value>
+        </member>
+        <member name="P:FileCabinetApp.PersonalData.SchoolGrade">
+            <summary>
+            Gets or sets school grade of a person in record.
+            </summary>
+            <value>School grade of a person in record.</value>
+        </member>
+        <member name="P:FileCabinetApp.PersonalData.AverageMark">
+            <summary>
+            Gets or sets averange mark of a person in record.
+            </summary>
+            <value>Average mark of a person in record.</value>
+        </member>
+        <member name="P:FileCabinetApp.PersonalData.ClassLetter">
+            <summary>
+            Gets or sets class letter of a person in record.
+            </summary>
+            <value>Class letter of a person in record.</value>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>

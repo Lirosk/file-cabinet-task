@@ -16,7 +16,7 @@ namespace FileCabinetApp
 
         private static bool isRunning = true;
 
-        private static FileCabinetService fileCabinetService = new ();
+        private static FileCabinetService fileCabinetService = new FileCabinetDefaultService();
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -139,7 +139,7 @@ namespace FileCabinetApp
                 }
                 catch (ArgumentException ex)
                 {
-                    Console.WriteLine(ex.Message + Environment.NewLine);
+                    Console.WriteLine($"Error: {ex.Message}{Environment.NewLine}");
                     continue;
                 }
 
@@ -167,7 +167,7 @@ namespace FileCabinetApp
                 }
                 catch (ArgumentException ex)
                 {
-                    Console.WriteLine(ex.Message + Environment.NewLine);
+                    Console.WriteLine($"Error: {ex.Message}{Environment.NewLine}");
                     continue;
                 }
 

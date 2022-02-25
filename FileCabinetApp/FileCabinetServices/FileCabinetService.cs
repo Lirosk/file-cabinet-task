@@ -5,7 +5,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Stores records with personal information; manages the creation, editing, finding the records.
     /// </summary>
-    public class FileCabinetService
+    public abstract class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new ();
         private readonly Dictionary<(string, string), List<FileCabinetRecord>> index = new ();
@@ -17,12 +17,7 @@ namespace FileCabinetApp
         /// <returns>Returns the id of created record.</returns>
         public int CreateRecord(PersonalData personalData)
         {
-            FileCabinetRecord.ValidateFirstName(personalData.FirstName);
-            FileCabinetRecord.ValidateLastName(personalData.LastName);
-            FileCabinetRecord.ValidateDateOfBirth(personalData.DateOfBirth);
-            FileCabinetRecord.ValidateSchoolGrade(personalData.SchoolGrade);
-            FileCabinetRecord.ValidateAverageMark(personalData.AverageMark);
-            FileCabinetRecord.ValidateClassLetter(personalData.ClassLetter);
+            this.Validate(personalData);
 
             var record = new FileCabinetRecord(this.list.Count + 1, personalData);
 
@@ -40,6 +35,8 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">No record matching given id.</exception>
         public void EditRecord(int id, PersonalData newData)
         {
+            this.Validate(newData);
+
             foreach (var record in this.list)
             {
                 if (record.Id == id)
@@ -95,6 +92,12 @@ namespace FileCabinetApp
         {
             return this.list.Count;
         }
+
+        /// <summary>
+        /// Checks for valid values in object parameter..
+        /// </summary>
+        /// <param name="personalData">Object parameter contains values to check for valid.</param>
+        protected abstract void Validate(PersonalData personalData);
 
         private void RemoveFromIndex(FileCabinetRecord record)
         {
