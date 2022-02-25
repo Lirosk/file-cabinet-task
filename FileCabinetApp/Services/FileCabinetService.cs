@@ -78,7 +78,7 @@ namespace FileCabinetApp.Services
         /// <returns>Array of found records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByField(string fieldName, object value)
         {
-            if (this.index.TryGetValue((fieldName.ToUpperInvariant(), value as string ?? value.ToString() !), out var res))
+            if (this.index.TryGetValue((fieldName.ToUpperInvariant(), value.ToString() !), out var res))
             {
                 return new ReadOnlyCollection<FileCabinetRecord>(res);
             }
@@ -137,7 +137,7 @@ namespace FileCabinetApp.Services
 
                 value = property.GetValue(record) !;
 
-                var key = (fieldName.ToUpperInvariant(), value as string ?? value.ToString() !);
+                var key = (fieldName.ToUpperInvariant(), value.ToString() !);
 
                 if (this.index.ContainsKey(key))
                 {
