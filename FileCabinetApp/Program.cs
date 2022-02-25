@@ -19,7 +19,7 @@ namespace FileCabinetApp
 
         private static bool isRunning = true;
 
-        private static FileCabinetService fileCabinetService;
+        private static IFileCabinetService fileCabinetService;
 
         private static string usingService = string.Empty;
 

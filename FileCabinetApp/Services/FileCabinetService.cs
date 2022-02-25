@@ -1,12 +1,12 @@
 ﻿using System.Collections.ObjectModel;
 using System.Reflection;
 
-namespace FileCabinetApp.FileCabinetServices
+namespace FileCabinetApp.Services
 {
     /// <summary>
     /// Stores records with personal information; manages the creation, editing, finding the records.
     /// </summary>
-    public class FileCabinetService
+    public class FileCabinetService : IFileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new ();
         private readonly Dictionary<(string, string), List<FileCabinetRecord>> index = new ();
