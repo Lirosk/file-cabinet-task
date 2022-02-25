@@ -339,7 +339,7 @@ namespace FileCabinetApp
 
                 if (!success)
                 {
-                    message = "Invalid value";
+                    message = $"Invalid value, correct format is \'{dateTimeFormat}\'";
                 }
 
                 return new Tuple<bool, string, DateTime>(success, message, res);
@@ -367,16 +367,16 @@ namespace FileCabinetApp
 
                 if (!conversionResult.Item1)
                 {
-                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Correct your input.{Environment.NewLine}");
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Correct your input:");
                     continue;
                 }
 
                 value = conversionResult.Item3;
 
                 var validationResult = validator(value);
-                if (validationResult.Item1)
+                if (!validationResult.Item1)
                 {
-                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Correct your input.{Environment.NewLine}");
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Correct your input:");
                     continue;
                 }
 
