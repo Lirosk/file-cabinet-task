@@ -17,7 +17,7 @@ namespace FileCabinetApp.FileCabinetServices
         /// <returns>Returns the id of created record.</returns>
         public int CreateRecord(PersonalData personalData)
         {
-            this.Validate(personalData);
+            this.CreateValidator().ValidateParameters(personalData);
 
             var record = new FileCabinetRecord(this.list.Count + 1, personalData);
 
@@ -35,7 +35,7 @@ namespace FileCabinetApp.FileCabinetServices
         /// <exception cref="ArgumentException">No record matching given id.</exception>
         public void EditRecord(int id, PersonalData newData)
         {
-            this.Validate(newData);
+            this.CreateValidator().ValidateParameters(newData);
 
             foreach (var record in this.list)
             {
@@ -94,10 +94,10 @@ namespace FileCabinetApp.FileCabinetServices
         }
 
         /// <summary>
-        /// Checks for valid values in object parameter..
+        /// Creates validator for personal data.
         /// </summary>
-        /// <param name="personalData">Object parameter contains values to check for valid.</param>
-        protected abstract void Validate(PersonalData personalData);
+        /// <returns>Validator for personal data.</returns>
+        protected abstract IRecordValidator CreateValidator();
 
         private void RemoveFromIndex(FileCabinetRecord record)
         {
