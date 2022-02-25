@@ -8,12 +8,11 @@ namespace FileCabinetApp.FileCabinetServices
     public class FileCabinetCustomService : FileCabinetService
     {
         /// <summary>
-        /// Creates validator for personal data.
+        /// Initializes a new instance of the <see cref="FileCabinetCustomService"/> class.
         /// </summary>
-        /// <returns>Validator for personal data.</returns>
-        protected override IRecordValidator CreateValidator()
+        public FileCabinetCustomService()
+            : base(new CustomValidator())
         {
-            return new CustomValidator();
         }
     }
 }

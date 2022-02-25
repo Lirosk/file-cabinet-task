@@ -9,6 +9,16 @@ namespace FileCabinetApp.FileCabinetServices
     {
         private readonly List<FileCabinetRecord> list = new ();
         private readonly Dictionary<(string, string), List<FileCabinetRecord>> index = new ();
+        private readonly IRecordValidator validator;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
+        /// </summary>
+        /// <param name="validator">Validates personal data for record.</param>
+        protected FileCabinetService(IRecordValidator validator)
+        {
+            this.validator = validator;
+        }
 
         /// <summary>
         /// Create record from given parameters.
@@ -17,7 +27,7 @@ namespace FileCabinetApp.FileCabinetServices
         /// <returns>Returns the id of created record.</returns>
         public int CreateRecord(PersonalData personalData)
         {
-            this.CreateValidator().ValidateParameters(personalData);
+            this.validator.ValidateParameters(personalData);
 
             var record = new FileCabinetRecord(this.list.Count + 1, personalData);
 
@@ -35,7 +45,7 @@ namespace FileCabinetApp.FileCabinetServices
         /// <exception cref="ArgumentException">No record matching given id.</exception>
         public void EditRecord(int id, PersonalData newData)
         {
-            this.CreateValidator().ValidateParameters(newData);
+            this.validator.ValidateParameters(newData);
 
             foreach (var record in this.list)
             {
@@ -92,12 +102,6 @@ namespace FileCabinetApp.FileCabinetServices
         {
             return this.list.Count;
         }
-
-        /// <summary>
-        /// Creates validator for personal data.
-        /// </summary>
-        /// <returns>Validator for personal data.</returns>
-        protected abstract IRecordValidator CreateValidator();
 
         private void RemoveFromIndex(FileCabinetRecord record)
         {
