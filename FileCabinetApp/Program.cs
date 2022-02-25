@@ -19,7 +19,7 @@ namespace FileCabinetApp
 
         private static bool isRunning = true;
 
-        private static IFileCabinetService fileCabinetService;
+        private static IFileCabinetService? fileCabinetService;
 
         private static string usingService = string.Empty;
 
@@ -153,7 +153,7 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat();
+            var recordsCount = Program.fileCabinetService!.GetStat();
             Console.WriteLine($"{recordsCount} record(s).");
         }
 
@@ -167,7 +167,7 @@ namespace FileCabinetApp
 
                     Console.WriteLine(
                         "Record #{0} is created.",
-                        Program.fileCabinetService.CreateRecord(personalData));
+                        Program.fileCabinetService!.CreateRecord(personalData));
                 }
                 catch (ArgumentException ex)
                 {
@@ -195,7 +195,7 @@ namespace FileCabinetApp
 
                     ReadRecordDataFromConsole(out var personalData);
 
-                    fileCabinetService.EditRecord(id, personalData);
+                    fileCabinetService!.EditRecord(id, personalData);
                 }
                 catch (ArgumentException ex)
                 {
@@ -231,7 +231,7 @@ namespace FileCabinetApp
                 fieldName = match.Groups[firstGroupMatchIndex].Value;
                 stringValue = match.Groups[secondGroupMatchIndex].Value;
 
-                var found = fileCabinetService.FindByField(fieldName, stringValue);
+                var found = fileCabinetService!.FindByField(fieldName, stringValue);
                 if (found.Count > 0)
                 {
                     foreach (var record in found)
@@ -252,7 +252,7 @@ namespace FileCabinetApp
 
         private static void List(string parameters)
         {
-            foreach (var record in Program.fileCabinetService.GetRecords())
+            foreach (var record in fileCabinetService!.GetRecords())
             {
                 Console.WriteLine(record);
             }
