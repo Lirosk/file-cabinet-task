@@ -24,7 +24,20 @@ namespace FileCabinetApp.Services
         /// <param name="writer">Writer for writing records to it.</param>
         public void SaveToCsv(StreamWriter writer)
         {
-            var scvWriter = new FileCabinetRecordCsvWriter(writer);
+            using var scvWriter = new FileCabinetRecordCsvWriter(writer);
+            foreach (var record in this.records)
+            {
+                scvWriter.Write(record);
+            }
+        }
+
+        /// <summary>
+        /// Saves record to xml file.
+        /// </summary>
+        /// <param name="writer">Writer for writing records to it.</param>
+        public void SaveToXml(StreamWriter writer)
+        {
+            using var scvWriter = new FileCabinetRecordXmlWriter(writer);
             foreach (var record in this.records)
             {
                 scvWriter.Write(record);

@@ -7,10 +7,12 @@ namespace FileCabinetApp.Services
     /// <summary>
     /// Class for writing data to csv file.
     /// </summary>
-    internal class FileCabinetRecordCsvWriter
+    public sealed class FileCabinetRecordCsvWriter : IFileCabinetRecordWriter
     {
-        private TextWriter writer;
-        private StringBuilder sb = new ();
+#pragma warning disable CA2213 // Следует высвобождать высвобождаемые поля
+        private readonly TextWriter writer;
+#pragma warning restore CA2213 // Следует высвобождать высвобождаемые поля
+        private readonly StringBuilder sb = new ();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordCsvWriter"/> class.
@@ -30,12 +32,16 @@ namespace FileCabinetApp.Services
             this.sb.Remove(this.sb.Length - 1, 1);
             this.writer.WriteLine(this.sb);
             this.sb.Clear();
+        }
 
+        /// <inheritdoc/>
+        public void Dispose()
+        {
             this.writer.Flush();
         }
 
         /// <summary>
-        /// Writes record to <see cref="FileCabinetRecordCsvWriter.writer"/>.
+        /// Writes record to given stream.
         /// </summary>
         /// <param name="record">Record to write.</param>
         public void Write(FileCabinetRecord record)
@@ -61,8 +67,6 @@ namespace FileCabinetApp.Services
             this.sb.Remove(this.sb.Length - 1, 1);
             this.writer.WriteLine(this.sb);
             this.sb.Clear();
-
-            this.writer.Flush();
         }
     }
 }

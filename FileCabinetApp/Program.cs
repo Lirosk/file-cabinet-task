@@ -444,15 +444,40 @@ namespace FileCabinetApp
             }
         }
 
-        private static void Export(string filePath)
+        private static void Export(string parameters)
         {
-            if (string.IsNullOrEmpty(filePath))
+            var spaceIndex = parameters.IndexOf(' ', StringComparison.Ordinal);
+
+            if (spaceIndex == -1)
             {
-                throw new ArgumentNullException(filePath, "Invalid path passed");
+                throw new ArgumentException("Invalid export parameters");
             }
 
+            var extension = parameters[..spaceIndex];
+            var filePath = parameters[(spaceIndex + 1) ..];
+
             using var writer = new StreamWriter(filePath, false, Encoding.UTF8);
-            fileCabinetService!.MakeSnapshot().SaveToCsv(writer);
+            var snapshot = fileCabinetService!.MakeSnapshot();
+
+            switch (extension)
+            {
+                case "csv":
+                    {
+                        snapshot.SaveToCsv(writer);
+                        break;
+                    }
+
+                case "xml":
+                    {
+                        snapshot.SaveToXml(writer);
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentException($"Extension {extension} is unsupportable.");
+                    }
+            }
         }
     }
 }

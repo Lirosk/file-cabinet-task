@@ -139,9 +139,32 @@
             </summary>
             <param name="writer">Writer for saving data.</param>
         </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordCsvWriter.Dispose">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.Services.FileCabinetRecordCsvWriter.Write(FileCabinetApp.FileCabinetRecord)">
             <summary>
-            Writes record to <see cref="F:FileCabinetApp.Services.FileCabinetRecordCsvWriter.writer"/>.
+            Writes record to given stream.
+            </summary>
+            <param name="record">Record to write.</param>
+        </member>
+        <member name="T:FileCabinetApp.Services.FileCabinetRecordXmlWriter">
+            <summary>
+            Class for writing data to xml file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordXmlWriter.#ctor(System.IO.StreamWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+            <param name="writer">Writer for saving data.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordXmlWriter.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes record to given stream.
             </summary>
             <param name="record">Record to write.</param>
         </member>
@@ -213,6 +236,23 @@
             Saves record to csv file.
             </summary>
             <param name="writer">Writer for writing records to it.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetServiceSnapshot.SaveToXml(System.IO.StreamWriter)">
+            <summary>
+            Saves record to xml file.
+            </summary>
+            <param name="writer">Writer for writing records to it.</param>
+        </member>
+        <member name="T:FileCabinetApp.Services.IFileCabinetRecordWriter">
+            <summary>
+            Interface for writing data to file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Services.IFileCabinetRecordWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes record to given stream.
+            </summary>
+            <param name="record">Record to write.</param>
         </member>
         <member name="T:FileCabinetApp.Services.IFileCabinetService">
             <summary>
