@@ -22,6 +22,15 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
+        /// Makes snapshot of present records.
+        /// </summary>
+        /// <returns>Snapshot of present records.</returns>
+        public FileCabinetServiceSnapshot MakeSnapshot()
+        {
+            return new FileCabinetServiceSnapshot(this.list.ToArray());
+        }
+
+        /// <summary>
         /// Create record from given parameters.
         /// </summary>
         /// <param name="personalData">Represents data of a person.</param>
@@ -121,8 +130,7 @@ namespace FileCabinetApp.Services
 
         private void AddToIndex(FileCabinetRecord record)
         {
-            var type = record.GetType();
-            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var properties = record.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             string fieldName;
             object value;

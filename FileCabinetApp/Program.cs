@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 
 using FileCabinetApp.Services;
@@ -43,6 +44,7 @@ namespace FileCabinetApp
             new ("list", List),
             new ("edit", Edit),
             new ("find", Find),
+            new ("export", Export),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -53,6 +55,7 @@ namespace FileCabinetApp
             new[] { "list", "prints all records" },
             new[] { "edit", $"edit existring record via id, datetime format: {FileCabinetRecord.InputDateTimeFormat}" },
             new[] { "find", $"find records by field value, format: 'find fieldname \"value\"', datetime format: {FileCabinetRecord.OutputDateTimeFormat}" },
+            new[] { "export", "saves records to the specified file" },
             new[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
@@ -62,6 +65,11 @@ namespace FileCabinetApp
         /// <param name="consoleArgs">Arguments passed via console.</param>
         public static void Main(string[] consoleArgs)
         {
+            if (consoleArgs.Length == 0)
+            {
+                consoleArgs = new[] { "-v", "default" };
+            }
+
             try
             {
                 ProceedArgs(consoleArgs);
@@ -433,6 +441,42 @@ namespace FileCabinetApp
                 {
                     throw new ArgumentException($"No defined parameter \'{param}\'.");
                 }
+            }
+        }
+
+        private static void Export(string parameters)
+        {
+            var spaceIndex = parameters.IndexOf(' ', StringComparison.Ordinal);
+
+            if (spaceIndex == -1)
+            {
+                throw new ArgumentException("Invalid export parameters");
+            }
+
+            var extension = parameters[..spaceIndex];
+            var filePath = parameters[(spaceIndex + 1) ..];
+
+            using var writer = new StreamWriter(filePath, false, Encoding.UTF8);
+            var snapshot = fileCabinetService!.MakeSnapshot();
+
+            switch (extension)
+            {
+                case "csv":
+                    {
+                        snapshot.SaveToCsv(writer);
+                        break;
+                    }
+
+                case "xml":
+                    {
+                        snapshot.SaveToXml(writer);
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentException($"Extension {extension} is unsupportable.");
+                    }
             }
         }
     }

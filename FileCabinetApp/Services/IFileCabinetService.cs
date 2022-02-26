@@ -41,5 +41,11 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <returns>Count of stored records.</returns>
         public int GetStat();
+
+        /// <summary>
+        /// Makes snapshot of present records.
+        /// </summary>
+        /// <returns>Snapshot of present records.</returns>
+        public FileCabinetServiceSnapshot MakeSnapshot();
     }
 }

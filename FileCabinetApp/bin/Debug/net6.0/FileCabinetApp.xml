@@ -128,6 +128,46 @@
             </summary>
             <param name="consoleArgs">Arguments passed via console.</param>
         </member>
+        <member name="T:FileCabinetApp.Services.FileCabinetRecordCsvWriter">
+            <summary>
+            Class for writing data to csv file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordCsvWriter.#ctor(System.IO.TextWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetRecordCsvWriter"/> class.
+            </summary>
+            <param name="writer">Writer for saving data.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordCsvWriter.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordCsvWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes record to given stream.
+            </summary>
+            <param name="record">Record to write.</param>
+        </member>
+        <member name="T:FileCabinetApp.Services.FileCabinetRecordXmlWriter">
+            <summary>
+            Class for writing data to xml file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordXmlWriter.#ctor(System.IO.StreamWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+            <param name="writer">Writer for saving data.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordXmlWriter.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes record to given stream.
+            </summary>
+            <param name="record">Record to write.</param>
+        </member>
         <member name="T:FileCabinetApp.Services.FileCabinetService">
             <summary>
             Stores records with personal information; manages the creation, editing, finding the records.
@@ -138,6 +178,12 @@
             Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetService"/> class.
             </summary>
             <param name="validator">Validates personal data for record.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetService.MakeSnapshot">
+            <summary>
+            Makes snapshot of present records.
+            </summary>
+            <returns>Snapshot of present records.</returns>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetService.CreateRecord(FileCabinetApp.PersonalData)">
             <summary>
@@ -173,6 +219,40 @@
             Get count of stored records.
             </summary>
             <returns>Count of stored records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Services.FileCabinetServiceSnapshot">
+            <summary>
+            Represents snapshot of once real records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetServiceSnapshot.#ctor(FileCabinetApp.FileCabinetRecord[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetServiceSnapshot"/> class.
+            </summary>
+            <param name="records">Records to save.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
+            <summary>
+            Saves record to csv file.
+            </summary>
+            <param name="writer">Writer for writing records to it.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetServiceSnapshot.SaveToXml(System.IO.StreamWriter)">
+            <summary>
+            Saves record to xml file.
+            </summary>
+            <param name="writer">Writer for writing records to it.</param>
+        </member>
+        <member name="T:FileCabinetApp.Services.IFileCabinetRecordWriter">
+            <summary>
+            Interface for writing data to file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Services.IFileCabinetRecordWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes record to given stream.
+            </summary>
+            <param name="record">Record to write.</param>
         </member>
         <member name="T:FileCabinetApp.Services.IFileCabinetService">
             <summary>
@@ -213,6 +293,12 @@
             Get count of stored records.
             </summary>
             <returns>Count of stored records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.IFileCabinetService.MakeSnapshot">
+            <summary>
+            Makes snapshot of present records.
+            </summary>
+            <returns>Snapshot of present records.</returns>
         </member>
         <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>
