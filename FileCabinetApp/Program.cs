@@ -27,6 +27,13 @@ namespace FileCabinetApp
         private static Tuple<string[], Action<string>>[] args = new Tuple<string[], Action<string>>[]
         {
             new (new[] { "-v", "--validation-rules" }, SetValidationRules),
+            new (new[] { "-s", "--storage" }, SetStorage),
+        };
+
+        private static Tuple<string, Action>[] storages = new Tuple<string, Action>[]
+        {
+            new ("memory", SetMemoryService),
+            new ("file", SetMemoryService),
         };
 
         private static Tuple<string, IRecordValidator>[] validationRules = new Tuple<string, IRecordValidator>[]
@@ -398,13 +405,37 @@ namespace FileCabinetApp
             int index;
             if ((index = Array.FindIndex(validationRules, 0, validationRules.Length, i => i.Item1.Equals(rule, StringComparison.InvariantCultureIgnoreCase))) != -1)
             {
-                fileCabinetService = new FileCabinetMemoryService(validationRules[index].Item2);
                 usedValidationRuleIndex = index;
             }
             else
             {
                 throw new ArgumentException($"No defined rule \'{rule}\'.");
             }
+        }
+
+        private static void SetStorage(string storage)
+        {
+            int index;
+            if ((index = Array.FindIndex(storages, 0, storages.Length, i => i.Item1.Equals(storage, StringComparison.InvariantCultureIgnoreCase))) != -1)
+            {
+                storages[index].Item2();
+            }
+            else
+            {
+                throw new ArgumentException($"No defined storage \'{storage}\'");
+            }
+        }
+
+        private static void SetMemoryService()
+        {
+            fileCabinetService = new FileCabinetMemoryService(validationRules[usedValidationRuleIndex].Item2);
+        }
+
+        private static void SetFileService()
+        {
+            var fileName = "cabinet-records.db";
+            var fileStream = File.Open(fileName, FileMode.OpenOrCreate);
+            fileCabinetService = new FileCabinetSystemService(fileStream);
         }
 
         private static void ProceedArgs(string[] consoleArgs)

@@ -8,6 +8,17 @@ namespace FileCabinetApp.Services
     internal class FileCabinetSystemService : IFileCabinetService
 
     {
+        private readonly FileStream fileStream;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetSystemService"/> class.
+        /// </summary>
+        /// <param name="fileStream">Stream to save records.</param>
+        public FileCabinetSystemService(FileStream fileStream)
+        {
+            this.fileStream = fileStream;
+        }
+
         /// <summary>
         /// Create record from given parameters.
         /// </summary>
