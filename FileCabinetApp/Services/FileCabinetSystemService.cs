@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Text;
 
 namespace FileCabinetApp.Services
 {
@@ -6,17 +7,35 @@ namespace FileCabinetApp.Services
     /// Stores records with personal information; manages the creation, editing, finding the records.
     /// </summary>
     internal class FileCabinetSystemService : IFileCabinetService
-
     {
+        private const byte StatusSize = sizeof(short);
+        private const byte IdSize = sizeof(int);
+        private const byte FirstNameSize = 120;
+        private const byte LastNameSize = 120;
+        private const byte YearSize = sizeof(int);
+        private const byte MonthSize = sizeof(int);
+        private const byte DaySize = sizeof(int);
+        private const byte SchoolGradeSize = sizeof(short);
+        private const byte AverageMarkSize = sizeof(decimal);
+        private const byte ClassLetterSize = sizeof(char);
+        private const short RecordSize =
+            StatusSize + IdSize +
+            FirstNameSize + LastNameSize +
+            YearSize + MonthSize + DaySize +
+            SchoolGradeSize + AverageMarkSize + ClassLetterSize;
+
         private readonly FileStream fileStream;
+        private readonly IRecordValidator validator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetSystemService"/> class.
         /// </summary>
         /// <param name="fileStream">Stream to save records.</param>
-        public FileCabinetSystemService(FileStream fileStream)
+        /// <param name="validator">Validator for checking records.</param>
+        public FileCabinetSystemService(FileStream fileStream, IRecordValidator validator)
         {
             this.fileStream = fileStream;
+            this.validator = validator;
         }
 
         /// <summary>
@@ -26,7 +45,34 @@ namespace FileCabinetApp.Services
         /// <returns>Returns the id of created record.</returns>
         public int CreateRecord(PersonalData personalData)
         {
-            throw new NotImplementedException();
+            this.validator.ValidateParameters(personalData);
+            var binaryWriter = new BinaryWriter(this.fileStream);
+
+            var id = this.GetStat() + 1;
+            var buffer = new byte[120];
+
+            binaryWriter.Write((short)0);
+            binaryWriter.Write(id);
+
+            Encoding.UTF8.GetBytes(personalData.FirstName).CopyTo(buffer, 0);
+            binaryWriter.Write(buffer);
+
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                buffer[i] = 0;
+            }
+
+            Encoding.UTF8.GetBytes(personalData.LastName).CopyTo(buffer, 0);
+            binaryWriter.Write(buffer);
+
+            binaryWriter.Write(personalData.DateOfBirth.Year);
+            binaryWriter.Write(personalData.DateOfBirth.Month);
+            binaryWriter.Write(personalData.DateOfBirth.Day);
+            binaryWriter.Write(personalData.SchoolGrade);
+            binaryWriter.Write(personalData.AverageMark);
+            binaryWriter.Write(personalData.ClassLetter);
+
+            return id;
         }
 
         /// <summary>
