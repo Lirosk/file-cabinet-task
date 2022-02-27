@@ -6,17 +6,17 @@ namespace FileCabinetApp.Services
     /// <summary>
     /// Stores records with personal information; manages the creation, editing, finding the records.
     /// </summary>
-    public class FileCabinetService : IFileCabinetService
+    public class FileCabinetMemoryService : IFileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new ();
         private readonly Dictionary<(string, string), List<FileCabinetRecord>> index = new ();
         private readonly IRecordValidator validator;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
+        /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
         /// </summary>
         /// <param name="validator">Validates personal data for record.</param>
-        public FileCabinetService(IRecordValidator validator)
+        public FileCabinetMemoryService(IRecordValidator validator)
         {
             this.validator = validator;
         }
