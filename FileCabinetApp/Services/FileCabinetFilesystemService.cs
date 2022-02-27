@@ -6,7 +6,7 @@ namespace FileCabinetApp.Services
     /// <summary>
     /// Stores records with personal information; manages the creation, editing, finding the records.
     /// </summary>
-    internal class FileCabinetSystemService : IFileCabinetService
+    internal class FileCabinetFileSystemService : IFileCabinetService
     {
         private const byte StatusSize = sizeof(short);
         private const byte IdSize = sizeof(int);
@@ -18,7 +18,7 @@ namespace FileCabinetApp.Services
         private const byte SchoolGradeSize = sizeof(short);
         private const byte AverageMarkSize = sizeof(decimal);
         private const byte ClassLetterSize = sizeof(char);
-        private const short RecordSize =
+        private const int RecordSize =
             StatusSize + IdSize +
             FirstNameSize + LastNameSize +
             YearSize + MonthSize + DaySize +
@@ -28,11 +28,11 @@ namespace FileCabinetApp.Services
         private readonly IRecordValidator validator;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetSystemService"/> class.
+        /// Initializes a new instance of the <see cref="FileCabinetFileSystemService"/> class.
         /// </summary>
         /// <param name="fileStream">Stream to save records.</param>
         /// <param name="validator">Validator for checking records.</param>
-        public FileCabinetSystemService(FileStream fileStream, IRecordValidator validator)
+        public FileCabinetFileSystemService(FileStream fileStream, IRecordValidator validator)
         {
             this.fileStream = fileStream;
             this.validator = validator;
@@ -46,7 +46,7 @@ namespace FileCabinetApp.Services
         public int CreateRecord(PersonalData personalData)
         {
             this.validator.ValidateParameters(personalData);
-            var binaryWriter = new BinaryWriter(this.fileStream);
+            using var binaryWriter = new BinaryWriter(this.fileStream);
 
             var id = this.GetStat() + 1;
             var buffer = new byte[120];
@@ -71,6 +71,8 @@ namespace FileCabinetApp.Services
             binaryWriter.Write(personalData.SchoolGrade);
             binaryWriter.Write(personalData.AverageMark);
             binaryWriter.Write(personalData.ClassLetter);
+
+            binaryWriter.Flush();
 
             return id;
         }
@@ -103,7 +105,38 @@ namespace FileCabinetApp.Services
         /// <returns>All stored records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            throw new NotImplementedException();
+            this.fileStream.Seek(0, SeekOrigin.Begin);
+
+            var list = new List<FileCabinetRecord>();
+            using var binaryReader = new BinaryReader(this.fileStream);
+
+            var buffer = new byte[RecordSize];
+            int offset;
+
+            while (binaryReader.BaseStream.Position != binaryReader.BaseStream.Length)
+            {
+                _ = binaryReader.ReadInt16();
+                var id = binaryReader.ReadInt32();
+
+                var personalData = new PersonalData();
+
+                personalData.FirstName = Encoding.UTF8.GetString(binaryReader.ReadBytes(FirstNameSize));
+                personalData.LastName = Encoding.UTF8.GetString(binaryReader.ReadBytes(LastNameSize));
+
+                var year = binaryReader.ReadInt32();
+                var month = binaryReader.ReadInt32();
+                var day = binaryReader.ReadInt32();
+
+                personalData.DateOfBirth = new (year, month, day);
+
+                personalData.SchoolGrade = binaryReader.ReadInt16();
+                personalData.AverageMark = binaryReader.ReadDecimal();
+                personalData.ClassLetter = binaryReader.ReadChar();
+
+                list.Add(new (id, personalData));
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(list);
         }
 
         /// <summary>
