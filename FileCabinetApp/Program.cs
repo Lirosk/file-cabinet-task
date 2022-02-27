@@ -398,7 +398,7 @@ namespace FileCabinetApp
             int index;
             if ((index = Array.FindIndex(validationRules, 0, validationRules.Length, i => i.Item1.Equals(rule, StringComparison.InvariantCultureIgnoreCase))) != -1)
             {
-                fileCabinetService = new FileCabinetService(validationRules[index].Item2);
+                fileCabinetService = new FileCabinetMemoryService(validationRules[index].Item2);
                 usedValidationRuleIndex = index;
             }
             else
