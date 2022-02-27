@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Reflection;
 using System.Text;
 
 namespace FileCabinetApp.Services
@@ -116,7 +118,32 @@ namespace FileCabinetApp.Services
         /// <returns>Array of found records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByField(string fieldName, object value)
         {
-            throw new NotImplementedException();
+            this.fileStream.Seek(0, SeekOrigin.Begin);
+            using var binaryReader = new BinaryReader(this.fileStream);
+
+            var property = typeof(FileCabinetRecord).GetProperty(fieldName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+
+            if (property is null)
+            {
+                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            }
+
+            var buffer = new byte[RecordSize];
+
+            var list = new List<FileCabinetRecord>();
+
+            while (binaryReader.Read(buffer, 0, RecordSize) == RecordSize)
+            {
+                var record = RecordFromBytes(buffer);
+                var recordFieldValue = property.GetValue(record);
+
+                if (value.Equals(recordFieldValue))
+                {
+                    list.Add(record);
+                }
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(list);
         }
 
         /// <summary>
@@ -135,8 +162,19 @@ namespace FileCabinetApp.Services
                 _ = binaryReader.ReadInt16();
                 var id = binaryReader.ReadInt32();
 
+                int index;
+
                 var firstName = Encoding.UTF8.GetString(binaryReader.ReadBytes(FirstNameSize));
+                if ((index = firstName.IndexOf((char)0, StringComparison.Ordinal)) != -1)
+                {
+                    firstName = firstName.Substring(0, index);
+                }
+
                 var lastName = Encoding.UTF8.GetString(binaryReader.ReadBytes(LastNameSize));
+                if ((index = lastName.IndexOf((char)0, StringComparison.Ordinal)) != -1)
+                {
+                    lastName = lastName.Substring(0, index);
+                }
 
                 var year = binaryReader.ReadInt32();
                 var month = binaryReader.ReadInt32();
@@ -180,6 +218,68 @@ namespace FileCabinetApp.Services
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             throw new NotImplementedException();
+        }
+
+        private static FileCabinetRecord RecordFromBytes(byte[] bytes)
+        {
+            int offset = StatusSize;
+            var id = BitConverter.ToInt32(bytes, offset);
+
+            int index;
+
+            offset += IdSize;
+            var firstName = Encoding.UTF8.GetString(bytes, offset, FirstNameSize);
+            if ((index = firstName.IndexOf((char)0, StringComparison.Ordinal)) != -1)
+            {
+                firstName = firstName.Substring(0, index);
+            }
+
+            offset += FirstNameSize;
+            var lastName = Encoding.UTF8.GetString(bytes, offset, LastNameSize);
+            if ((index = lastName.IndexOf((char)0, StringComparison.Ordinal)) != -1)
+            {
+                lastName = lastName.Substring(0, index);
+            }
+
+            offset += LastNameSize;
+            var year = BitConverter.ToInt32(bytes, offset);
+
+            offset += YearSize;
+            var month = BitConverter.ToInt32(bytes, offset);
+
+            offset += MonthSize;
+            var day = BitConverter.ToInt32(bytes, offset);
+
+            var dateOfBirth = new DateTime(year, month, day);
+
+            offset += DaySize;
+            var schoolGrade = BitConverter.ToInt16(bytes, offset);
+
+            offset += schoolGrade;
+            var i1 = BitConverter.ToInt32(bytes, offset);
+            offset += AverageMarkSize / sizeof(int);
+            var i2 = BitConverter.ToInt32(bytes, offset);
+            offset += AverageMarkSize / sizeof(int);
+            var i3 = BitConverter.ToInt32(bytes, offset);
+            offset += AverageMarkSize / sizeof(int);
+            var i4 = BitConverter.ToInt32(bytes, offset);
+            offset += AverageMarkSize / sizeof(int);
+
+            var averageMark = new decimal(new[] { i1, i2, i3, i4 });
+
+            var classLetter = BitConverter.ToChar(bytes, offset);
+
+            var personalData = new PersonalData()
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                DateOfBirth = dateOfBirth,
+                SchoolGrade = schoolGrade,
+                AverageMark = averageMark,
+                ClassLetter = classLetter,
+            };
+
+            return new FileCabinetRecord(id, personalData);
         }
 
         private int FindRecordOffset(int id)
