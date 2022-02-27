@@ -49,19 +49,16 @@ namespace FileCabinetApp.Services
             using var binaryWriter = new BinaryWriter(this.fileStream);
 
             var id = this.GetStat() + 1;
-            var buffer = new byte[120];
+            byte[] buffer;
 
             binaryWriter.Write((short)0);
             binaryWriter.Write(id);
 
+            buffer = new byte[FirstNameSize];
             Encoding.UTF8.GetBytes(personalData.FirstName).CopyTo(buffer, 0);
             binaryWriter.Write(buffer);
 
-            for (int i = 0; i < buffer.Length; i++)
-            {
-                buffer[i] = 0;
-            }
-
+            buffer = new byte[LastNameSize];
             Encoding.UTF8.GetBytes(personalData.LastName).CopyTo(buffer, 0);
             binaryWriter.Write(buffer);
 
@@ -85,7 +82,30 @@ namespace FileCabinetApp.Services
         /// <exception cref="ArgumentException">No record matching given id.</exception>
         public void EditRecord(int id, PersonalData newData)
         {
-            throw new NotImplementedException();
+            var offset = this.FindRecordOffset(id);
+
+            this.fileStream.Seek(offset + StatusSize + IdSize, SeekOrigin.Begin);
+            using var binaryWriter = new BinaryWriter(this.fileStream);
+
+            byte[] buffer;
+
+            buffer = new byte[FirstNameSize];
+            Encoding.UTF8.GetBytes(newData.FirstName).CopyTo(buffer, 0);
+            binaryWriter.Write(buffer);
+
+            buffer = new byte[LastNameSize];
+            Encoding.UTF8.GetBytes(newData.LastName).CopyTo(buffer, 0);
+            binaryWriter.Write(buffer);
+
+            binaryWriter.Write(newData.DateOfBirth.Year);
+            binaryWriter.Write(newData.DateOfBirth.Month);
+            binaryWriter.Write(newData.DateOfBirth.Day);
+
+            binaryWriter.Write(newData.SchoolGrade);
+            binaryWriter.Write(newData.AverageMark);
+            binaryWriter.Write(newData.ClassLetter);
+
+            binaryWriter.Flush();
         }
 
         /// <summary>
@@ -110,28 +130,33 @@ namespace FileCabinetApp.Services
             var list = new List<FileCabinetRecord>();
             using var binaryReader = new BinaryReader(this.fileStream);
 
-            var buffer = new byte[RecordSize];
-            int offset;
-
             while (binaryReader.BaseStream.Position != binaryReader.BaseStream.Length)
             {
                 _ = binaryReader.ReadInt16();
                 var id = binaryReader.ReadInt32();
 
-                var personalData = new PersonalData();
-
-                personalData.FirstName = Encoding.UTF8.GetString(binaryReader.ReadBytes(FirstNameSize));
-                personalData.LastName = Encoding.UTF8.GetString(binaryReader.ReadBytes(LastNameSize));
+                var firstName = Encoding.UTF8.GetString(binaryReader.ReadBytes(FirstNameSize));
+                var lastName = Encoding.UTF8.GetString(binaryReader.ReadBytes(LastNameSize));
 
                 var year = binaryReader.ReadInt32();
                 var month = binaryReader.ReadInt32();
                 var day = binaryReader.ReadInt32();
 
-                personalData.DateOfBirth = new (year, month, day);
+                var dateOfBirth = new DateTime(year, month, day);
 
-                personalData.SchoolGrade = binaryReader.ReadInt16();
-                personalData.AverageMark = binaryReader.ReadDecimal();
-                personalData.ClassLetter = binaryReader.ReadChar();
+                var schoolGrade = binaryReader.ReadInt16();
+                var averageMark = binaryReader.ReadDecimal();
+                var classLetter = binaryReader.ReadChar();
+
+                var personalData = new PersonalData()
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    DateOfBirth = dateOfBirth,
+                    SchoolGrade = schoolGrade,
+                    AverageMark = averageMark,
+                    ClassLetter = classLetter,
+                };
 
                 list.Add(new (id, personalData));
             }
@@ -155,6 +180,29 @@ namespace FileCabinetApp.Services
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             throw new NotImplementedException();
+        }
+
+        private int FindRecordOffset(int id)
+        {
+            this.fileStream.Seek(0, SeekOrigin.Begin);
+            using var binaryReader = new BinaryReader(this.fileStream);
+
+            var buffer = new byte[RecordSize];
+            var offset = 0;
+            int readedId;
+
+            while (binaryReader.Read(buffer, 0, RecordSize) == RecordSize)
+            {
+                readedId = BitConverter.ToInt32(buffer, StatusSize);
+                if (readedId == id)
+                {
+                    return offset;
+                }
+
+                offset += RecordSize;
+            }
+
+            throw new ArgumentException($"No record with {id} id.");
         }
     }
 }
