@@ -145,7 +145,7 @@ namespace FileCabinetApp.Services
         /// <returns>Count of stored records.</returns>
         public int GetStat()
         {
-            throw new NotImplementedException();
+            return (int)(this.fileStream.Seek(0, SeekOrigin.End) / RecordSize);
         }
 
         /// <summary>
