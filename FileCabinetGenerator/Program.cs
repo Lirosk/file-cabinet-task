@@ -1,6 +1,7 @@
 ﻿using FileCabinetApp;
 using FileCabinetApp.Services;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace FileCabinetGenerator
 {
@@ -8,8 +9,8 @@ namespace FileCabinetGenerator
     {
         private static string OutputType = string.Empty;
         private static string OutputFile = string.Empty;
-        private static int RecordsAmount;
-        private static int StartId;
+        private static int RecordsAmount = -1;
+        private static int StartId = -1;
         private static Random random = new ();
 
         private static Tuple<string[], Action<string>>[] args = new Tuple<string[], Action<string>>[]
@@ -27,6 +28,26 @@ namespace FileCabinetGenerator
             try
             {
                 ProceedArgs(consoleArgs);
+
+                if (OutputType.Equals(string.Empty, StringComparison.Ordinal))
+                {
+                    throw new ArgumentException("Define output type.");
+                }
+
+                if (OutputFile.Equals(string.Empty, StringComparison.Ordinal))
+                {
+                    throw new ArgumentException("Define output file.");
+                }
+
+                if (RecordsAmount == -1)
+                {
+                    throw new ArgumentException("Define records amount.");
+                }
+
+                if (StartId == -1)
+                {
+                    throw new ArgumentException("Define start id.");
+                }
             }
             catch (ArgumentException ex)
             {
@@ -38,11 +59,11 @@ namespace FileCabinetGenerator
                 Console.WriteLine($"Error: Invalid args input.{Environment.NewLine}");
                 return;
             }
-
+            
             SaveRecords(GenerateRecords());
         }
 
-        private static IEnumerable<FileCabinetRecord> GenerateRecords()
+        private static List<FileCabinetRecord> GenerateRecords()
         {
             var sb = new StringBuilder();
             char symb;
@@ -56,8 +77,9 @@ namespace FileCabinetGenerator
             decimal averageMark;
             char classLetter;
             PersonalData personalData;
+            List<FileCabinetRecord> records = new ();
 
-            for (int id = StartId; id < StartId + RecordsAmount; id++)
+            for (int id = (int)StartId!; id < StartId + RecordsAmount; id++)
             {
                 firstNameLen = random.Next(2, 31);
                 for (int i = 0; i < firstNameLen; i++)
@@ -115,13 +137,32 @@ namespace FileCabinetGenerator
                     ClassLetter = classLetter,
                 };
 
-                yield return new(id, personalData);
+                records.Add(new (id, personalData));
             }
+
+            return records;
         }
 
-        private static void SaveRecords(IEnumerable<FileCabinetRecord> records)
+        private static void SaveRecords(List<FileCabinetRecord> records)
         {
-            throw new NotImplementedException();
+            using var streamWriter = new StreamWriter(OutputFile, false, Encoding.UTF8);
+
+            switch (OutputType)
+            {
+                case "xml":
+                    {
+                        throw new NotImplementedException();
+                    }
+                case "csv":
+                    {
+                        using var writer = new FileCabinetRecordCsvWriter(streamWriter!);
+                        foreach (var record in records)
+                        {
+                            writer!.Write(record);
+                        }
+                        break;
+                    }
+            }
         }
 
         private static void SetOutputType(string parameters)
@@ -132,7 +173,7 @@ namespace FileCabinetGenerator
                 throw new ArgumentException($"Unsupportable output file type: {parameters}.");
             }
 
-            OutputFile = SupportableFileExtensions[index];
+            OutputType = SupportableFileExtensions[index];
         }
 
         private static void SetOutputFile(string parameters)
