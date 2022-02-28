@@ -151,7 +151,9 @@ namespace FileCabinetGenerator
             {
                 case "xml":
                     {
-                        throw new NotImplementedException();
+                        var serializer = new XmlSerializer(typeof(List<FileCabinetRecord>));
+                        serializer.Serialize(streamWriter, records);
+                        break;
                     }
                 case "csv":
                     {
