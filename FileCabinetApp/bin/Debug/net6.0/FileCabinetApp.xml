@@ -16,6 +16,11 @@
             <param name="id">Id of record.</param>
             <param name="personalData">Personal information.</param>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetRecord.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.
+            </summary>
+        </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.InputDateTimeFormat">
             <summary>
             Gets or sets <see cref="T:System.DateTime">DateTime</see> format for record input.
@@ -128,6 +133,111 @@
             </summary>
             <param name="consoleArgs">Arguments passed via console.</param>
         </member>
+        <member name="T:FileCabinetApp.Services.FileCabinetFileSystemService">
+            <summary>
+            Stores records with personal information; manages the creation, editing, finding the records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.#ctor(System.IO.FileStream,FileCabinetApp.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetFileSystemService"/> class.
+            </summary>
+            <param name="fileStream">Stream to save records.</param>
+            <param name="validator">Validator for checking records.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.CreateRecord(FileCabinetApp.PersonalData)">
+            <summary>
+            Create record from given parameters.
+            </summary>
+            <param name="personalData">Represents data of a person.</param>
+            <returns>Returns the id of created record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.EditRecord(System.Int32,FileCabinetApp.PersonalData)">
+            <summary>
+            Edit record with the given id.
+            </summary>
+            <param name="id">Id of record to edit.</param>
+            <param name="newData">New personal data for record.</param>
+            <exception cref="T:System.ArgumentException">No record matching given id.</exception>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.FindByField(System.String,System.Object)">
+            <summary>
+            Find record by value of given field.
+            </summary>
+            <param name="fieldName">Name of field to search.</param>
+            <param name="value">Value of <paramref name="fieldName"/> field to search.</param>
+            <returns>Array of found records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.GetRecords">
+            <summary>
+            Get all stored records.
+            </summary>
+            <returns>All stored records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.GetStat">
+            <summary>
+            Get count of stored records.
+            </summary>
+            <returns>Count of stored records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.MakeSnapshot">
+            <summary>
+            Makes snapshot of present records.
+            </summary>
+            <returns>Snapshot of present records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Services.FileCabinetMemoryService">
+            <summary>
+            Stores records with personal information; manages the creation, editing, finding the records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.#ctor(FileCabinetApp.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetMemoryService"/> class.
+            </summary>
+            <param name="validator">Validates personal data for record.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.MakeSnapshot">
+            <summary>
+            Makes snapshot of present records.
+            </summary>
+            <returns>Snapshot of present records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.CreateRecord(FileCabinetApp.PersonalData)">
+            <summary>
+            Create record from given parameters.
+            </summary>
+            <param name="personalData">Represents data of a person.</param>
+            <returns>Returns the id of created record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.EditRecord(System.Int32,FileCabinetApp.PersonalData)">
+            <summary>
+            Edit record with the given id.
+            </summary>
+            <param name="id">Id of record to edit.</param>
+            <param name="newData">New personal data for record.</param>
+            <exception cref="T:System.ArgumentException">No record matching given id.</exception>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.FindByField(System.String,System.Object)">
+            <summary>
+            Find record by value of given field.
+            </summary>
+            <param name="fieldName">Name of field to search.</param>
+            <param name="value">Value of <paramref name="fieldName"/> field to search.</param>
+            <returns>Array of found records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.GetRecords">
+            <summary>
+            Get all stored records.
+            </summary>
+            <returns>All stored records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.GetStat">
+            <summary>
+            Get count of stored records.
+            </summary>
+            <returns>Count of stored records.</returns>
+        </member>
         <member name="T:FileCabinetApp.Services.FileCabinetRecordCsvWriter">
             <summary>
             Class for writing data to csv file.
@@ -167,58 +277,6 @@
             Writes record to given stream.
             </summary>
             <param name="record">Record to write.</param>
-        </member>
-        <member name="T:FileCabinetApp.Services.FileCabinetService">
-            <summary>
-            Stores records with personal information; manages the creation, editing, finding the records.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetService.#ctor(FileCabinetApp.IRecordValidator)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetService"/> class.
-            </summary>
-            <param name="validator">Validates personal data for record.</param>
-        </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetService.MakeSnapshot">
-            <summary>
-            Makes snapshot of present records.
-            </summary>
-            <returns>Snapshot of present records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetService.CreateRecord(FileCabinetApp.PersonalData)">
-            <summary>
-            Create record from given parameters.
-            </summary>
-            <param name="personalData">Represents data of a person.</param>
-            <returns>Returns the id of created record.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetService.EditRecord(System.Int32,FileCabinetApp.PersonalData)">
-            <summary>
-            Edit record with the given id.
-            </summary>
-            <param name="id">Id of record to edit.</param>
-            <param name="newData">New personal data for record.</param>
-            <exception cref="T:System.ArgumentException">No record matching given id.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetService.FindByField(System.String,System.Object)">
-            <summary>
-            Find record by value of given field.
-            </summary>
-            <param name="fieldName">Name of field to search.</param>
-            <param name="value">Value of <paramref name="fieldName"/> field to search.</param>
-            <returns>Array of found records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetService.GetRecords">
-            <summary>
-            Get all stored records.
-            </summary>
-            <returns>All stored records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetService.GetStat">
-            <summary>
-            Get count of stored records.
-            </summary>
-            <returns>Count of stored records.</returns>
         </member>
         <member name="T:FileCabinetApp.Services.FileCabinetServiceSnapshot">
             <summary>

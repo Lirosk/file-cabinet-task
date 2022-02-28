@@ -9,9 +9,7 @@ namespace FileCabinetApp.Services
     /// </summary>
     public sealed class FileCabinetRecordCsvWriter : IFileCabinetRecordWriter
     {
-#pragma warning disable CA2213 // Следует высвобождать высвобождаемые поля
         private readonly TextWriter writer;
-#pragma warning restore CA2213 // Следует высвобождать высвобождаемые поля
         private readonly StringBuilder sb = new ();
 
         /// <summary>
@@ -38,6 +36,7 @@ namespace FileCabinetApp.Services
         public void Dispose()
         {
             this.writer.Flush();
+            this.writer.Dispose();
         }
 
         /// <summary>

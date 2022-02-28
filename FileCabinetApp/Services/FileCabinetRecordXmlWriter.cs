@@ -9,9 +9,8 @@ namespace FileCabinetApp.Services
     /// </summary>
     public sealed class FileCabinetRecordXmlWriter : IFileCabinetRecordWriter
     {
-#pragma warning disable CA2213 // Следует высвобождать высвобождаемые поля
         private readonly XmlWriter writer;
-#pragma warning restore CA2213 // Следует высвобождать высвобождаемые поля
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordXmlWriter"/> class.
         /// </summary>
@@ -32,6 +31,8 @@ namespace FileCabinetApp.Services
         {
             this.writer.WriteEndElement();
             this.writer.WriteEndDocument();
+            this.writer.Flush();
+            this.writer.Dispose();
         }
 
         /// <summary>

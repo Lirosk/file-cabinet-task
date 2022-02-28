@@ -33,7 +33,7 @@ namespace FileCabinetApp
         private static Tuple<string, Action>[] storages = new Tuple<string, Action>[]
         {
             new ("memory", SetMemoryService),
-            new ("file", SetMemoryService),
+            new ("file", SetFileSystemService),
         };
 
         private static Tuple<string, IRecordValidator>[] validationRules = new Tuple<string, IRecordValidator>[]
@@ -72,10 +72,8 @@ namespace FileCabinetApp
         /// <param name="consoleArgs">Arguments passed via console.</param>
         public static void Main(string[] consoleArgs)
         {
-            if (consoleArgs.Length == 0)
-            {
-                consoleArgs = new[] { "-v", "default" };
-            }
+            usedValidationRuleIndex = 0;
+            SetMemoryService();
 
             try
             {
@@ -431,7 +429,7 @@ namespace FileCabinetApp
             fileCabinetService = new FileCabinetMemoryService(validationRules[usedValidationRuleIndex].Item2);
         }
 
-        private static void SetFileService()
+        private static void SetFileSystemService()
         {
             var fileName = "cabinet-records.db";
             var fileStream = File.Open(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
