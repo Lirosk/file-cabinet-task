@@ -1,4 +1,6 @@
 ﻿using FileCabinetApp;
+using FileCabinetApp.Services;
+using System.Text;
 
 namespace FileCabinetGenerator
 {
@@ -8,6 +10,7 @@ namespace FileCabinetGenerator
         private static string OutputFile = string.Empty;
         private static int RecordsAmount;
         private static int StartId;
+        private static Random random = new ();
 
         private static Tuple<string[], Action<string>>[] args = new Tuple<string[], Action<string>>[]
         {
@@ -41,7 +44,79 @@ namespace FileCabinetGenerator
 
         private static IEnumerable<FileCabinetRecord> GenerateRecords()
         {
-            throw new NotImplementedException();
+            var sb = new StringBuilder();
+            char symb;
+            int firstNameLen;
+            int lastNameLen;
+            string firstName;
+            string lastName;
+            int year, month, day;
+            DateTime dateOfBirth;
+            short schoolGrade;
+            decimal averageMark;
+            char classLetter;
+            PersonalData personalData;
+
+            for (int id = StartId; id < StartId + RecordsAmount; id++)
+            {
+                firstNameLen = random.Next(2, 31);
+                for (int i = 0; i < firstNameLen; i++)
+                {
+                    if (random.NextSingle() < .5)
+                    {
+                        symb = (char)random.Next((int)'a', (int)'z');
+                    }
+                    else
+                    {
+                        symb = (char)random.Next((int)'A', (int)'Z');
+                    }
+
+                    sb.Append(symb);
+                }
+
+                firstName = sb.ToString();
+                sb.Clear();
+
+                lastNameLen = random.Next(2, 31);
+                for (int i = 0; i < lastNameLen; i++)
+                {
+                    if (random.NextSingle() < .5)
+                    {
+                        symb = (char)random.Next((int)'a', (int)'z');
+                    }
+                    else
+                    {
+                        symb = (char)random.Next((int)'A', (int)'Z');
+                    }
+
+                    sb.Append(symb);
+                }
+
+                lastName = sb.ToString();
+                sb.Clear();
+
+                year = random.Next(1950, 2022);
+                month = random.Next(1, 13);
+                day = random.Next(1, 29);
+
+                dateOfBirth = new(year, month, day);
+
+                schoolGrade = (short)random.Next(1, 12);
+                averageMark = (decimal)random.NextDouble() * 10;
+                classLetter = (char)random.Next((int)'A', (int)'E');
+
+                personalData = new()
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    DateOfBirth = dateOfBirth,
+                    SchoolGrade = schoolGrade,
+                    AverageMark = averageMark,
+                    ClassLetter = classLetter,
+                };
+
+                yield return new(id, personalData);
+            }
         }
 
         private static void SaveRecords(IEnumerable<FileCabinetRecord> records)
