@@ -7,7 +7,7 @@ namespace FileCabinetGenerator
 {
     public static class Program
     {
-        private static string OutputType = string.Empty;
+        private static int OutputTypeIndex = -1;
         private static string OutputFile = string.Empty;
         private static int RecordsAmount = -1;
         private static int StartId = -1;
@@ -21,7 +21,11 @@ namespace FileCabinetGenerator
             new (new[] { "-i", "--start-id"}, SetStartId),
         };
 
-        private static string[] SupportableFileExtensions = new[] { "csv", "xml" };
+        private static Tuple<string, Action<StreamWriter, List<FileCabinetRecord>>>[] OutputTypes = new Tuple<string, Action<StreamWriter, List<FileCabinetRecord>>>[]
+        { 
+            new ("csv", ExportRecordsToCsv),
+            new ("xml", ExportRecordsToXml),
+        };
 
         public static void Main(string[] consoleArgs)
         {
@@ -29,7 +33,7 @@ namespace FileCabinetGenerator
             {
                 ProceedArgs(consoleArgs);
 
-                if (OutputType.Equals(string.Empty, StringComparison.Ordinal))
+                if (OutputTypeIndex == -1)
                 {
                     throw new ArgumentException("Define output type.");
                 }
@@ -60,7 +64,7 @@ namespace FileCabinetGenerator
                 return;
             }
             
-            SaveRecords(GenerateRecords());
+            ExportRecords(GenerateRecords());
         }
 
         private static List<FileCabinetRecord> GenerateRecords()
@@ -143,39 +147,36 @@ namespace FileCabinetGenerator
             return records;
         }
 
-        private static void SaveRecords(List<FileCabinetRecord> records)
+        private static void ExportRecords(List<FileCabinetRecord> records)
         {
             using var streamWriter = new StreamWriter(OutputFile, false, Encoding.UTF8);
+            OutputTypes[OutputTypeIndex].Item2(streamWriter, records);
+        }
 
-            switch (OutputType)
+        private static void ExportRecordsToXml(StreamWriter streamWriter, List<FileCabinetRecord> records)
+        {
+            var serializer = new XmlSerializer(typeof(List<FileCabinetRecord>));
+            serializer.Serialize(streamWriter, records);
+        }
+
+        private static void ExportRecordsToCsv(StreamWriter streamWriter, List<FileCabinetRecord> records)
+        {
+            using var writer = new FileCabinetRecordCsvWriter(streamWriter);
+            foreach (var record in records)
             {
-                case "xml":
-                    {
-                        var serializer = new XmlSerializer(typeof(List<FileCabinetRecord>));
-                        serializer.Serialize(streamWriter, records);
-                        break;
-                    }
-                case "csv":
-                    {
-                        using var writer = new FileCabinetRecordCsvWriter(streamWriter!);
-                        foreach (var record in records)
-                        {
-                            writer!.Write(record);
-                        }
-                        break;
-                    }
+                writer!.Write(record);
             }
         }
 
         private static void SetOutputType(string parameters)
         {
             int index;
-            if ((index = Array.FindIndex(SupportableFileExtensions, 0, SupportableFileExtensions.Length, x => x.Equals(parameters, StringComparison.InvariantCultureIgnoreCase))) == -1)
+            if ((index = Array.FindIndex(OutputTypes, 0, OutputTypes.Length, x => x.Item1.Equals(parameters, StringComparison.InvariantCultureIgnoreCase))) == -1)
             {
                 throw new ArgumentException($"Unsupportable output file type: {parameters}.");
             }
 
-            OutputType = SupportableFileExtensions[index];
+            OutputTypeIndex = index;
         }
 
         private static void SetOutputFile(string parameters)
