@@ -220,6 +220,72 @@ namespace FileCabinetApp.Services
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Restore records from snapshot.
+        /// </summary>
+        /// <param name="snapshot">Snapshot contatining records to restore.</param>
+        public void Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            var haveRecordsWithIds = this.IdsOfStoredRecords();
+            this.fileStream.Seek(0, SeekOrigin.End);
+            byte[] buffer;
+            using var binaryWriter = new BinaryWriter(this.fileStream);
+
+            foreach (var record in snapshot.Records)
+            {
+                try
+                {
+                    this.validator.ValidateFirstName(record.FirstName);
+                    this.validator.ValidateLastName(record.LastName);
+                    this.validator.ValidateDateOfBirth(record.DateOfBirth);
+                    this.validator.ValidateSchoolGrade(record.SchoolGrade);
+                    this.validator.ValidateAverageMark(record.AverageMark);
+                    this.validator.ValidateClassLetter(record.ClassLetter);
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    continue;
+                }
+
+                if (!haveRecordsWithIds.Contains(record.Id))
+                {
+                    buffer = new byte[StatusSize];
+                    binaryWriter.Write(buffer);
+
+                    buffer = new byte[FirstNameSize];
+                    Encoding.UTF8.GetBytes(record.FirstName).CopyTo(buffer, 0);
+                    binaryWriter.Write(buffer);
+
+                    buffer = new byte[LastNameSize];
+                    Encoding.UTF8.GetBytes(record.LastName).CopyTo(buffer, 0);
+                    binaryWriter.Write(buffer);
+
+                    binaryWriter.Write(record.DateOfBirth.Year);
+                    binaryWriter.Write(record.DateOfBirth.Month);
+                    binaryWriter.Write(record.DateOfBirth.Day);
+
+                    binaryWriter.Write(record.SchoolGrade);
+                    binaryWriter.Write(record.AverageMark);
+                    binaryWriter.Write(record.ClassLetter);
+                }
+            }
+        }
+
+        private int[] IdsOfStoredRecords()
+        {
+            var res = new List<int>();
+            this.fileStream.Seek(0, SeekOrigin.Begin);
+
+            var bytes = new byte[RecordSize];
+            while (this.fileStream.Read(bytes, 0, RecordSize) == RecordSize)
+            {
+                res.Add(BitConverter.ToInt32(bytes, StatusSize));
+            }
+
+            return res.ToArray();
+        }
+
         private static FileCabinetRecord RecordFromBytes(byte[] bytes)
         {
             int offset = StatusSize;

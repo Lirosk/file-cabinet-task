@@ -186,6 +186,12 @@
             </summary>
             <returns>Snapshot of present records.</returns>
         </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.Restore(FileCabinetApp.Services.FileCabinetServiceSnapshot)">
+            <summary>
+            Restore records from snapshot.
+            </summary>
+            <param name="snapshot">Snapshot contatining records to restore.</param>
+        </member>
         <member name="T:FileCabinetApp.Services.FileCabinetMemoryService">
             <summary>
             Stores records with personal information; manages the creation, editing, finding the records.
@@ -238,6 +244,32 @@
             </summary>
             <returns>Count of stored records.</returns>
         </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Restore(FileCabinetApp.Services.FileCabinetServiceSnapshot)">
+            <summary>
+            Restore records from snapshot.
+            </summary>
+            <param name="snapshot">Snapshot contatining records to restore.</param>
+        </member>
+        <member name="T:FileCabinetApp.Services.FileCabinetRecordCsvReader">
+            <summary>
+            Reads records from csv file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordCsvReader.#ctor(System.IO.StreamReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetRecordCsvReader"/> class.
+            </summary>
+            <param name="reader">Reader to read data from.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordCsvReader.ReadAll">
+            <summary>
+            Reads all records.
+            </summary>
+            <returns>All readed records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordCsvReader.Dispose">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Services.FileCabinetRecordCsvWriter">
             <summary>
             Class for writing data to csv file.
@@ -283,6 +315,12 @@
             Represents snapshot of once real records.
             </summary>
         </member>
+        <member name="P:FileCabinetApp.Services.FileCabinetServiceSnapshot.Records">
+            <summary>
+            Gets readonly collection of records.
+            </summary>
+            <value>Readonly collection of records.</value>
+        </member>
         <member name="M:FileCabinetApp.Services.FileCabinetServiceSnapshot.#ctor(FileCabinetApp.FileCabinetRecord[])">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetServiceSnapshot"/> class.
@@ -305,6 +343,12 @@
             Saves record to xml file.
             </summary>
             <param name="writer">Writer for writing records to it.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetServiceSnapshot.LoadFromCsv(System.IO.StreamReader)">
+            <summary>
+            Loads records from csv file.
+            </summary>
+            <param name="reader">Stream for reading.</param>
         </member>
         <member name="T:FileCabinetApp.Services.IFileCabinetRecordWriter">
             <summary>
@@ -362,6 +406,12 @@
             Makes snapshot of present records.
             </summary>
             <returns>Snapshot of present records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.IFileCabinetService.Restore(FileCabinetApp.Services.FileCabinetServiceSnapshot)">
+            <summary>
+            Restore records from snapshot.
+            </summary>
+            <param name="snapshot">Snapshot contatining records to restore.</param>
         </member>
         <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>
