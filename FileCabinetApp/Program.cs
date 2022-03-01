@@ -552,7 +552,10 @@ namespace FileCabinetApp
 
         private static void ImportCsv(string filePath)
         {
-            throw new NotImplementedException();
+            using var reader = new StreamReader(filePath, Encoding.UTF8);
+            var snapShort = new FileCabinetServiceSnapshot();
+            snapShort.LoadFromCsv(reader);
+            fileCabinetService!.Restore(snapShort);
         }
 
         private static void ImportXml(string filePath)

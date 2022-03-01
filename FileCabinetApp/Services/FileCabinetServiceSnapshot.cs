@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Reflection;
 
 namespace FileCabinetApp.Services
 {
@@ -10,12 +12,32 @@ namespace FileCabinetApp.Services
         private FileCabinetRecord[] records;
 
         /// <summary>
+        /// Gets readonly collection of records.
+        /// </summary>
+        /// <value>Readonly collection of records.</value>
+        public ReadOnlyCollection<FileCabinetRecord> Records
+        {
+            get
+            {
+                return new ReadOnlyCollection<FileCabinetRecord>(this.records);
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
         /// </summary>
         /// <param name="records">Records to save.</param>
         public FileCabinetServiceSnapshot(FileCabinetRecord[] records)
         {
             this.records = records;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
+        /// </summary>
+        public FileCabinetServiceSnapshot()
+        {
+            this.records = Array.Empty<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -42,6 +64,47 @@ namespace FileCabinetApp.Services
             {
                 scvWriter.Write(record);
             }
+        }
+
+        /// <summary>
+        /// Loads records from csv file.
+        /// </summary>
+        /// <param name="reader">Stream for reading.</param>
+        public void LoadFromCsv(StreamReader reader)
+        {
+            List<FileCabinetRecord> restored = new ();
+
+            reader.BaseStream.Seek(0, SeekOrigin.Begin);
+
+            var propertiesNames = reader.ReadToEnd().Split(',');
+            var properties = propertiesNames.Select(
+                name => typeof(FileCabinetRecord).GetProperty(
+                    name, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase)).ToArray<PropertyInfo?>();
+
+            string? readed;
+            string[] readedValues;
+            while ((readed = reader.ReadLine()) != null)
+            {
+                readedValues = readed.Split(',');
+
+                if (readedValues.Length != properties.Length)
+                {
+                    continue;
+                }
+
+                var record = new FileCabinetRecord();
+
+                for (int i = 0; i < readedValues.Length; i++)
+                {
+                    properties[i] !.SetValue(
+                        record,
+                        Convert.ChangeType(readedValues[i], properties[i] !.PropertyType, CultureInfo.InvariantCulture));
+                }
+
+                restored.Add(record);
+            }
+
+            this.records = restored.ToArray();
         }
     }
 }

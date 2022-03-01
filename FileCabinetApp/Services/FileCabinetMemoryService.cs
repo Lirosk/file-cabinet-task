@@ -113,6 +113,21 @@ namespace FileCabinetApp.Services
             return this.list.Count;
         }
 
+        /// <summary>
+        /// Restore records from snapshot.
+        /// </summary>
+        /// <param name="snapshot">Snapshot contatining records to restore.</param>
+        public void Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            foreach (var record in snapshot.Records)
+            {
+                if (!this.list.Any(rec => rec.Id == record.Id))
+                {
+                    this.list.Add(record);
+                }
+            }
+        }
+
         private void RemoveFromIndex(FileCabinetRecord record)
         {
             foreach (var (key, records) in this.index)
