@@ -1,54 +1,63 @@
-﻿using FileCabinetApp;
-using FileCabinetApp.Services;
-using System.Text;
+﻿using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
+
+using FileCabinetApp;
+using FileCabinetApp.Services;
 
 namespace FileCabinetGenerator
 {
+    /// <summary>
+    /// Generates records and saves them to file.
+    /// </summary>
     public static class Program
     {
-        private static int OutputTypeIndex = -1;
-        private static string OutputFile = string.Empty;
-        private static int RecordsAmount = -1;
-        private static int StartId = -1;
+        private static int outputTypeIndex = -1;
+        private static string outputFile = string.Empty;
+        private static int recordsAmount = -1;
+        private static int startId = -1;
         private static Random random = new ();
 
         private static Tuple<string[], Action<string>>[] args = new Tuple<string[], Action<string>>[]
         {
             new (new[] { "-t", "--output-type" }, SetOutputType),
             new (new[] { "-o", "--output" }, SetOutputFile),
-            new (new[] { "-a", "--records-amount"}, SetRecordsAmount),
-            new (new[] { "-i", "--start-id"}, SetStartId),
+            new (new[] { "-a", "--records-amount" }, SetRecordsAmount),
+            new (new[] { "-i", "--start-id" }, SetStartId),
         };
 
-        private static Tuple<string, Action<StreamWriter, List<FileCabinetRecord>>>[] OutputTypes = new Tuple<string, Action<StreamWriter, List<FileCabinetRecord>>>[]
-        { 
+        private static Tuple<string, Action<StreamWriter, List<FileCabinetRecord>>>[] outputTypes = new Tuple<string, Action<StreamWriter, List<FileCabinetRecord>>>[]
+        {
             new ("csv", ExportRecordsToCsv),
             new ("xml", ExportRecordsToXml),
         };
 
+        /// <summary>
+        /// Entry point.
+        /// </summary>
+        /// <param name="consoleArgs">Arguments passed via console.</param>
         public static void Main(string[] consoleArgs)
         {
             try
             {
                 ProceedArgs(consoleArgs);
 
-                if (OutputTypeIndex == -1)
+                if (outputTypeIndex == -1)
                 {
                     throw new ArgumentException("Define output type.");
                 }
 
-                if (OutputFile.Equals(string.Empty, StringComparison.Ordinal))
+                if (outputFile.Equals(string.Empty, StringComparison.Ordinal))
                 {
                     throw new ArgumentException("Define output file.");
                 }
 
-                if (RecordsAmount == -1)
+                if (recordsAmount == -1)
                 {
                     throw new ArgumentException("Define records amount.");
                 }
 
-                if (StartId == -1)
+                if (startId == -1)
                 {
                     throw new ArgumentException("Define start id.");
                 }
@@ -63,7 +72,7 @@ namespace FileCabinetGenerator
                 Console.WriteLine($"Error: Invalid args input.{Environment.NewLine}");
                 return;
             }
-            
+
             ExportRecords(GenerateRecords());
         }
 
@@ -83,7 +92,7 @@ namespace FileCabinetGenerator
             PersonalData personalData;
             List<FileCabinetRecord> records = new ();
 
-            for (int id = (int)StartId!; id < StartId + RecordsAmount; id++)
+            for (int id = (int)startId!; id < startId + recordsAmount; id++)
             {
                 firstNameLen = random.Next(2, 31);
                 for (int i = 0; i < firstNameLen; i++)
@@ -125,13 +134,13 @@ namespace FileCabinetGenerator
                 month = random.Next(1, 13);
                 day = random.Next(1, 29);
 
-                dateOfBirth = new(year, month, day);
+                dateOfBirth = new (year, month, day);
 
                 schoolGrade = (short)random.Next(1, 12);
                 averageMark = (decimal)random.NextDouble() * 10;
                 classLetter = (char)random.Next((int)'A', (int)'E');
 
-                personalData = new()
+                personalData = new ()
                 {
                     FirstName = firstName,
                     LastName = lastName,
@@ -149,14 +158,27 @@ namespace FileCabinetGenerator
 
         private static void ExportRecords(List<FileCabinetRecord> records)
         {
-            using var streamWriter = new StreamWriter(OutputFile, false, Encoding.UTF8);
-            OutputTypes[OutputTypeIndex].Item2(streamWriter, records);
+            using var streamWriter = new StreamWriter(outputFile, false, Encoding.UTF8);
+            outputTypes[outputTypeIndex].Item2(streamWriter, records);
         }
 
         private static void ExportRecordsToXml(StreamWriter streamWriter, List<FileCabinetRecord> records)
         {
-            var serializer = new XmlSerializer(typeof(List<FileCabinetRecord>));
-            serializer.Serialize(streamWriter, records);
+            var res = records.Select(record => new RecordForXml(record)).ToList<RecordForXml>();
+
+            var type = typeof(List<RecordForXml>);
+
+            var ignoreAttrs = new XmlAttributes();
+            ignoreAttrs.XmlIgnore = true;
+
+            var overrides = new XmlAttributeOverrides();
+            overrides.Add(typeof(FileCabinetRecord), "FirstName", ignoreAttrs);
+            overrides.Add(typeof(FileCabinetRecord), "LastName", ignoreAttrs);
+
+            var serializer = new XmlSerializer(type, overrides, null, new ("reocords"), null);
+            using var xmlWriter = XmlWriter.Create(streamWriter, new () { Indent = true });
+
+            serializer.Serialize(xmlWriter, res);
         }
 
         private static void ExportRecordsToCsv(StreamWriter streamWriter, List<FileCabinetRecord> records)
@@ -171,22 +193,22 @@ namespace FileCabinetGenerator
         private static void SetOutputType(string parameters)
         {
             int index;
-            if ((index = Array.FindIndex(OutputTypes, 0, OutputTypes.Length, x => x.Item1.Equals(parameters, StringComparison.InvariantCultureIgnoreCase))) == -1)
+            if ((index = Array.FindIndex(outputTypes, 0, outputTypes.Length, x => x.Item1.Equals(parameters, StringComparison.InvariantCultureIgnoreCase))) == -1)
             {
                 throw new ArgumentException($"Unsupportable output file type: {parameters}.");
             }
 
-            OutputTypeIndex = index;
+            outputTypeIndex = index;
         }
 
         private static void SetOutputFile(string parameters)
         {
-            OutputFile = parameters;
+            outputFile = parameters;
         }
 
         private static void SetRecordsAmount(string parameters)
         {
-            if (!int.TryParse(parameters, out RecordsAmount))
+            if (!int.TryParse(parameters, out recordsAmount))
             {
                 throw new ArgumentException($"Cannot parse records amount: {parameters}.");
             }
@@ -194,7 +216,7 @@ namespace FileCabinetGenerator
 
         private static void SetStartId(string parameters)
         {
-            if (!int.TryParse(parameters, out StartId))
+            if (!int.TryParse(parameters, out startId))
             {
                 throw new ArgumentException("Cannot parse start id.");
             }
@@ -202,13 +224,13 @@ namespace FileCabinetGenerator
 
         private static void ProceedArgs(string[] consoleArgs)
         {
-            Stack<string> paramsAndArgs = new();
+            Stack<string> paramsAndArgs = new ();
             int index;
             foreach (var consoleArg in consoleArgs.Reverse())
             {
                 if ((index = consoleArg.IndexOf('=', StringComparison.Ordinal)) != -1)
                 {
-                    paramsAndArgs.Push(consoleArg[(index + 1)..]);
+                    paramsAndArgs.Push(consoleArg[(index + 1) ..]);
                     paramsAndArgs.Push(consoleArg[..index]);
                     continue;
                 }
