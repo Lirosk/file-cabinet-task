@@ -17,7 +17,6 @@ namespace FileCabinetApp.Services
         public FileCabinetRecordCsvReader(StreamReader reader)
             : base(reader)
         {
-            this.reader = reader;
         }
 
         /// <summary>
@@ -30,7 +29,7 @@ namespace FileCabinetApp.Services
 
             this.reader.BaseStream.Seek(0, SeekOrigin.Begin);
 
-            var propertiesNames = this.reader.ReadToEnd().Split(',');
+            var propertiesNames = this.reader.ReadLine() !.Split(',');
             var properties = propertiesNames.Select(
                 name => typeof(FileCabinetRecord).GetProperty(
                     name, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase)).ToArray<PropertyInfo?>();

@@ -4,52 +4,6 @@
         <name>FileCabinetGenerator</name>
     </assembly>
     <members>
-        <member name="T:FileCabinetGenerator.RecordForXml">
-            <summary>
-            For serializing it right way.
-            </summary>
-        </member>
-        <member name="M:FileCabinetGenerator.RecordForXml.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetGenerator.RecordForXml"/> class.
-            </summary>
-        </member>
-        <member name="M:FileCabinetGenerator.RecordForXml.#ctor(System.Int32,FileCabinetApp.PersonalData)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetGenerator.RecordForXml"/> class.
-            </summary>
-            <param name="id">Id of record.</param>
-            <param name="personalData">Personal information.</param>
-        </member>
-        <member name="M:FileCabinetGenerator.RecordForXml.#ctor(FileCabinetApp.FileCabinetRecord)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetGenerator.RecordForXml"/> class.
-            </summary>
-            <param name="record">Record for copying data.</param>
-        </member>
-        <member name="P:FileCabinetGenerator.RecordForXml.FullName">
-            <summary>
-            Gets or sets represent first and last names.
-            </summary>
-            <value>Object represent first and last names.</value>
-        </member>
-        <member name="T:FileCabinetGenerator.RecordForXml.Name">
-            <summary>
-            Represents first and last names.
-            </summary>
-        </member>
-        <member name="P:FileCabinetGenerator.RecordForXml.Name.FirstName">
-            <summary>
-            Gets or sets first name of a person in record.
-            </summary>
-            <value>First name of a person in record.</value>
-        </member>
-        <member name="P:FileCabinetGenerator.RecordForXml.Name.LastName">
-            <summary>
-            Gets or sets last name of a person in record.
-            </summary>
-            <value>Last name of a person in record.</value>
-        </member>
         <member name="T:FileCabinetGenerator.Program">
             <summary>
             Generates records and saves them to file.

@@ -50,6 +50,9 @@ namespace FileCabinetApp.Services
             var properties = typeof(FileCabinetRecord).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             object value;
 
+            var customCulture = (CultureInfo)CultureInfo.InvariantCulture.Clone();
+            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+
             foreach (var property in properties)
             {
                 value = property.GetValue(record) !;
@@ -59,7 +62,7 @@ namespace FileCabinetApp.Services
                 }
                 else
                 {
-                    this.sb.Append(value);
+                    this.sb.Append(Convert.ToString(value, customCulture));
                 }
 
                 this.sb.Append(',');

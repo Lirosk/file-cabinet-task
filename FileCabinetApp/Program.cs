@@ -52,6 +52,7 @@ namespace FileCabinetApp
             new ("list", List),
             new ("edit", Edit),
             new ("find", Find),
+            new ("import", Import),
             new ("export", Export),
         };
 
@@ -554,14 +555,17 @@ namespace FileCabinetApp
         private static void ImportCsv(string filePath)
         {
             using var reader = new StreamReader(filePath, Encoding.UTF8);
-            var snapShort = new FileCabinetServiceSnapshot();
-            snapShort.LoadFromCsv(reader);
-            fileCabinetService!.Restore(snapShort);
+            var snapshot = new FileCabinetServiceSnapshot();
+            snapshot.LoadFromCsv(reader);
+            fileCabinetService!.Restore(snapshot);
         }
 
         private static void ImportXml(string filePath)
         {
-            throw new NotImplementedException();
+            using var reader = new StreamReader(filePath, Encoding.UTF8);
+            var snapshot = new FileCabinetServiceSnapshot();
+            snapshot.LoadFromXml(reader);
+            fileCabinetService!.Restore(snapshot);
         }
     }
 }

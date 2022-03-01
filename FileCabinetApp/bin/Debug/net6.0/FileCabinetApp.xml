@@ -4,124 +4,6 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
-        <member name="T:FileCabinetApp.FileCabinetRecord">
-            <summary>
-            Represents the record with personal information.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetRecord.#ctor(System.Int32,FileCabinetApp.PersonalData)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.
-            </summary>
-            <param name="id">Id of record.</param>
-            <param name="personalData">Personal information.</param>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetRecord.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.InputDateTimeFormat">
-            <summary>
-            Gets or sets <see cref="T:System.DateTime">DateTime</see> format for record input.
-            </summary>
-            <value><see cref="T:System.DateTime">DateTime</see> format for record input.</value>
-        </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.OutputDateTimeFormat">
-            <summary>
-            Gets or sets <see cref="T:System.DateTime">DateTime</see> format for record output.
-            </summary>
-            <value><see cref="T:System.DateTime">DateTime</see> format for record output.</value>
-        </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.Id">
-            <summary>
-            Gets or sets id of record.
-            </summary>
-            <value>Id of record.</value>
-        </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.FirstName">
-            <summary>
-            Gets or sets first name of a person in record.
-            </summary>
-            <value>First name of a person in record.</value>
-        </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.LastName">
-            <summary>
-            Gets or sets last name of a person in record.
-            </summary>
-            <value>Last name of a person in record.</value>
-        </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
-            <summary>
-            Gets or sets date of birth of a person in record.
-            </summary>
-            <value>Date of birth of a person in record.</value>
-        </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.SchoolGrade">
-            <summary>
-            Gets or sets school grade of a person in record.
-            </summary>
-            <value>School grade of a person in record.</value>
-        </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.AverageMark">
-            <summary>
-            Gets or sets averange mark of a person in record.
-            </summary>
-            <value>Average mark of a person in record.</value>
-        </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.ClassLetter">
-            <summary>
-            Gets or sets class letter of a person in record.
-            </summary>
-            <value>Class letter of a person in record.</value>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetRecord.ToString">
-            <summary>
-            Convert instance to its string representation.
-            </summary>
-            <returns>Instance string representation.</returns>
-        </member>
-        <member name="T:FileCabinetApp.PersonalData">
-            <summary>
-            Represents parameter object for <see cref="T:FileCabinetApp.FileCabinetRecord"/>.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.PersonalData.FirstName">
-            <summary>
-            Gets or sets first name of a person in record.
-            </summary>
-            <value>First name of a person in record.</value>
-        </member>
-        <member name="P:FileCabinetApp.PersonalData.LastName">
-            <summary>
-            Gets or sets last name of a person in record.
-            </summary>
-            <value>Last name of a person in record.</value>
-        </member>
-        <member name="P:FileCabinetApp.PersonalData.DateOfBirth">
-            <summary>
-            Gets or sets date of birth of a person in record.
-            </summary>
-            <value>Date of birth of a person in record.</value>
-        </member>
-        <member name="P:FileCabinetApp.PersonalData.SchoolGrade">
-            <summary>
-            Gets or sets school grade of a person in record.
-            </summary>
-            <value>School grade of a person in record.</value>
-        </member>
-        <member name="P:FileCabinetApp.PersonalData.AverageMark">
-            <summary>
-            Gets or sets averange mark of a person in record.
-            </summary>
-            <value>Average mark of a person in record.</value>
-        </member>
-        <member name="P:FileCabinetApp.PersonalData.ClassLetter">
-            <summary>
-            Gets or sets class letter of a person in record.
-            </summary>
-            <value>Class letter of a person in record.</value>
-        </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
             Interacts with user.
@@ -145,14 +27,14 @@
             <param name="fileStream">Stream to save records.</param>
             <param name="validator">Validator for checking records.</param>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.CreateRecord(FileCabinetApp.PersonalData)">
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.CreateRecord(Models.PersonalData)">
             <summary>
             Create record from given parameters.
             </summary>
             <param name="personalData">Represents data of a person.</param>
             <returns>Returns the id of created record.</returns>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.EditRecord(System.Int32,FileCabinetApp.PersonalData)">
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.EditRecord(System.Int32,Models.PersonalData)">
             <summary>
             Edit record with the given id.
             </summary>
@@ -209,14 +91,14 @@
             </summary>
             <returns>Snapshot of present records.</returns>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.CreateRecord(FileCabinetApp.PersonalData)">
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.CreateRecord(Models.PersonalData)">
             <summary>
             Create record from given parameters.
             </summary>
             <param name="personalData">Represents data of a person.</param>
             <returns>Returns the id of created record.</returns>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.EditRecord(System.Int32,FileCabinetApp.PersonalData)">
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.EditRecord(System.Int32,Models.PersonalData)">
             <summary>
             Edit record with the given id.
             </summary>
@@ -267,9 +149,6 @@
             </summary>
             <returns>All readed records.</returns>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetRecordCsvReader.Dispose">
-            <inheritdoc/>
-        </member>
         <member name="T:FileCabinetApp.Services.FileCabinetRecordCsvWriter">
             <summary>
             Class for writing data to csv file.
@@ -284,11 +163,50 @@
         <member name="M:FileCabinetApp.Services.FileCabinetRecordCsvWriter.Dispose">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetRecordCsvWriter.Write(FileCabinetApp.FileCabinetRecord)">
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordCsvWriter.Write(Models.FileCabinetRecord)">
             <summary>
             Writes record to given stream.
             </summary>
             <param name="record">Record to write.</param>
+        </member>
+        <member name="T:FileCabinetApp.Services.FileCabinetRecordReader">
+            <summary>
+            Interface for reading records from stream.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Services.FileCabinetRecordReader.reader">
+            <summary>
+            Read data from.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordReader.#ctor(System.IO.StreamReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetRecordReader"/> class.
+            </summary>
+            <param name="reader">Reader to read data from.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordReader.ReadAll">
+            <summary>
+            Reads all records.
+            </summary>
+            <returns>All readed records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Services.FileCabinetRecordXmlReader">
+            <summary>
+            Reads records from xml file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordXmlReader.#ctor(System.IO.StreamReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetRecordXmlReader"/> class.
+            </summary>
+            <param name="reader">Reader to read data from.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordXmlReader.ReadAll">
+            <summary>
+            Reads all records.
+            </summary>
+            <returns>All readed records.</returns>
         </member>
         <member name="T:FileCabinetApp.Services.FileCabinetRecordXmlWriter">
             <summary>
@@ -304,7 +222,7 @@
         <member name="M:FileCabinetApp.Services.FileCabinetRecordXmlWriter.Dispose">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord)">
+        <member name="M:FileCabinetApp.Services.FileCabinetRecordXmlWriter.Write(Models.FileCabinetRecord)">
             <summary>
             Writes record to given stream.
             </summary>
@@ -321,7 +239,7 @@
             </summary>
             <value>Readonly collection of records.</value>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetServiceSnapshot.#ctor(FileCabinetApp.FileCabinetRecord[])">
+        <member name="M:FileCabinetApp.Services.FileCabinetServiceSnapshot.#ctor(Models.FileCabinetRecord[])">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetServiceSnapshot"/> class.
             </summary>
@@ -350,12 +268,18 @@
             </summary>
             <param name="reader">Stream for reading.</param>
         </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetServiceSnapshot.LoadFromXml(System.IO.StreamReader)">
+            <summary>
+            Loads records from xml file.
+            </summary>
+            <param name="reader">Stream for reading.</param>
+        </member>
         <member name="T:FileCabinetApp.Services.IFileCabinetRecordWriter">
             <summary>
             Interface for writing data to file.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Services.IFileCabinetRecordWriter.Write(FileCabinetApp.FileCabinetRecord)">
+        <member name="M:FileCabinetApp.Services.IFileCabinetRecordWriter.Write(Models.FileCabinetRecord)">
             <summary>
             Writes record to given stream.
             </summary>
@@ -366,14 +290,14 @@
             Stores records with personal information; manages the creation, editing, finding the records.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Services.IFileCabinetService.CreateRecord(FileCabinetApp.PersonalData)">
+        <member name="M:FileCabinetApp.Services.IFileCabinetService.CreateRecord(Models.PersonalData)">
             <summary>
             Create record from given parameters.
             </summary>
             <param name="personalData">Represents data of a person.</param>
             <returns>Returns the id of created record.</returns>
         </member>
-        <member name="M:FileCabinetApp.Services.IFileCabinetService.EditRecord(System.Int32,FileCabinetApp.PersonalData)">
+        <member name="M:FileCabinetApp.Services.IFileCabinetService.EditRecord(System.Int32,Models.PersonalData)">
             <summary>
             Edit record with the given id.
             </summary>
@@ -626,7 +550,7 @@
             Interface for validation personal data.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.IRecordValidator.ValidateParameters(FileCabinetApp.PersonalData)">
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateParameters(Models.PersonalData)">
             <summary>
             Validated personal data.
             </summary>

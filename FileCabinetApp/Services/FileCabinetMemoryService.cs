@@ -121,6 +121,8 @@ namespace FileCabinetApp.Services
         /// <param name="snapshot">Snapshot contatining records to restore.</param>
         public void Restore(FileCabinetServiceSnapshot snapshot)
         {
+            int imported = 0;
+
             foreach (var record in snapshot.Records)
             {
                 try
@@ -141,8 +143,11 @@ namespace FileCabinetApp.Services
                 if (!this.list.Any(rec => rec.Id == record.Id))
                 {
                     this.list.Add(record);
+                    imported++;
                 }
             }
+
+            Console.WriteLine($"{imported} record were imported.");
         }
 
         private void RemoveFromIndex(FileCabinetRecord record)

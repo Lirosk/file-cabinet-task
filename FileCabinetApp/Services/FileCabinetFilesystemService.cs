@@ -219,7 +219,7 @@ namespace FileCabinetApp.Services
         /// <returns>Snapshot of present records.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            throw new NotImplementedException();
+            return new FileCabinetServiceSnapshot(this.GetRecords().ToArray());
         }
 
         /// <summary>
@@ -231,6 +231,8 @@ namespace FileCabinetApp.Services
             var haveRecordsWithIds = this.IdsOfStoredRecords();
             this.fileStream.Seek(0, SeekOrigin.End);
             byte[] buffer;
+            int imported = 0;
+
             using var binaryWriter = new BinaryWriter(this.fileStream);
 
             foreach (var record in snapshot.Records)
@@ -270,22 +272,12 @@ namespace FileCabinetApp.Services
                     binaryWriter.Write(record.SchoolGrade);
                     binaryWriter.Write(record.AverageMark);
                     binaryWriter.Write(record.ClassLetter);
+
+                    imported++;
                 }
             }
-        }
 
-        private int[] IdsOfStoredRecords()
-        {
-            var res = new List<int>();
-            this.fileStream.Seek(0, SeekOrigin.Begin);
-
-            var bytes = new byte[RecordSize];
-            while (this.fileStream.Read(bytes, 0, RecordSize) == RecordSize)
-            {
-                res.Add(BitConverter.ToInt32(bytes, StatusSize));
-            }
-
-            return res.ToArray();
+            Console.WriteLine($"{imported} record were imported.");
         }
 
         private static FileCabinetRecord RecordFromBytes(byte[] bytes)
@@ -348,6 +340,20 @@ namespace FileCabinetApp.Services
             };
 
             return new FileCabinetRecord(id, personalData);
+        }
+
+        private int[] IdsOfStoredRecords()
+        {
+            var res = new List<int>();
+            this.fileStream.Seek(0, SeekOrigin.Begin);
+
+            var bytes = new byte[RecordSize];
+            while (this.fileStream.Read(bytes, 0, RecordSize) == RecordSize)
+            {
+                res.Add(BitConverter.ToInt32(bytes, StatusSize));
+            }
+
+            return res.ToArray();
         }
 
         private int FindRecordOffset(int id)
