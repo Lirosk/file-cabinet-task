@@ -63,6 +63,7 @@ namespace FileCabinetApp
             new[] { "edit", $"edit existring record via id, datetime format: {FileCabinetRecord.InputDateTimeFormat}" },
             new[] { "find", $"find records by field value, format: 'find fieldname \"value\"', datetime format: {FileCabinetRecord.OutputDateTimeFormat}" },
             new[] { "export", "saves records to the specified file" },
+            new[] { "import", "imports records from file" },
             new[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
@@ -507,6 +508,56 @@ namespace FileCabinetApp
                         throw new ArgumentException($"Extension {extension} is unsupportable.");
                     }
             }
+        }
+
+        private static void Import(string parameters)
+        {
+            var spaceIndex = parameters.IndexOf(' ', StringComparison.Ordinal);
+
+            if (spaceIndex == -1)
+            {
+                throw new ArgumentException("Invalid export parameters");
+            }
+
+            var extension = parameters[..spaceIndex];
+            var filePath = parameters[(spaceIndex + 1)..];
+
+            if (!File.Exists(filePath))
+            {
+                throw new ArgumentException("File does not exist.");
+            }
+
+            using var writer = new StreamReader(filePath, Encoding.UTF8);
+
+            switch (extension)
+            {
+                case "csv":
+                    {
+                        ImportCsv(filePath);
+                        break;
+                    }
+
+                case "xml":
+                    {
+                        ImportXml(filePath);
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new ArgumentException($"Extension {extension} is unsupportable.");
+                    }
+            }
+        }
+
+        private static void ImportCsv(string filePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ImportXml(string filePath)
+        {
+            throw new NotImplementedException();
         }
     }
 }
