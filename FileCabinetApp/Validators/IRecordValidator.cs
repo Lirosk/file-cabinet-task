@@ -1,4 +1,6 @@
-﻿namespace FileCabinetApp
+﻿using Models;
+
+namespace FileCabinetApp
 {
     /// <summary>
     /// Interface for validation personal data.

@@ -1,8 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-using FileCabinetApp;
-
-namespace FileCabinetGenerator
+namespace Models
 {
     /// <summary>
     /// For serializing it right way.

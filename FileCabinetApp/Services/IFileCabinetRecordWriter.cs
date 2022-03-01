@@ -1,4 +1,6 @@
-﻿namespace FileCabinetApp.Services
+﻿using Models;
+
+namespace FileCabinetApp.Services
 {
     /// <summary>
     /// Interface for writing data to file.

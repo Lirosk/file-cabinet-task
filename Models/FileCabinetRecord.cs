@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Xml.Serialization;
 
-namespace FileCabinetApp
+namespace Models
 {
     /// <summary>
     /// Represents the record with personal information.

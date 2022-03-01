@@ -1,9 +1,8 @@
 ﻿using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-
-using FileCabinetApp;
 using FileCabinetApp.Services;
+using Models;
 
 namespace FileCabinetGenerator
 {
@@ -175,7 +174,7 @@ namespace FileCabinetGenerator
             overrides.Add(typeof(FileCabinetRecord), "FirstName", ignoreAttrs);
             overrides.Add(typeof(FileCabinetRecord), "LastName", ignoreAttrs);
 
-            var serializer = new XmlSerializer(type, overrides, null, new ("reocords"), null);
+            var serializer = new XmlSerializer(type, overrides, null, new ("records"), null);
             using var xmlWriter = XmlWriter.Create(streamWriter, new () { Indent = true });
 
             serializer.Serialize(xmlWriter, res);
