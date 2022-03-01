@@ -6,7 +6,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Represents the record with personal information.
     /// </summary>
-    [XmlRoot]
+    [XmlRoot("record")]
     public class FileCabinetRecord
     {
         /// <summary>
