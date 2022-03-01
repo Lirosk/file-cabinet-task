@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Reflection;
+
+using Models;
 
 namespace FileCabinetApp.Services
 {
@@ -72,8 +72,18 @@ namespace FileCabinetApp.Services
         /// <param name="reader">Stream for reading.</param>
         public void LoadFromCsv(StreamReader reader)
         {
-            using var csvReader = new FileCabinetRecordCsvReader(reader);
+            var csvReader = new FileCabinetRecordCsvReader(reader);
             this.records = csvReader.ReadAll().ToArray();
+        }
+
+        /// <summary>
+        /// Loads records from xml file.
+        /// </summary>
+        /// <param name="reader">Stream for reading.</param>
+        public void LoadFromXml(StreamReader reader)
+        {
+            var xmlReader = new FileCabinetRecordXmlReader(reader);
+            this.records = xmlReader.ReadAll().ToArray();
         }
     }
 }

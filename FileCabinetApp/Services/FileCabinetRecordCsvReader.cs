@@ -1,20 +1,21 @@
 ﻿using System.Globalization;
 using System.Reflection;
 
+using Models;
+
 namespace FileCabinetApp.Services
 {
     /// <summary>
     /// Reads records from csv file.
     /// </summary>
-    public sealed class FileCabinetRecordCsvReader : IDisposable
+    public sealed class FileCabinetRecordCsvReader : FileCabinetRecordReader
     {
-        private StreamReader reader;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordCsvReader"/> class.
         /// </summary>
         /// <param name="reader">Reader to read data from.</param>
         public FileCabinetRecordCsvReader(StreamReader reader)
+            : base(reader)
         {
             this.reader = reader;
         }
@@ -23,7 +24,7 @@ namespace FileCabinetApp.Services
         /// Reads all records.
         /// </summary>
         /// <returns>All readed records.</returns>
-        public IList<FileCabinetRecord> ReadAll()
+        public override IList<FileCabinetRecord> ReadAll()
         {
             List<FileCabinetRecord> restored = new ();
 
@@ -58,12 +59,6 @@ namespace FileCabinetApp.Services
             }
 
             return restored;
-        }
-
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            this.reader.Dispose();
         }
     }
 }
