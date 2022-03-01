@@ -72,39 +72,8 @@ namespace FileCabinetApp.Services
         /// <param name="reader">Stream for reading.</param>
         public void LoadFromCsv(StreamReader reader)
         {
-            List<FileCabinetRecord> restored = new ();
-
-            reader.BaseStream.Seek(0, SeekOrigin.Begin);
-
-            var propertiesNames = reader.ReadToEnd().Split(',');
-            var properties = propertiesNames.Select(
-                name => typeof(FileCabinetRecord).GetProperty(
-                    name, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase)).ToArray<PropertyInfo?>();
-
-            string? readed;
-            string[] readedValues;
-            while ((readed = reader.ReadLine()) != null)
-            {
-                readedValues = readed.Split(',');
-
-                if (readedValues.Length != properties.Length)
-                {
-                    continue;
-                }
-
-                var record = new FileCabinetRecord();
-
-                for (int i = 0; i < readedValues.Length; i++)
-                {
-                    properties[i] !.SetValue(
-                        record,
-                        Convert.ChangeType(readedValues[i], properties[i] !.PropertyType, CultureInfo.InvariantCulture));
-                }
-
-                restored.Add(record);
-            }
-
-            this.records = restored.ToArray();
+            using var csvReader = new FileCabinetRecordCsvReader(reader);
+            this.records = csvReader.ReadAll().ToArray();
         }
     }
 }
