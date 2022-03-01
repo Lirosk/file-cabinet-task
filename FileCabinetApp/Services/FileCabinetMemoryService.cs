@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.Reflection;
 
+using Models;
+
 namespace FileCabinetApp.Services
 {
     /// <summary>
@@ -111,6 +113,41 @@ namespace FileCabinetApp.Services
         public int GetStat()
         {
             return this.list.Count;
+        }
+
+        /// <summary>
+        /// Restore records from snapshot.
+        /// </summary>
+        /// <param name="snapshot">Snapshot contatining records to restore.</param>
+        public void Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            int imported = 0;
+
+            foreach (var record in snapshot.Records)
+            {
+                try
+                {
+                    this.validator.ValidateFirstName(record.FirstName);
+                    this.validator.ValidateLastName(record.LastName);
+                    this.validator.ValidateDateOfBirth(record.DateOfBirth);
+                    this.validator.ValidateSchoolGrade(record.SchoolGrade);
+                    this.validator.ValidateAverageMark(record.AverageMark);
+                    this.validator.ValidateClassLetter(record.ClassLetter);
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    continue;
+                }
+
+                if (!this.list.Any(rec => rec.Id == record.Id))
+                {
+                    this.list.Add(record);
+                    imported++;
+                }
+            }
+
+            Console.WriteLine($"{imported} record were imported.");
         }
 
         private void RemoveFromIndex(FileCabinetRecord record)

@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 
+using Models;
+
 namespace FileCabinetApp.Services
 {
     /// <summary>
@@ -47,5 +49,11 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <returns>Snapshot of present records.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot();
+
+        /// <summary>
+        /// Restore records from snapshot.
+        /// </summary>
+        /// <param name="snapshot">Snapshot contatining records to restore.</param>
+        public void Restore(FileCabinetServiceSnapshot snapshot);
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace FileCabinetApp
+﻿namespace Models
 {
     /// <summary>
     /// Represents parameter object for <see cref="FileCabinetRecord"/>.

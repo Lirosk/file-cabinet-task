@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 
+using Models;
+
 namespace FileCabinetApp.Services
 {
     /// <summary>
@@ -10,12 +12,32 @@ namespace FileCabinetApp.Services
         private FileCabinetRecord[] records;
 
         /// <summary>
+        /// Gets readonly collection of records.
+        /// </summary>
+        /// <value>Readonly collection of records.</value>
+        public ReadOnlyCollection<FileCabinetRecord> Records
+        {
+            get
+            {
+                return new ReadOnlyCollection<FileCabinetRecord>(this.records);
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
         /// </summary>
         /// <param name="records">Records to save.</param>
         public FileCabinetServiceSnapshot(FileCabinetRecord[] records)
         {
             this.records = records;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
+        /// </summary>
+        public FileCabinetServiceSnapshot()
+        {
+            this.records = Array.Empty<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -42,6 +64,26 @@ namespace FileCabinetApp.Services
             {
                 scvWriter.Write(record);
             }
+        }
+
+        /// <summary>
+        /// Loads records from csv file.
+        /// </summary>
+        /// <param name="reader">Stream for reading.</param>
+        public void LoadFromCsv(StreamReader reader)
+        {
+            var csvReader = new FileCabinetRecordCsvReader(reader);
+            this.records = csvReader.ReadAll().ToArray();
+        }
+
+        /// <summary>
+        /// Loads records from xml file.
+        /// </summary>
+        /// <param name="reader">Stream for reading.</param>
+        public void LoadFromXml(StreamReader reader)
+        {
+            var xmlReader = new FileCabinetRecordXmlReader(reader);
+            this.records = xmlReader.ReadAll().ToArray();
         }
     }
 }
