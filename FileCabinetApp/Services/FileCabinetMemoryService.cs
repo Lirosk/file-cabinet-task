@@ -110,9 +110,9 @@ namespace FileCabinetApp.Services
         /// Get count of stored records.
         /// </summary>
         /// <returns>Count of stored records.</returns>
-        public int GetStat()
+        public (int have, int deleted) GetStat()
         {
-            return this.list.Count;
+            return (this.list.Count, 0);
         }
 
         /// <summary>

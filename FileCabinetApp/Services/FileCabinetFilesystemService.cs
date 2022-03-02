@@ -52,7 +52,7 @@ namespace FileCabinetApp.Services
             this.validator.ValidateParameters(personalData);
             using var binaryWriter = new BinaryWriter(this.fileStream);
 
-            var id = this.GetStat() + 1;
+            var id = this.GetStat().have + 1;
             byte[] buffer;
 
             binaryWriter.Write((short)0);
@@ -214,9 +214,29 @@ namespace FileCabinetApp.Services
         /// Get count of stored records.
         /// </summary>
         /// <returns>Count of stored records.</returns>
-        public int GetStat()
+        public (int have, int deleted) GetStat()
         {
-            return (int)(this.fileStream.Seek(0, SeekOrigin.End) / RecordSize);
+            int have = (int)(this.fileStream.Length / RecordSize);
+            int deleted = 0;
+
+            this.fileStream.Seek(0, SeekOrigin.Begin);
+
+            using var binaryReader = new BinaryReader(this.fileStream);
+            using var binaryWriter = new BinaryWriter(this.fileStream);
+
+            while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+            {
+                var status = binaryReader.ReadInt16();
+
+                if (IsDeleted(status))
+                {
+                    deleted++;
+                }
+
+                this.fileStream.Position += RecordSize - StatusSize;
+            }
+
+            return (have, deleted);
         }
 
         /// <summary>
@@ -294,7 +314,7 @@ namespace FileCabinetApp.Services
             using var binaryReader = new BinaryReader(this.fileStream);
             using var binaryWriter = new BinaryWriter(this.fileStream);
 
-            while (binaryReader.BaseStream.Position != binaryReader.BaseStream.Length)
+            while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
             {
                 var status = binaryReader.ReadInt16();
                 var id = binaryReader.ReadInt32();
