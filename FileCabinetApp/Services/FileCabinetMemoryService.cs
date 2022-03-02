@@ -150,6 +150,22 @@ namespace FileCabinetApp.Services
             Console.WriteLine($"{imported} record were imported.");
         }
 
+        /// <inheritdoc/>
+        public bool Remove(int recordId)
+        {
+            var record = this.list.Where(r => r.Id == recordId).GetEnumerator().Current;
+
+            if (record is null)
+            {
+                return false;
+            }
+
+            this.RemoveFromIndex(record);
+            this.list.Remove(record);
+
+            return true;
+        }
+
         private void RemoveFromIndex(FileCabinetRecord record)
         {
             foreach (var (key, records) in this.index)
