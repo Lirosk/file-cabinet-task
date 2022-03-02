@@ -577,7 +577,8 @@ namespace FileCabinetApp
                 throw new ArgumentException($"Cannot parse id \'{parameters}\'.");
             }
 
-            fileCabinetService!.Remove(id);
+            bool deleted = fileCabinetService!.Remove(id);
+            Console.WriteLine($"Record #{id} {(deleted ? "is removed" : "does not exists")}.");
         }
     }
 }
