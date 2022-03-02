@@ -68,6 +68,7 @@ namespace FileCabinetApp
             new[] { "export", "saves records to the specified file" },
             new[] { "import", "imports records from file" },
             new[] { "remove", "remove record with given id" },
+            new[] { "purge", "remove records marked as deleted" },
             new[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
@@ -579,6 +580,13 @@ namespace FileCabinetApp
 
             bool deleted = fileCabinetService!.Remove(id);
             Console.WriteLine($"Record #{id} {(deleted ? "is removed" : "does not exists")}.");
+        }
+
+        private static void Purge(string parameters)
+        {
+            int was = fileCabinetService!.GetStat();
+            int deleted = fileCabinetService!.Purge();
+            Console.WriteLine($"{deleted} of {was} records were purged.");
         }
     }
 }
