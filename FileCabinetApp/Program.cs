@@ -54,6 +54,7 @@ namespace FileCabinetApp
             new ("find", Find),
             new ("import", Import),
             new ("export", Export),
+            new ("remove", Remove),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -66,6 +67,7 @@ namespace FileCabinetApp
             new[] { "find", $"find records by field value, format: 'find fieldname \"value\"', datetime format: {FileCabinetRecord.OutputDateTimeFormat}" },
             new[] { "export", "saves records to the specified file" },
             new[] { "import", "imports records from file" },
+            new[] { "remove", "remove record with given id" },
             new[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
@@ -522,7 +524,7 @@ namespace FileCabinetApp
             }
 
             var extension = parameters[..spaceIndex];
-            var filePath = parameters[(spaceIndex + 1)..];
+            var filePath = parameters[(spaceIndex + 1) ..];
 
             if (!File.Exists(filePath))
             {
@@ -566,6 +568,16 @@ namespace FileCabinetApp
             var snapshot = new FileCabinetServiceSnapshot();
             snapshot.LoadFromXml(reader);
             fileCabinetService!.Restore(snapshot);
+        }
+
+        private static void Remove(string parameters)
+        {
+            if (!int.TryParse(parameters, out var id))
+            {
+                throw new ArgumentException($"Cannot parse id \'{parameters}\'.");
+            }
+
+            fileCabinetService!.Remove(id);
         }
     }
 }
