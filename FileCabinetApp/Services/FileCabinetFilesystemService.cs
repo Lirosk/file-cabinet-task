@@ -162,7 +162,7 @@ namespace FileCabinetApp.Services
             while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
             {
                 var status = binaryReader.ReadInt16();
-                if ((status & (short)FileCabinetRecordStatus.Deleted) > 0)
+                if (IsDeleted(status))
                 {
                     binaryReader.BaseStream.Position += RecordSize - StatusSize;
                     continue;
@@ -311,12 +311,53 @@ namespace FileCabinetApp.Services
             return false;
         }
 
+        /// <inheritdoc/>
+        public int Purge()
+        {
+            using var br = new BinaryReader(this.fileStream);
+            using var bw = new BinaryWriter(this.fileStream);
+
+            var buffer = new byte[RecordSize];
+            short status;
+            long currentPosition;
+
+            int purged = 0;
+
+            while (br.Read(buffer, 0, RecordSize) == RecordSize)
+            {
+                status = BitConverter.ToInt16(buffer, 0);
+                if (IsDeleted(status))
+                {
+                    currentPosition = this.fileStream.Position;
+
+                    while (br.Read(buffer, 0, RecordSize) == RecordSize)
+                    {
+                        this.fileStream.Position -= 2 * RecordSize;
+                        bw.Write(buffer);
+                        this.fileStream.Position += RecordSize;
+                    }
+
+                    this.fileStream.Position = currentPosition;
+                    this.fileStream.SetLength(this.fileStream.Length - RecordSize);
+
+                    purged++;
+                }
+            }
+
+            return purged;
+        }
+
+        private static bool IsDeleted(short status)
+        {
+            return (status & (short)FileCabinetRecordStatus.Deleted) > 0;
+        }
+
         private static FileCabinetRecord? RecordFromBytes(byte[] bytes)
         {
             int offset = 0;
 
             var status = BitConverter.ToInt16(bytes, 0);
-            if ((status & (short)FileCabinetRecordStatus.Deleted) > 0)
+            if (IsDeleted(status))
             {
                 return null;
             }
@@ -384,13 +425,13 @@ namespace FileCabinetApp.Services
         {
             var res = new List<int>();
             this.fileStream.Seek(0, SeekOrigin.Begin);
-            int status;
+            short status;
 
             var bytes = new byte[RecordSize];
             while (this.fileStream.Read(bytes, 0, RecordSize) == RecordSize)
             {
                 status = BitConverter.ToInt16(bytes, 0);
-                if ((status & (short)FileCabinetRecordStatus.Deleted) > 0)
+                if (IsDeleted(status))
                 {
                     continue;
                 }
@@ -409,12 +450,12 @@ namespace FileCabinetApp.Services
             var buffer = new byte[RecordSize];
             var offset = 0;
             int readedId;
-            int status;
+            short status;
 
             for (; binaryReader.Read(buffer, 0, RecordSize) == RecordSize; offset += RecordSize)
             {
                 status = BitConverter.ToInt16(buffer, 0);
-                if ((status & (short)FileCabinetRecordStatus.Deleted) > 0)
+                if (IsDeleted(status))
                 {
                     continue;
                 }

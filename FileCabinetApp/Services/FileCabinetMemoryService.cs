@@ -166,6 +166,9 @@ namespace FileCabinetApp.Services
             return true;
         }
 
+        /// <inheritdoc/>
+        public int Purge() => 0;
+
         private void RemoveFromIndex(FileCabinetRecord record)
         {
             foreach (var (key, records) in this.index)
