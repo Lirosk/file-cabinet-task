@@ -74,6 +74,9 @@
             </summary>
             <param name="snapshot">Snapshot contatining records to restore.</param>
         </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Services.FileCabinetMemoryService">
             <summary>
             Stores records with personal information; manages the creation, editing, finding the records.
@@ -132,6 +135,9 @@
             </summary>
             <param name="snapshot">Snapshot contatining records to restore.</param>
         </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Services.FileCabinetRecordCsvReader">
             <summary>
             Reads records from csv file.
@@ -168,28 +174,6 @@
             Writes record to given stream.
             </summary>
             <param name="record">Record to write.</param>
-        </member>
-        <member name="T:FileCabinetApp.Services.FileCabinetRecordReader">
-            <summary>
-            Interface for reading records from stream.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Services.FileCabinetRecordReader.reader">
-            <summary>
-            Read data from.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetRecordReader.#ctor(System.IO.StreamReader)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetRecordReader"/> class.
-            </summary>
-            <param name="reader">Reader to read data from.</param>
-        </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetRecordReader.ReadAll">
-            <summary>
-            Reads all records.
-            </summary>
-            <returns>All readed records.</returns>
         </member>
         <member name="T:FileCabinetApp.Services.FileCabinetRecordXmlReader">
             <summary>
@@ -274,6 +258,17 @@
             </summary>
             <param name="reader">Stream for reading.</param>
         </member>
+        <member name="T:FileCabinetApp.Services.IFileCabinetRecordReader">
+            <summary>
+            Interface for reading records from stream.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Services.IFileCabinetRecordReader.ReadAll">
+            <summary>
+            Reads all records.
+            </summary>
+            <returns>All readed records.</returns>
+        </member>
         <member name="T:FileCabinetApp.Services.IFileCabinetRecordWriter">
             <summary>
             Interface for writing data to file.
@@ -336,6 +331,13 @@
             Restore records from snapshot.
             </summary>
             <param name="snapshot">Snapshot contatining records to restore.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.IFileCabinetService.Remove(System.Int32)">
+            <summary>
+            Remove record with given id.
+            </summary>
+            <param name="id">Id of record to remove.</param>
+            <returns>True if record has been deleted.</returns>
         </member>
         <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>

@@ -159,9 +159,15 @@ namespace FileCabinetApp.Services
             var list = new List<FileCabinetRecord>();
             using var binaryReader = new BinaryReader(this.fileStream);
 
-            while (binaryReader.BaseStream.Position != binaryReader.BaseStream.Length)
+            while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
             {
-                _ = binaryReader.ReadInt16();
+                var status = binaryReader.ReadInt16();
+                if ((status & (short)FileCabinetRecordStatus.Deleted) > 0)
+                {
+                    binaryReader.BaseStream.Position += RecordSize - StatusSize;
+                    continue;
+                }
+
                 var id = binaryReader.ReadInt32();
 
                 int index;
@@ -280,9 +286,41 @@ namespace FileCabinetApp.Services
             Console.WriteLine($"{imported} record were imported.");
         }
 
-        private static FileCabinetRecord RecordFromBytes(byte[] bytes)
+        /// <inheritdoc/>
+        public bool Remove(int recordId)
         {
-            int offset = StatusSize;
+            this.fileStream.Seek(0, SeekOrigin.Begin);
+
+            using var binaryReader = new BinaryReader(this.fileStream);
+            using var binaryWriter = new BinaryWriter(this.fileStream);
+
+            while (binaryReader.BaseStream.Position != binaryReader.BaseStream.Length)
+            {
+                var status = binaryReader.ReadInt16();
+                var id = binaryReader.ReadInt32();
+
+                if (id == recordId)
+                {
+                    binaryWriter.BaseStream.Position -= StatusSize + IdSize;
+                    binaryWriter.Write(status | (int)FileCabinetRecordStatus.Deleted);
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static FileCabinetRecord? RecordFromBytes(byte[] bytes)
+        {
+            int offset = 0;
+
+            var status = BitConverter.ToInt16(bytes, 0);
+            if ((status & (short)FileCabinetRecordStatus.Deleted) > 0)
+            {
+                return null;
+            }
+
             var id = BitConverter.ToInt32(bytes, offset);
 
             int index;
@@ -346,10 +384,17 @@ namespace FileCabinetApp.Services
         {
             var res = new List<int>();
             this.fileStream.Seek(0, SeekOrigin.Begin);
+            int status;
 
             var bytes = new byte[RecordSize];
             while (this.fileStream.Read(bytes, 0, RecordSize) == RecordSize)
             {
+                status = BitConverter.ToInt16(bytes, 0);
+                if ((status & (short)FileCabinetRecordStatus.Deleted) > 0)
+                {
+                    continue;
+                }
+
                 res.Add(BitConverter.ToInt32(bytes, StatusSize));
             }
 
@@ -364,16 +409,21 @@ namespace FileCabinetApp.Services
             var buffer = new byte[RecordSize];
             var offset = 0;
             int readedId;
+            int status;
 
-            while (binaryReader.Read(buffer, 0, RecordSize) == RecordSize)
+            for (; binaryReader.Read(buffer, 0, RecordSize) == RecordSize; offset += RecordSize)
             {
+                status = BitConverter.ToInt16(buffer, 0);
+                if ((status & (short)FileCabinetRecordStatus.Deleted) > 0)
+                {
+                    continue;
+                }
+
                 readedId = BitConverter.ToInt32(buffer, StatusSize);
                 if (readedId == id)
                 {
                     return offset;
                 }
-
-                offset += RecordSize;
             }
 
             throw new ArgumentException($"No record with {id} id.");
