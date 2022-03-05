@@ -153,7 +153,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public bool Remove(int recordId)
         {
-            var record = this.list.Where(r => r.Id == recordId).GetEnumerator().Current;
+            var record = this.list.Where(r => r.Id == recordId).First();
 
             if (record is null)
             {

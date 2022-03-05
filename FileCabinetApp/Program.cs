@@ -55,6 +55,7 @@ namespace FileCabinetApp
             new ("import", Import),
             new ("export", Export),
             new ("remove", Remove),
+            new ("purge", Purge),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -79,7 +80,8 @@ namespace FileCabinetApp
         public static void Main(string[] consoleArgs)
         {
             usedValidationRuleIndex = 0;
-            SetMemoryService();
+            //SetMemoryService();
+            SetFileSystemService();
 
             try
             {
@@ -173,7 +175,8 @@ namespace FileCabinetApp
         private static void Stat(string parameters)
         {
             var recordsCount = Program.fileCabinetService!.GetStat();
-            Console.WriteLine($"{recordsCount} record(s).");
+            Console.WriteLine($"{recordsCount.have} record(s) total.");
+            Console.WriteLine($"{recordsCount.deleted} record(s) deleted.");
         }
 
         private static void Create(string parameters)
@@ -584,7 +587,7 @@ namespace FileCabinetApp
 
         private static void Purge(string parameters)
         {
-            int was = fileCabinetService!.GetStat();
+            int was = fileCabinetService!.GetStat().have;
             int deleted = fileCabinetService!.Purge();
             Console.WriteLine($"{deleted} of {was} records were purged.");
         }

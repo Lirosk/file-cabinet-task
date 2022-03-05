@@ -50,28 +50,44 @@ namespace FileCabinetApp.Services
         public int CreateRecord(PersonalData personalData)
         {
             this.validator.ValidateParameters(personalData);
-            using var binaryWriter = new BinaryWriter(this.fileStream);
+            var binaryWriter = new BinaryWriter(this.fileStream, Encoding.Unicode);
 
             var id = this.GetStat().have + 1;
-            byte[] buffer;
 
-            binaryWriter.Write((short)0);
-            binaryWriter.Write(id);
+            byte[] buffer = BitConverter.GetBytes((short)0);
+            binaryWriter.Write(buffer);
+
+            buffer = BitConverter.GetBytes(id);
+            binaryWriter.Write(buffer);
 
             buffer = new byte[FirstNameSize];
-            Encoding.UTF8.GetBytes(personalData.FirstName).CopyTo(buffer, 0);
+            Encoding.Unicode.GetBytes(personalData.FirstName).CopyTo(buffer, 0);
             binaryWriter.Write(buffer);
 
             buffer = new byte[LastNameSize];
-            Encoding.UTF8.GetBytes(personalData.LastName).CopyTo(buffer, 0);
+            Encoding.Unicode.GetBytes(personalData.LastName).CopyTo(buffer, 0);
             binaryWriter.Write(buffer);
 
-            binaryWriter.Write(personalData.DateOfBirth.Year);
-            binaryWriter.Write(personalData.DateOfBirth.Month);
-            binaryWriter.Write(personalData.DateOfBirth.Day);
-            binaryWriter.Write(personalData.SchoolGrade);
-            binaryWriter.Write(personalData.AverageMark);
-            binaryWriter.Write(personalData.ClassLetter);
+            buffer = BitConverter.GetBytes(personalData.DateOfBirth.Year);
+            binaryWriter.Write(buffer);
+
+            buffer = BitConverter.GetBytes(personalData.DateOfBirth.Month);
+            binaryWriter.Write(buffer);
+
+            buffer = BitConverter.GetBytes(personalData.DateOfBirth.Day);
+            binaryWriter.Write(buffer);
+
+            buffer = BitConverter.GetBytes(personalData.SchoolGrade);
+            binaryWriter.Write(buffer);
+
+            foreach (var int32 in decimal.GetBits(personalData.AverageMark))
+            {
+                buffer = BitConverter.GetBytes(int32);
+                binaryWriter.Write(buffer);
+            }
+
+            buffer = BitConverter.GetBytes(personalData.ClassLetter);
+            binaryWriter.Write(buffer);
 
             binaryWriter.Flush();
 
@@ -89,16 +105,16 @@ namespace FileCabinetApp.Services
             var offset = this.FindRecordOffset(id);
 
             this.fileStream.Seek(offset + StatusSize + IdSize, SeekOrigin.Begin);
-            using var binaryWriter = new BinaryWriter(this.fileStream);
+            var binaryWriter = new BinaryWriter(this.fileStream, Encoding.Unicode);
 
             byte[] buffer;
 
             buffer = new byte[FirstNameSize];
-            Encoding.UTF8.GetBytes(newData.FirstName).CopyTo(buffer, 0);
+            Encoding.Unicode.GetBytes(newData.FirstName).CopyTo(buffer, 0);
             binaryWriter.Write(buffer);
 
             buffer = new byte[LastNameSize];
-            Encoding.UTF8.GetBytes(newData.LastName).CopyTo(buffer, 0);
+            Encoding.Unicode.GetBytes(newData.LastName).CopyTo(buffer, 0);
             binaryWriter.Write(buffer);
 
             binaryWriter.Write(newData.DateOfBirth.Year);
@@ -121,7 +137,7 @@ namespace FileCabinetApp.Services
         public ReadOnlyCollection<FileCabinetRecord> FindByField(string fieldName, object value)
         {
             this.fileStream.Seek(0, SeekOrigin.Begin);
-            using var binaryReader = new BinaryReader(this.fileStream);
+            var binaryReader = new BinaryReader(this.fileStream, Encoding.Unicode);
 
             var property = typeof(FileCabinetRecord).GetProperty(fieldName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
 
@@ -141,7 +157,7 @@ namespace FileCabinetApp.Services
 
                 if (value.Equals(recordFieldValue))
                 {
-                    list.Add(record);
+                    list.Add(record!);
                 }
             }
 
@@ -157,7 +173,7 @@ namespace FileCabinetApp.Services
             this.fileStream.Seek(0, SeekOrigin.Begin);
 
             var list = new List<FileCabinetRecord>();
-            using var binaryReader = new BinaryReader(this.fileStream);
+            var binaryReader = new BinaryReader(this.fileStream, Encoding.Unicode);
 
             while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
             {
@@ -172,13 +188,13 @@ namespace FileCabinetApp.Services
 
                 int index;
 
-                var firstName = Encoding.UTF8.GetString(binaryReader.ReadBytes(FirstNameSize));
+                var firstName = Encoding.Unicode.GetString(binaryReader.ReadBytes(FirstNameSize));
                 if ((index = firstName.IndexOf((char)0, StringComparison.Ordinal)) != -1)
                 {
                     firstName = firstName.Substring(0, index);
                 }
 
-                var lastName = Encoding.UTF8.GetString(binaryReader.ReadBytes(LastNameSize));
+                var lastName = Encoding.Unicode.GetString(binaryReader.ReadBytes(LastNameSize));
                 if ((index = lastName.IndexOf((char)0, StringComparison.Ordinal)) != -1)
                 {
                     lastName = lastName.Substring(0, index);
@@ -221,8 +237,8 @@ namespace FileCabinetApp.Services
 
             this.fileStream.Seek(0, SeekOrigin.Begin);
 
-            using var binaryReader = new BinaryReader(this.fileStream);
-            using var binaryWriter = new BinaryWriter(this.fileStream);
+            var binaryReader = new BinaryReader(this.fileStream, Encoding.Unicode);
+            var binaryWriter = new BinaryWriter(this.fileStream, Encoding.Unicode);
 
             while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
             {
@@ -259,7 +275,7 @@ namespace FileCabinetApp.Services
             byte[] buffer;
             int imported = 0;
 
-            using var binaryWriter = new BinaryWriter(this.fileStream);
+            var binaryWriter = new BinaryWriter(this.fileStream, Encoding.Unicode);
 
             foreach (var record in snapshot.Records)
             {
@@ -280,15 +296,15 @@ namespace FileCabinetApp.Services
 
                 if (!haveRecordsWithIds.Contains(record.Id))
                 {
-                    buffer = new byte[StatusSize];
-                    binaryWriter.Write(buffer);
+                    binaryWriter.Write((short)0);
+                    binaryWriter.Write(record.Id);
 
                     buffer = new byte[FirstNameSize];
-                    Encoding.UTF8.GetBytes(record.FirstName).CopyTo(buffer, 0);
+                    Encoding.Unicode.GetBytes(record.FirstName).CopyTo(buffer, 0);
                     binaryWriter.Write(buffer);
 
                     buffer = new byte[LastNameSize];
-                    Encoding.UTF8.GetBytes(record.LastName).CopyTo(buffer, 0);
+                    Encoding.Unicode.GetBytes(record.LastName).CopyTo(buffer, 0);
                     binaryWriter.Write(buffer);
 
                     binaryWriter.Write(record.DateOfBirth.Year);
@@ -297,6 +313,7 @@ namespace FileCabinetApp.Services
 
                     binaryWriter.Write(record.SchoolGrade);
                     binaryWriter.Write(record.AverageMark);
+
                     binaryWriter.Write(record.ClassLetter);
 
                     imported++;
@@ -311,10 +328,10 @@ namespace FileCabinetApp.Services
         {
             this.fileStream.Seek(0, SeekOrigin.Begin);
 
-            using var binaryReader = new BinaryReader(this.fileStream);
-            using var binaryWriter = new BinaryWriter(this.fileStream);
+            var binaryReader = new BinaryReader(this.fileStream, Encoding.Unicode);
+            var binaryWriter = new BinaryWriter(this.fileStream, Encoding.Unicode);
 
-            while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+            for (; this.fileStream.Position < this.fileStream.Length; this.fileStream.Position += RecordSize - StatusSize - IdSize)
             {
                 var status = binaryReader.ReadInt16();
                 var id = binaryReader.ReadInt32();
@@ -334,8 +351,10 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public int Purge()
         {
-            using var br = new BinaryReader(this.fileStream);
-            using var bw = new BinaryWriter(this.fileStream);
+            this.fileStream.Position = 0;
+
+            var br = new BinaryReader(this.fileStream, Encoding.Unicode);
+            var bw = new BinaryWriter(this.fileStream, Encoding.Unicode);
 
             var buffer = new byte[RecordSize];
             short status;
@@ -387,14 +406,14 @@ namespace FileCabinetApp.Services
             int index;
 
             offset += IdSize;
-            var firstName = Encoding.UTF8.GetString(bytes, offset, FirstNameSize);
+            var firstName = Encoding.Unicode.GetString(bytes, offset, FirstNameSize);
             if ((index = firstName.IndexOf((char)0, StringComparison.Ordinal)) != -1)
             {
                 firstName = firstName.Substring(0, index);
             }
 
             offset += FirstNameSize;
-            var lastName = Encoding.UTF8.GetString(bytes, offset, LastNameSize);
+            var lastName = Encoding.Unicode.GetString(bytes, offset, LastNameSize);
             if ((index = lastName.IndexOf((char)0, StringComparison.Ordinal)) != -1)
             {
                 lastName = lastName.Substring(0, index);
@@ -465,7 +484,7 @@ namespace FileCabinetApp.Services
         private int FindRecordOffset(int id)
         {
             this.fileStream.Seek(0, SeekOrigin.Begin);
-            using var binaryReader = new BinaryReader(this.fileStream);
+            var binaryReader = new BinaryReader(this.fileStream, Encoding.Unicode);
 
             var buffer = new byte[RecordSize];
             var offset = 0;

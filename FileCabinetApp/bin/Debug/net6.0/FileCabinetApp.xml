@@ -77,6 +77,9 @@
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.Remove(System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.Purge">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Services.FileCabinetMemoryService">
             <summary>
             Stores records with personal information; manages the creation, editing, finding the records.
@@ -138,6 +141,9 @@
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Remove(System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Purge">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Services.FileCabinetRecordCsvReader">
             <summary>
             Reads records from csv file.
@@ -174,6 +180,16 @@
             Writes record to given stream.
             </summary>
             <param name="record">Record to write.</param>
+        </member>
+        <member name="T:FileCabinetApp.Services.FileCabinetRecordStatus">
+            <summary>
+            Represents status of record for FileCabinetFileSystemService.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Services.FileCabinetRecordStatus.Deleted">
+            <summary>
+            Status of deleted record.
+            </summary>
         </member>
         <member name="T:FileCabinetApp.Services.FileCabinetRecordXmlReader">
             <summary>
@@ -336,8 +352,14 @@
             <summary>
             Remove record with given id.
             </summary>
-            <param name="id">Id of record to remove.</param>
+            <param name="recordId">Id of record to remove.</param>
             <returns>True if record has been deleted.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.IFileCabinetService.Purge">
+            <summary>
+            Remove records marked as deleted.
+            </summary>
+            <returns>Count of deleted records.</returns>
         </member>
         <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>
