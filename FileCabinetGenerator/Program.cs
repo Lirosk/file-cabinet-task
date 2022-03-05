@@ -152,6 +152,7 @@ namespace FileCabinetGenerator
                 records.Add(new (id, personalData));
             }
 
+            Console.WriteLine($"{records.Count} records generated.");
             return records;
         }
 
