@@ -4,17 +4,11 @@ namespace FileCabinetApp.CommandHandlers
 {
     public abstract class CommandHandlerBase : ICommandHandler
     {
-        private string commandName = string.Empty;
         private ICommandHandler? nextHandler;
-
-        protected CommandHandlerBase(string commandName)
-        {
-            this.commandName = commandName;
-        }
 
         void ICommandHandler.Handle(AppCommandRequest request)
         {
-            if (!request.Command.Equals(this.commandName, StringComparison.InvariantCultureIgnoreCase))
+            if (!this.GetType().Name.StartsWith(request.Command, StringComparison.InvariantCultureIgnoreCase))
             {
                 _ = this.nextHandler ?? throw new ArgumentException("Invalid command to handle.");
                 this.nextHandler.Handle(request);

@@ -5,7 +5,7 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
     public class RemoveCommandHandler : ServiceCommandHandlerBase
     {
         public RemoveCommandHandler(IFileCabinetService service)
-            : base("remove", service)
+            : base(service)
         {
         }
 

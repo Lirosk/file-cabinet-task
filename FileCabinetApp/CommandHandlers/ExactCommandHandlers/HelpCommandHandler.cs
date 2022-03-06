@@ -26,7 +26,6 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
         };
 
         public HelpCommandHandler(IFileCabinetService service)
-            : base("help")
         {
         }
 

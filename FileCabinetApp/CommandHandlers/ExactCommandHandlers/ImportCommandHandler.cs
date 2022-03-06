@@ -5,7 +5,7 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
     public class ImportCommandHandler : ServiceCommandHandlerBase
     {
         public ImportCommandHandler(IFileCabinetService service)
-            : base("import", service)
+            : base(service)
         {
         }
 

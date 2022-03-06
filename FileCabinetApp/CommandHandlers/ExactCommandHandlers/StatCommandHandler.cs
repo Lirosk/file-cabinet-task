@@ -5,7 +5,7 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
     public class StatCommandHandler : ServiceCommandHandlerBase
     {
         public StatCommandHandler(IFileCabinetService service)
-            : base("stat", service)
+            : base(service)
         {
         }
 

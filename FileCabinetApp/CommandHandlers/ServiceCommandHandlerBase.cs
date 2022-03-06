@@ -6,9 +6,7 @@ namespace FileCabinetApp.CommandHandlers
     {
         public IFileCabinetService Service { get; private set; }
 
-        public ServiceCommandHandlerBase(string commandName, IFileCabinetService service)
-            : base(commandName)
-
+        public ServiceCommandHandlerBase(IFileCabinetService service)
         {
             this.Service = service;
         }

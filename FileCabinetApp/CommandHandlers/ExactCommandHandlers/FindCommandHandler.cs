@@ -1,13 +1,17 @@
-﻿using FileCabinetApp.Services;
+﻿using FileCabinetApp.RecordPrinters;
+using FileCabinetApp.Services;
 using System.Text.RegularExpressions;
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
     public class FindCommandHandler : ServiceCommandHandlerBase
     {
-        public FindCommandHandler(IFileCabinetService service)
-            : base("find", service)
+        private IRecordPrinter printer;
+
+        public FindCommandHandler(IFileCabinetService service, IRecordPrinter printer)
+            : base(service)
         {
+            this.printer = printer;
         }
 
         protected override void Handle(AppCommandRequest request)
@@ -41,10 +45,7 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
                 var found = this.Service.FindByField(fieldName, stringValue);
                 if (found.Count > 0)
                 {
-                    foreach (var record in found)
-                    {
-                        Console.WriteLine(record);
-                    }
+                    this.printer.Print(found);
                 }
                 else
                 {

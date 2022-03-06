@@ -1,12 +1,16 @@
-﻿using FileCabinetApp.Services;
+﻿using FileCabinetApp.RecordPrinters;
+using FileCabinetApp.Services;
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
-    internal class ListCommandHandler : ServiceCommandHandlerBase
+    public class ListCommandHandler : ServiceCommandHandlerBase
     {
-        public ListCommandHandler(IFileCabinetService service)
-            : base("list", service)
+        private IRecordPrinter printer;
+
+        public ListCommandHandler(IFileCabinetService service, IRecordPrinter printer)
+            : base(service)
         {
+            this.printer = printer;
         }
 
         protected override void Handle(AppCommandRequest request)
@@ -16,10 +20,8 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 
         private void List(string parameters)
         {
-            foreach (var record in this.Service.GetRecords())
-            {
-                Console.WriteLine(record);
-            }
+            var records = this.Service.GetRecords();
+            this.printer.Print(records);
         }
     }
 }

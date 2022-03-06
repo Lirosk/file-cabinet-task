@@ -7,7 +7,7 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
         private readonly Action<bool> setProgramRunning;
 
         public ExitCommandHandler(IFileCabinetService service, Action<bool> setProgramRunning)
-            : base("exit", service)
+            : base(service)
         {
             this.setProgramRunning = setProgramRunning;
         }

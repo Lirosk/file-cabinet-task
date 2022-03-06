@@ -7,7 +7,7 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
     public class EditCommandHandler : ServiceCommandHandlerBase
     {
         public EditCommandHandler(IFileCabinetService service)
-            : base("edit", service)
+            : base(service)
         {
         }
 

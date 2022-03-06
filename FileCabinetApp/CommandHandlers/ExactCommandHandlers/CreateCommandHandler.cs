@@ -7,7 +7,7 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
     public class CreateCommandHandler : ServiceCommandHandlerBase
     {
         public CreateCommandHandler(IFileCabinetService service)
-            : base("create", service)
+            : base(service)
         {
         }
 

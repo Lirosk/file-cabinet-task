@@ -6,7 +6,7 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
     public class ExportCommandHandler : ServiceCommandHandlerBase
     {
         public ExportCommandHandler(IFileCabinetService service)
-            : base("export", service)
+            : base(service)
         {
         }
 
