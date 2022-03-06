@@ -11,7 +11,33 @@ namespace FileCabinetApp.Validators
         /// Gets or sets minimum length for name.
         /// </summary>
         /// <value>Minimum length for name.</value>
-        protected static int NameMinLen { get; set; } = 2;
+        private int nameMinLen;
+
+        /// <summary>
+        /// Gets or sets maximum length for name.
+        /// </summary>
+        /// <value>Maximum length for name.</value>
+        private int nameMaxLen;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CustomFirstNameValidator"/> class.
+        /// </summary>
+        /// <param name="nameMinLen">Minimal valid name length.</param>
+        /// <param name="nameMaxLen">Maximum valid name length.</param>
+        public CustomFirstNameValidator(int nameMinLen, int nameMaxLen)
+        {
+            this.nameMinLen = nameMinLen;
+            this.nameMaxLen = nameMaxLen;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CustomFirstNameValidator"/> class.
+        /// </summary>
+        public CustomFirstNameValidator()
+        {
+            this.nameMinLen = CustomValidatorRules.NameMinLen;
+            this.nameMaxLen = CustomValidatorRules.NameMaxLen;
+        }
 
         /// <summary>
         /// Check first name for valid value.
@@ -26,9 +52,9 @@ namespace FileCabinetApp.Validators
                 throw new ArgumentNullException(nameof(personalData), $"{nameof(personalData.FirstName)} is null");
             }
 
-            if (personalData.FirstName.Length < NameMinLen)
+            if (personalData.FirstName.Length < this.nameMinLen)
             {
-                throw new ArgumentException($"Name minimal length is {NameMinLen} symbols.");
+                throw new ArgumentException($"Name minimal length is {this.nameMinLen} symbols, max is {this.nameMaxLen}.");
             }
         }
     }

@@ -10,12 +10,32 @@ namespace FileCabinetApp.Validators
         /// <summary>
         /// Minimum valid last name length.
         /// </summary>
-        protected const int LastNameMinLen = 2;
+        private int lastNameMinLen;
 
         /// <summary>
         /// Maximum valid last name length.
         /// </summary>
-        protected const int LastNameMaxLen = 60;
+        private int lastNameMaxLen;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultLastNameValidator"/> class.
+        /// </summary>
+        /// <param name="lastNameMinLen">Minimal valid name length.</param>
+        /// <param name="lastNameMaxLen">Maximum valid name length.</param>
+        public DefaultLastNameValidator(int lastNameMinLen, int lastNameMaxLen)
+        {
+            this.lastNameMinLen = lastNameMinLen;
+            this.lastNameMaxLen = lastNameMaxLen;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultLastNameValidator"/> class.
+        /// </summary>
+        public DefaultLastNameValidator()
+        {
+            this.lastNameMinLen = DefaultValidatorRules.LastNameMinLen;
+            this.lastNameMaxLen = DefaultValidatorRules.LastNameMaxLen;
+        }
 
         /// <summary>
         /// Check last name for valid value.
@@ -30,14 +50,14 @@ namespace FileCabinetApp.Validators
                 throw new ArgumentNullException(nameof(personalData), $"{nameof(personalData.LastName)} is null");
             }
 
-            if (personalData.LastName.Length < LastNameMinLen ||
-                personalData.LastName.Length > LastNameMaxLen ||
+            if (personalData.LastName.Length < this.lastNameMinLen ||
+                personalData.LastName.Length > this.lastNameMaxLen ||
                 !personalData.LastName.All(c => char.IsLetter(c)))
             {
                 throw new ArgumentException(
                     $"{nameof(personalData.LastName)} must contatin " +
-                    $"from {LastNameMinLen} " +
-                    $"to {LastNameMaxLen} characters, " +
+                    $"from {this.lastNameMinLen} " +
+                    $"to {this.lastNameMaxLen} characters, " +
                     "and must not contain spaces, digits, special symbols.");
             }
         }

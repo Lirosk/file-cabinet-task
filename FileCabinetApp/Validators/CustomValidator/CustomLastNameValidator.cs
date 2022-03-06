@@ -11,7 +11,33 @@ namespace FileCabinetApp.Validators
         /// Gets or sets minimum length for name.
         /// </summary>
         /// <value>Minimum length for name.</value>
-        protected static int NameMinLen { get; set; } = 2;
+        private int nameMinLen;
+
+        /// <summary>
+        /// Gets or sets maximum length for name.
+        /// </summary>
+        /// <value>Maximum length for name.</value>
+        private int nameMaxLen;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CustomLastNameValidator"/> class.
+        /// </summary>
+        /// <param name="nameMinLen">Minimal valid name length.</param>
+        /// <param name="nameMaxLen">Maximum valid name length.</param>
+        public CustomLastNameValidator(int nameMinLen, int nameMaxLen)
+        {
+            this.nameMinLen = nameMinLen;
+            this.nameMaxLen = nameMaxLen;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CustomLastNameValidator"/> class.
+        /// </summary>
+        public CustomLastNameValidator()
+        {
+            this.nameMinLen = CustomValidatorRules.NameMinLen;
+            this.nameMaxLen = CustomValidatorRules.NameMaxLen;
+        }
 
         /// <summary>
         /// Check last name for valid value.
@@ -21,14 +47,14 @@ namespace FileCabinetApp.Validators
         /// <exception cref="ArgumentException">If <see cref="PersonalData.LastName"/> has invalid length or contains invalid symbols.</exception>
         public void Validate(PersonalData personalData)
         {
-            if (personalData.LastName is null)
+            if (personalData.FirstName is null)
             {
-                throw new ArgumentNullException(nameof(personalData), $"{nameof(personalData.LastName)} is null");
+                throw new ArgumentNullException(nameof(personalData), $"{nameof(personalData.FirstName)} is null");
             }
 
-            if (personalData.LastName.Length < NameMinLen)
+            if (personalData.FirstName.Length < this.nameMinLen)
             {
-                throw new ArgumentException($"Name minimal length is {NameMinLen} symbols.");
+                throw new ArgumentException($"Name minimal length is {this.nameMinLen} symbols, max is {this.nameMaxLen}.");
             }
         }
     }

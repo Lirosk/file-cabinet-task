@@ -39,7 +39,7 @@ namespace FileCabinetApp.Services
         /// <returns>Returns the id of created record.</returns>
         public int CreateRecord(PersonalData personalData)
         {
-            this.validator.Validate(personalData);
+            this.validator.ValidateParameters(personalData);
 
             var record = new FileCabinetRecord(this.list.Count + 1, personalData);
 
@@ -57,7 +57,7 @@ namespace FileCabinetApp.Services
         /// <exception cref="ArgumentException">No record matching given id.</exception>
         public void EditRecord(int id, PersonalData newData)
         {
-            this.validator.Validate(newData);
+            this.validator.ValidateParameters(newData);
 
             foreach (var record in this.list)
             {

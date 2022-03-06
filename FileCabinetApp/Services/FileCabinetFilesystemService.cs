@@ -49,7 +49,7 @@ namespace FileCabinetApp.Services
         /// <returns>Returns the id of created record.</returns>
         public int CreateRecord(PersonalData personalData)
         {
-            this.validator.Validate(personalData);
+            this.validator.ValidateParameters(personalData);
             var binaryWriter = new BinaryWriter(this.fileStream, Program.EncodingUsed);
 
             var id = this.GetStat().have + 1;

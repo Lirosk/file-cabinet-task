@@ -10,12 +10,32 @@ namespace FileCabinetApp.Validators
         /// <summary>
         /// Minimal valid first name length.
         /// </summary>
-        protected const int FirstNameMinLen = 2;
+        private int firstNameMinLen;
 
         /// <summary>
         /// Maximun valid last name length.
         /// </summary>
-        protected const int FirstNameMaxLen = 60;
+        private int firstNameMaxLen;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultFirstNameValidator"/> class.
+        /// </summary>
+        /// <param name="nameMinLen">Minimal valid name length.</param>
+        /// <param name="nameMaxLen">Maximum valid name length.</param>
+        public DefaultFirstNameValidator(int firstNameMinLen, int firstNameMaxLen)
+        {
+            this.firstNameMinLen = firstNameMinLen;
+            this.firstNameMaxLen = firstNameMaxLen;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultFirstNameValidator"/> class.
+        /// </summary>
+        public DefaultFirstNameValidator()
+        {
+            this.firstNameMinLen = DefaultValidatorRules.FirstNameMinLen;
+            this.firstNameMaxLen = DefaultValidatorRules.FirstNameMaxLen;
+        }
 
         /// <summary>
         /// Check first name for valid value.
@@ -30,14 +50,14 @@ namespace FileCabinetApp.Validators
                 throw new ArgumentNullException(nameof(personalData), $"{nameof(personalData.FirstName)} is null");
             }
 
-            if (personalData.FirstName.Length < FirstNameMinLen ||
-                personalData.FirstName.Length > FirstNameMaxLen ||
+            if (personalData.FirstName.Length < this.firstNameMinLen ||
+                personalData.FirstName.Length > this.firstNameMaxLen ||
                 !personalData.FirstName.All(c => char.IsLetter(c)))
             {
                 throw new ArgumentException(
                     $"{nameof(personalData.FirstName)} must contatin " +
-                    $"from {FirstNameMinLen} " +
-                    $"to {FirstNameMaxLen} characters, " +
+                    $"from {this.firstNameMinLen} " +
+                    $"to {this.firstNameMaxLen} characters, " +
                     "and must not contain spaces, digits, special symbols.");
             }
         }
