@@ -1,13 +1,13 @@
-﻿using FileCabinetApp.RecordPrinters;
-using FileCabinetApp.Services;
+﻿using FileCabinetApp.Services;
+using Models;
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
     public class ListCommandHandler : ServiceCommandHandlerBase
     {
-        private IRecordPrinter printer;
+        private Action<IEnumerable<FileCabinetRecord>> printer;
 
-        public ListCommandHandler(IFileCabinetService service, IRecordPrinter printer)
+        public ListCommandHandler(IFileCabinetService service, Action<IEnumerable<FileCabinetRecord>> printer)
             : base(service)
         {
             this.printer = printer;
@@ -21,7 +21,7 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
         private void List(string parameters)
         {
             var records = this.Service.GetRecords();
-            this.printer.Print(records);
+            this.printer(records);
         }
     }
 }

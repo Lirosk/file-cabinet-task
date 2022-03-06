@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.CommandHandlers.ExactCommandHandlers;
+using FileCabinetApp.RecordPrinters;
 using FileCabinetApp.Services;
 using FileCabinetApp.Validators;
 using Models;
@@ -200,14 +201,22 @@ namespace FileCabinetApp
 
         private static ICommandHandler CreateCommandHandlers()
         {
+            var printer = (IEnumerable<FileCabinetRecord> records) =>
+            {
+                foreach (var record in records)
+                {
+                    Console.WriteLine(record);
+                }
+            };
+
             ICommandHandler handlers = new CreateCommandHandler(fileCabinetService!);
             handlers.SetNext(new EditCommandHandler(fileCabinetService!));
             handlers.SetNext(new ExitCommandHandler(fileCabinetService!, (running) => isRunning = running));
             handlers.SetNext(new ExportCommandHandler(fileCabinetService!));
-            handlers.SetNext(new FindCommandHandler(fileCabinetService!));
+            handlers.SetNext(new FindCommandHandler(fileCabinetService!, printer));
             handlers.SetNext(new HelpCommandHandler(fileCabinetService!));
             handlers.SetNext(new ImportCommandHandler(fileCabinetService!));
-            handlers.SetNext(new ListCommandHandler(fileCabinetService!));
+            handlers.SetNext(new ListCommandHandler(fileCabinetService!, printer));
             handlers.SetNext(new PurgeCommandHandler(fileCabinetService!));
             handlers.SetNext(new RemoveCommandHandler(fileCabinetService!));
             handlers.SetNext(new StatCommandHandler(fileCabinetService!));
