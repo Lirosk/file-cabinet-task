@@ -1,17 +1,32 @@
 ﻿namespace FileCabinetApp.CommandHandlers
 {
-    public class CommandHandlerBase : ICommandHandler
+    public abstract class CommandHandlerBase : ICommandHandler
     {
-        private ICommandHandler nextHandler;
+        private string commandName = string.Empty;
+        private ICommandHandler? nextHandler;
 
-        public void Handle(AppCommandRequest request)
+        protected CommandHandlerBase(string commandName)
         {
-            throw new NotImplementedException();
+            this.commandName = commandName;
+        }
+
+        void ICommandHandler.Handle(AppCommandRequest request)
+        {
+            if (!request.Command.Equals(this.commandName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                _ = this.nextHandler ?? throw new ArgumentException("Invalid command to handle.");
+                this.nextHandler.Handle(request);
+                return;
+            }
+
+            this.Handle(request);
         }
 
         public void SetNext(ICommandHandler handler)
         {
-            throw new NotImplementedException();
+            this.nextHandler = handler;
         }
+
+        protected abstract void Handle(AppCommandRequest request);
     }
 }
