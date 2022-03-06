@@ -2,8 +2,8 @@
 {
     public class ExitCommandHandler : CommandHandlerBase
     {
-        public ExitCommandHandler()
-            : base("exit")
+        public ExitCommandHandler(IFileCabinetService service)
+            : base("exit", service)
         {
         }
 

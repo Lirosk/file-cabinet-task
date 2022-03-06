@@ -1,9 +1,11 @@
-﻿namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
+﻿using FileCabinetApp.Services;
+
+namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
     public class StatCommandHandler : CommandHandlerBase
     {
-        public StatCommandHandler()
-            : base("stat")
+        public StatCommandHandler(IFileCabinetService service)
+            : base("stat", service)
         {
         }
 

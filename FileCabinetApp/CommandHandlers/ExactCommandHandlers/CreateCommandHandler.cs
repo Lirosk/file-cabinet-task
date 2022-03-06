@@ -1,12 +1,13 @@
 ﻿using FileCabinetApp.Helpers;
+using FileCabinetApp.Services;
 using Models;
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
     public class CreateCommandHandler : CommandHandlerBase
     {
-        public CreateCommandHandler()
-            : base("create")
+        public CreateCommandHandler(IFileCabinetService service)
+            : base("create", service)
         {
         }
 

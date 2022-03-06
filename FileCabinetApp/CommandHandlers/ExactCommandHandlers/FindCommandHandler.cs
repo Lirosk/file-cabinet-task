@@ -1,11 +1,12 @@
-﻿using System.Text.RegularExpressions;
+﻿using FileCabinetApp.Services;
+using System.Text.RegularExpressions;
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
     public class FindCommandHandler : CommandHandlerBase
     {
-        public FindCommandHandler()
-            : base("find")
+        public FindCommandHandler(IFileCabinetService service)
+            : base("find", service)
         {
         }
 

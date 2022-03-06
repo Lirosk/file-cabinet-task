@@ -1,12 +1,13 @@
 ﻿using FileCabinetApp.Helpers;
+using FileCabinetApp.Services;
 using Models;
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
     public class EditCommandHandler : CommandHandlerBase
     {
-        public EditCommandHandler()
-            : base("edit")
+        public EditCommandHandler(IFileCabinetService service)
+            : base("edit", service)
         {
         }
 

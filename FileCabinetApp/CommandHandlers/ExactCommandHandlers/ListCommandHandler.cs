@@ -1,9 +1,11 @@
-﻿namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
+﻿using FileCabinetApp.Services;
+
+namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
     internal class ListCommandHandler : CommandHandlerBase
     {
-        public ListCommandHandler()
-            : base("list")
+        public ListCommandHandler(IFileCabinetService service)
+            : base("list", service)
         {
         }
 

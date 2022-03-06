@@ -113,17 +113,6 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                //var index = Array.FindIndex(commands, 0, commands.Length, i => i.Item1.Equals(command, StringComparison.InvariantCultureIgnoreCase));
-                //if (index >= 0)
-                //{
-                //    var parameters = inputs.Length > 1 ? inputs[parametersIndex] : string.Empty;
-                //    commands[index].Item2(parameters);
-                //}
-                //else
-                //{
-                //    PrintMissedCommandInfo(command);
-                //}
-
                 var parameters = inputs.Length > 1 ? inputs[parametersIndex] : string.Empty;
                 try
                 {

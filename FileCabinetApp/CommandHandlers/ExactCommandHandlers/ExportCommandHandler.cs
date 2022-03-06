@@ -1,11 +1,12 @@
-﻿using System.Text;
+﻿using FileCabinetApp.Services;
+using System.Text;
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
     public class ExportCommandHandler : CommandHandlerBase
     {
-        public ExportCommandHandler()
-            : base("export")
+        public ExportCommandHandler(IFileCabinetService service)
+            : base("export", service)
         {
         }
 

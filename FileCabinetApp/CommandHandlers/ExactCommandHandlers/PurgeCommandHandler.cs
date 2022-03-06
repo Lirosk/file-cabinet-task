@@ -1,9 +1,11 @@
-﻿namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
+﻿using FileCabinetApp.Services;
+
+namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
     public class PurgeCommandHandler : CommandHandlerBase
     {
-        public PurgeCommandHandler()
-            : base("purge")
+        public PurgeCommandHandler(IFileCabinetService service)
+            : base("purge", service)
         {
         }
 

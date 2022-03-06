@@ -1,4 +1,5 @@
-﻿using Models;
+﻿using FileCabinetApp.Services;
+using Models;
 using System.Text.RegularExpressions;
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
@@ -24,7 +25,7 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
             new[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
-        public HelpCommandHandler()
+        public HelpCommandHandler(IFileCabinetService service)
             : base("help")
         {
         }
