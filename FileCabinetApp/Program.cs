@@ -54,6 +54,8 @@ namespace FileCabinetApp
             new ("find", Find),
             new ("import", Import),
             new ("export", Export),
+            new ("remove", Remove),
+            new ("purge", Purge),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -66,6 +68,8 @@ namespace FileCabinetApp
             new[] { "find", $"find records by field value, format: 'find fieldname \"value\"', datetime format: {FileCabinetRecord.OutputDateTimeFormat}" },
             new[] { "export", "saves records to the specified file" },
             new[] { "import", "imports records from file" },
+            new[] { "remove", "remove record with given id" },
+            new[] { "purge", "remove records marked as deleted" },
             new[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
@@ -76,7 +80,8 @@ namespace FileCabinetApp
         public static void Main(string[] consoleArgs)
         {
             usedValidationRuleIndex = 0;
-            SetMemoryService();
+            //SetMemoryService();
+            SetFileSystemService();
 
             try
             {
@@ -170,7 +175,8 @@ namespace FileCabinetApp
         private static void Stat(string parameters)
         {
             var recordsCount = Program.fileCabinetService!.GetStat();
-            Console.WriteLine($"{recordsCount} record(s).");
+            Console.WriteLine($"{recordsCount.have} record(s) total.");
+            Console.WriteLine($"{recordsCount.deleted} record(s) deleted.");
         }
 
         private static void Create(string parameters)
@@ -522,7 +528,7 @@ namespace FileCabinetApp
             }
 
             var extension = parameters[..spaceIndex];
-            var filePath = parameters[(spaceIndex + 1)..];
+            var filePath = parameters[(spaceIndex + 1) ..];
 
             if (!File.Exists(filePath))
             {
@@ -566,6 +572,24 @@ namespace FileCabinetApp
             var snapshot = new FileCabinetServiceSnapshot();
             snapshot.LoadFromXml(reader);
             fileCabinetService!.Restore(snapshot);
+        }
+
+        private static void Remove(string parameters)
+        {
+            if (!int.TryParse(parameters, out var id))
+            {
+                throw new ArgumentException($"Cannot parse id \'{parameters}\'.");
+            }
+
+            bool deleted = fileCabinetService!.Remove(id);
+            Console.WriteLine($"Record #{id} {(deleted ? "is removed" : "does not exists")}.");
+        }
+
+        private static void Purge(string parameters)
+        {
+            int was = fileCabinetService!.GetStat().have;
+            int deleted = fileCabinetService!.Purge();
+            Console.WriteLine($"{deleted} of {was} records were purged.");
         }
     }
 }

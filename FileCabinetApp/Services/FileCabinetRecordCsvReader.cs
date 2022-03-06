@@ -8,22 +8,24 @@ namespace FileCabinetApp.Services
     /// <summary>
     /// Reads records from csv file.
     /// </summary>
-    public sealed class FileCabinetRecordCsvReader : FileCabinetRecordReader
+    public sealed class FileCabinetRecordCsvReader : IFileCabinetRecordReader
     {
+        private readonly StreamReader reader;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordCsvReader"/> class.
         /// </summary>
         /// <param name="reader">Reader to read data from.</param>
         public FileCabinetRecordCsvReader(StreamReader reader)
-            : base(reader)
         {
+            this.reader = reader;
         }
 
         /// <summary>
         /// Reads all records.
         /// </summary>
         /// <returns>All readed records.</returns>
-        public override IList<FileCabinetRecord> ReadAll()
+        public IList<FileCabinetRecord> ReadAll()
         {
             List<FileCabinetRecord> restored = new ();
 

@@ -8,22 +8,24 @@ namespace FileCabinetApp.Services
     /// <summary>
     /// Reads records from xml file.
     /// </summary>
-    public class FileCabinetRecordXmlReader : FileCabinetRecordReader
+    public class FileCabinetRecordXmlReader : IFileCabinetRecordReader
     {
+        private readonly StreamReader reader;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordXmlReader"/> class.
         /// </summary>
         /// <param name="reader">Reader to read data from.</param>
         public FileCabinetRecordXmlReader(StreamReader reader)
-            : base(reader)
         {
+            this.reader = reader;
         }
 
         /// <summary>
         /// Reads all records.
         /// </summary>
         /// <returns>All readed records.</returns>
-        public override IList<FileCabinetRecord> ReadAll()
+        public IList<FileCabinetRecord> ReadAll()
         {
             var serializer = new XmlSerializer(typeof(List<RecordForXml>), null, null, new ("records"), null);
             var xmlReader = new XmlTextReader(this.reader);

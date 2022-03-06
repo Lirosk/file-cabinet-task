@@ -42,7 +42,7 @@ namespace FileCabinetApp.Services
         /// Get count of stored records.
         /// </summary>
         /// <returns>Count of stored records.</returns>
-        public int GetStat();
+        public (int have, int deleted) GetStat();
 
         /// <summary>
         /// Makes snapshot of present records.
@@ -55,5 +55,18 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <param name="snapshot">Snapshot contatining records to restore.</param>
         public void Restore(FileCabinetServiceSnapshot snapshot);
+
+        /// <summary>
+        /// Remove record with given id.
+        /// </summary>
+        /// <param name="recordId">Id of record to remove.</param>
+        /// <returns>True if record has been deleted.</returns>
+        public bool Remove(int recordId);
+
+        /// <summary>
+        /// Remove records marked as deleted.
+        /// </summary>
+        /// <returns>Count of deleted records.</returns>
+        public int Purge();
     }
 }

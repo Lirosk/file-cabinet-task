@@ -110,9 +110,9 @@ namespace FileCabinetApp.Services
         /// Get count of stored records.
         /// </summary>
         /// <returns>Count of stored records.</returns>
-        public int GetStat()
+        public (int have, int deleted) GetStat()
         {
-            return this.list.Count;
+            return (this.list.Count, 0);
         }
 
         /// <summary>
@@ -149,6 +149,25 @@ namespace FileCabinetApp.Services
 
             Console.WriteLine($"{imported} record were imported.");
         }
+
+        /// <inheritdoc/>
+        public bool Remove(int recordId)
+        {
+            var record = this.list.Where(r => r.Id == recordId).First();
+
+            if (record is null)
+            {
+                return false;
+            }
+
+            this.RemoveFromIndex(record);
+            this.list.Remove(record);
+
+            return true;
+        }
+
+        /// <inheritdoc/>
+        public int Purge() => 0;
 
         private void RemoveFromIndex(FileCabinetRecord record)
         {
