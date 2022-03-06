@@ -4,7 +4,7 @@ using Models;
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
-    public class CreateCommandHandler : CommandHandlerBase
+    public class CreateCommandHandler : ServiceCommandHandlerBase
     {
         public CreateCommandHandler(IFileCabinetService service)
             : base("create", service)
@@ -13,14 +13,12 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 
         protected override void Handle(AppCommandRequest request)
         {
-            Create(request.Parameters);
+            this.Create(request.Parameters);
         }
 
-        private static void Create(string parameters)
+        private void Create(string parameters)
         {
-            _ = Program.FileCabinetService ?? throw new InvalidOperationException("No service set for Program.");
-
-            while (Program.IsRunning)
+            while (true)
             {
                 try
                 {
@@ -28,7 +26,7 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 
                     Console.WriteLine(
                         "Record #{0} is created.",
-                        Program.FileCabinetService.CreateRecord(personalData));
+                        this.Service.CreateRecord(personalData));
                 }
                 catch (ArgumentException ex)
                 {

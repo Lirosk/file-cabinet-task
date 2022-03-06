@@ -39,24 +39,9 @@ namespace FileCabinetApp
             new ("custom", new CustomValidator()),
         };
 
-        //private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
-        //{
-        //    new ("help", PrintHelp),
-        //    new ("exit", Exit),
-        //    new ("stat", Stat),
-        //    new ("create", Create),
-        //    new ("list", List),
-        //    new ("edit", Edit),
-        //    new ("find", Find),
-        //    new ("import", Import),
-        //    new ("export", Export),
-        //    new ("remove", Remove),
-        //    new ("purge", Purge),
-        //};
+        private static IFileCabinetService? fileCabinetService;
 
-        public static IFileCabinetService? FileCabinetService { get; set; }
-
-        public static bool IsRunning { get; set; } = true;
+        private static bool isRunning = true;
 
         internal static IRecordValidator Validator
         {
@@ -130,7 +115,7 @@ namespace FileCabinetApp
 
                 Console.WriteLine();
             }
-            while (IsRunning);
+            while (isRunning);
         }
 
         private static void PrintMissedCommandInfo(string command)
@@ -203,29 +188,29 @@ namespace FileCabinetApp
 
         private static void SetMemoryService()
         {
-            FileCabinetService = new FileCabinetMemoryService(validationRules[usedValidationRuleIndex].Item2);
+            fileCabinetService = new FileCabinetMemoryService(validationRules[usedValidationRuleIndex].Item2);
         }
 
         private static void SetFileSystemService()
         {
             var fileName = "cabinet-records.db";
             var fileStream = File.Open(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
-            FileCabinetService = new FileCabinetFileSystemService(fileStream, validationRules[usedValidationRuleIndex].Item2);
+            fileCabinetService = new FileCabinetFileSystemService(fileStream, validationRules[usedValidationRuleIndex].Item2);
         }
 
         private static ICommandHandler CreateCommandHandlers()
         {
-            ICommandHandler handlers = new CreateCommandHandler();
-            handlers.SetNext(new EditCommandHandler());
-            handlers.SetNext(new ExitCommandHandler());
-            handlers.SetNext(new ExportCommandHandler());
-            handlers.SetNext(new FindCommandHandler());
-            handlers.SetNext(new HelpCommandHandler());
-            handlers.SetNext(new ImportCommandHandler());
-            handlers.SetNext(new ListCommandHandler());
-            handlers.SetNext(new PurgeCommandHandler());
-            handlers.SetNext(new RemoveCommandHandler());
-            handlers.SetNext(new StatCommandHandler());
+            ICommandHandler handlers = new CreateCommandHandler(fileCabinetService!);
+            handlers.SetNext(new EditCommandHandler(fileCabinetService!));
+            handlers.SetNext(new ExitCommandHandler(fileCabinetService!, (running) => isRunning = running));
+            handlers.SetNext(new ExportCommandHandler(fileCabinetService!));
+            handlers.SetNext(new FindCommandHandler(fileCabinetService!));
+            handlers.SetNext(new HelpCommandHandler(fileCabinetService!));
+            handlers.SetNext(new ImportCommandHandler(fileCabinetService!));
+            handlers.SetNext(new ListCommandHandler(fileCabinetService!));
+            handlers.SetNext(new PurgeCommandHandler(fileCabinetService!));
+            handlers.SetNext(new RemoveCommandHandler(fileCabinetService!));
+            handlers.SetNext(new StatCommandHandler(fileCabinetService!));
 
             return handlers;
         }

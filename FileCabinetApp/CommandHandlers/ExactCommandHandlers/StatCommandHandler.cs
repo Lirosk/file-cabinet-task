@@ -2,7 +2,7 @@
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
-    public class StatCommandHandler : CommandHandlerBase
+    public class StatCommandHandler : ServiceCommandHandlerBase
     {
         public StatCommandHandler(IFileCabinetService service)
             : base("stat", service)
@@ -11,14 +11,12 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 
         protected override void Handle(AppCommandRequest request)
         {
-            Stat(request.Parameters);
+            this.Stat(request.Parameters);
         }
 
-        private static void Stat(string parameters)
+        private void Stat(string parameters)
         {
-            _ = Program.FileCabinetService ?? throw new InvalidOperationException("No service set for Program.");
-
-            var recordsCount = Program.FileCabinetService.GetStat();
+            var recordsCount = this.Service.GetStat();
             Console.WriteLine($"{recordsCount.have} record(s) total.");
             Console.WriteLine($"{recordsCount.deleted} record(s) deleted.");
         }

@@ -2,7 +2,7 @@
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
-    internal class ListCommandHandler : CommandHandlerBase
+    internal class ListCommandHandler : ServiceCommandHandlerBase
     {
         public ListCommandHandler(IFileCabinetService service)
             : base("list", service)
@@ -11,14 +11,12 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 
         protected override void Handle(AppCommandRequest request)
         {
-            List(request.Parameters);
+            this.List(request.Parameters);
         }
 
-        private static void List(string parameters)
+        private void List(string parameters)
         {
-            _ = Program.FileCabinetService ?? throw new InvalidOperationException("No service set for Program.");
-
-            foreach (var record in Program.FileCabinetService.GetRecords())
+            foreach (var record in this.Service.GetRecords())
             {
                 Console.WriteLine(record);
             }

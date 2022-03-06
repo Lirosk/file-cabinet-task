@@ -75,7 +75,8 @@ namespace FileCabinetApp.Helpers
             }
             while (true);
         }
-        public static Func<T, Tuple<bool, string>> Validator<T>(Action<T> validate)
+
+        private static Func<T, Tuple<bool, string>> Validator<T>(Action<T> validate)
         {
             return (T input) =>
             {

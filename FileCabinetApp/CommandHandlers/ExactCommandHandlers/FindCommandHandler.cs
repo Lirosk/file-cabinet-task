@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
-    public class FindCommandHandler : CommandHandlerBase
+    public class FindCommandHandler : ServiceCommandHandlerBase
     {
         public FindCommandHandler(IFileCabinetService service)
             : base("find", service)
@@ -12,13 +12,11 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 
         protected override void Handle(AppCommandRequest request)
         {
-            Find(request.Parameters);
+            this.Find(request.Parameters);
         }
 
-        private static void Find(string parameters)
+        private void Find(string parameters)
         {
-            _ = Program.FileCabinetService ?? throw new InvalidOperationException("No service set for Program.");
-
             try
             {
                 const int firstGroupMatchIndex = 1;
@@ -40,7 +38,7 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
                 fieldName = match.Groups[firstGroupMatchIndex].Value;
                 stringValue = match.Groups[secondGroupMatchIndex].Value;
 
-                var found = Program.FileCabinetService.FindByField(fieldName, stringValue);
+                var found = this.Service.FindByField(fieldName, stringValue);
                 if (found.Count > 0)
                 {
                     foreach (var record in found)

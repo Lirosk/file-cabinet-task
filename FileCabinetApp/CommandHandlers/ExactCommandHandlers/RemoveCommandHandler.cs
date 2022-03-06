@@ -2,7 +2,7 @@
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
-    public class RemoveCommandHandler : CommandHandlerBase
+    public class RemoveCommandHandler : ServiceCommandHandlerBase
     {
         public RemoveCommandHandler(IFileCabinetService service)
             : base("remove", service)
@@ -11,19 +11,17 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 
         protected override void Handle(AppCommandRequest request)
         {
-            Remove(request.Parameters);
+            this.Remove(request.Parameters);
         }
 
-        private static void Remove(string parameters)
+        private void Remove(string parameters)
         {
-            _ = Program.FileCabinetService ?? throw new InvalidOperationException("No service set for Program.");
-
             if (!int.TryParse(parameters, out var id))
             {
                 throw new ArgumentException($"Cannot parse id \'{parameters}\'.");
             }
 
-            bool deleted = Program.FileCabinetService.Remove(id);
+            bool deleted = this.Service.Remove(id);
             Console.WriteLine($"Record #{id} {(deleted ? "is removed" : "does not exists")}.");
         }
     }

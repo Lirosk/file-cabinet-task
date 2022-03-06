@@ -4,16 +4,8 @@ namespace FileCabinetApp.CommandHandlers
 {
     public abstract class CommandHandlerBase : ICommandHandler
     {
-        protected IFileCabinetService Service { get; private set; }
-
         private string commandName = string.Empty;
         private ICommandHandler? nextHandler;
-
-        protected CommandHandlerBase(string commandName, IFileCabinetService service)
-            : this(commandName)
-        {
-            this.Service = service;
-        }
 
         protected CommandHandlerBase(string commandName)
         {

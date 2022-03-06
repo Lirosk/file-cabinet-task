@@ -2,7 +2,7 @@
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
-    public class PurgeCommandHandler : CommandHandlerBase
+    public class PurgeCommandHandler : ServiceCommandHandlerBase
     {
         public PurgeCommandHandler(IFileCabinetService service)
             : base("purge", service)
@@ -11,15 +11,13 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 
         protected override void Handle(AppCommandRequest request)
         {
-            Purge(request.Parameters);
+            this.Purge(request.Parameters);
         }
 
-        private static void Purge(string parameters)
+        private void Purge(string parameters)
         {
-            _ = Program.FileCabinetService ?? throw new InvalidOperationException("No service set for Program.");
-
-            int was = Program.FileCabinetService.GetStat().have;
-            int deleted = Program.FileCabinetService.Purge();
+            int was = this.Service.GetStat().have;
+            int deleted = this.Service.Purge();
             Console.WriteLine($"{deleted} of {was} records were purged.");
         }
     }

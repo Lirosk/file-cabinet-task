@@ -1,9 +1,8 @@
 ﻿using FileCabinetApp.Services;
-using System.Text;
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
-    public class ImportCommandHandler : CommandHandlerBase
+    public class ImportCommandHandler : ServiceCommandHandlerBase
     {
         public ImportCommandHandler(IFileCabinetService service)
             : base("import", service)
@@ -12,13 +11,11 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 
         protected override void Handle(AppCommandRequest request)
         {
-            Import(request.Parameters);
+            this.Import(request.Parameters);
         }
 
-        private static void Import(string parameters)
+        private void Import(string parameters)
         {
-            _ = Program.FileCabinetService ?? throw new InvalidOperationException("No service set for Program.");
-
             var spaceIndex = parameters.IndexOf(' ', StringComparison.Ordinal);
 
             if (spaceIndex == -1)
@@ -40,13 +37,13 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
             {
                 case "csv":
                     {
-                        ImportCsv(filePath);
+                        this.ImportCsv(filePath);
                         break;
                     }
 
                 case "xml":
                     {
-                        ImportXml(filePath);
+                        this.ImportXml(filePath);
                         break;
                     }
 
@@ -57,20 +54,20 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
             }
         }
 
-        private static void ImportCsv(string filePath)
+        private void ImportCsv(string filePath)
         {
             using var reader = new StreamReader(filePath, Program.EncodingUsed);
             var snapshot = new FileCabinetServiceSnapshot();
             snapshot.LoadFromCsv(reader);
-            Program.FileCabinetService!.Restore(snapshot);
+            this.Service.Restore(snapshot);
         }
 
-        private static void ImportXml(string filePath)
+        private void ImportXml(string filePath)
         {
             using var reader = new StreamReader(filePath, Program.EncodingUsed);
             var snapshot = new FileCabinetServiceSnapshot();
             snapshot.LoadFromXml(reader);
-            Program.FileCabinetService!.Restore(snapshot);
+            this.Service.Restore(snapshot);
         }
     }
 }

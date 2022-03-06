@@ -3,7 +3,7 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
-    public class ExportCommandHandler : CommandHandlerBase
+    public class ExportCommandHandler : ServiceCommandHandlerBase
     {
         public ExportCommandHandler(IFileCabinetService service)
             : base("export", service)
@@ -12,13 +12,11 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 
         protected override void Handle(AppCommandRequest request)
         {
-            Export(request.Parameters);
+            this.Export(request.Parameters);
         }
 
-        private static void Export(string parameters)
+        private void Export(string parameters)
         {
-            _ = Program.FileCabinetService ?? throw new InvalidOperationException("No service set for Program.");
-
             var spaceIndex = parameters.IndexOf(' ', StringComparison.Ordinal);
 
             if (spaceIndex == -1)
@@ -30,7 +28,7 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
             var filePath = parameters[(spaceIndex + 1)..];
 
             using var writer = new StreamWriter(filePath, false, Program.EncodingUsed);
-            var snapshot = Program.FileCabinetService.MakeSnapshot();
+            var snapshot = this.Service.MakeSnapshot();
 
             switch (extension)
             {

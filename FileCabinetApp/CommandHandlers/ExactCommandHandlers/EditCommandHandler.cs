@@ -4,7 +4,7 @@ using Models;
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
-    public class EditCommandHandler : CommandHandlerBase
+    public class EditCommandHandler : ServiceCommandHandlerBase
     {
         public EditCommandHandler(IFileCabinetService service)
             : base("edit", service)
@@ -13,16 +13,14 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 
         protected override void Handle(AppCommandRequest request)
         {
-            Edit(request.Parameters);
+            this.Edit(request.Parameters);
         }
 
-        private static void Edit(string parameters)
+        private void Edit(string parameters)
         {
-            _ = Program.FileCabinetService ?? throw new InvalidOperationException("No service set for Program.");
-
             int id;
 
-            while (Program.IsRunning)
+            while (true)
             {
                 try
                 {
@@ -34,7 +32,7 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 
                     RecordHelper.ReadRecordDataFromConsole(FileCabinetRecord.OutputDateTimeFormat, out var personalData);
 
-                    Program.FileCabinetService.EditRecord(id, personalData);
+                    this.Service.EditRecord(id, personalData);
                 }
                 catch (ArgumentException ex)
                 {

@@ -1,21 +1,26 @@
-﻿namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
+﻿using FileCabinetApp.Services;
+
+namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
-    public class ExitCommandHandler : CommandHandlerBase
+    public class ExitCommandHandler : ServiceCommandHandlerBase
     {
-        public ExitCommandHandler(IFileCabinetService service)
+        private readonly Action<bool> setProgramRunning;
+
+        public ExitCommandHandler(IFileCabinetService service, Action<bool> setProgramRunning)
             : base("exit", service)
         {
+            this.setProgramRunning = setProgramRunning;
         }
 
         protected override void Handle(AppCommandRequest request)
         {
-            Exit(request.Parameters);
+            this.Exit(request.Parameters);
         }
 
-        private static void Exit(string parameters)
+        private void Exit(string parameters)
         {
             Console.WriteLine("Exiting an application...");
-            Program.IsRunning = false;
+            this.setProgramRunning(false);
         }
     }
 }
