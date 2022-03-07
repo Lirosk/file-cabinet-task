@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-
+using FileCabinetApp.Validators;
 using Models;
 
 namespace FileCabinetApp.Helpers
@@ -11,11 +11,12 @@ namespace FileCabinetApp.Helpers
             personalData = new ();
             var usedValidationRule = Program.Validator;
 
+
             Console.Write("First name: ");
             personalData.FirstName =
-                ReadInput(
-                    StringConverter,
-                    Validator<string>(usedValidationRule.ValidateFirstName));
+                //ReadInput(
+                //    StringConverter,
+                //    Validator<string>(usedValidationRule.ValidateFirstName));
 
             Console.Write("Last name: ");
             personalData.LastName =
@@ -66,6 +67,7 @@ namespace FileCabinetApp.Helpers
                 value = conversionResult.Item3;
 
                 var validationResult = validator(value);
+
                 if (!validationResult.Item1)
                 {
                     Console.WriteLine($"Validation failed: {validationResult.Item2}. Correct your input:");
@@ -78,6 +80,7 @@ namespace FileCabinetApp.Helpers
         }
 
         private static Func<T, Tuple<bool, string>> Validator<T>(Action<T> validate)
+        //private static Func<T, Tuple<bool, string>> Validator<T>(IRecordValidator validator)
         {
             return (T input) =>
             {

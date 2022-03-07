@@ -1,24 +1,24 @@
-﻿using Models;
-
-namespace FileCabinetApp.Validators
+﻿namespace FileCabinetApp.Validators
 {
     /// <summary>
     /// Class for custom validation personal data.
     /// </summary>
-    public class CustomValidator : IRecordValidator
+    public class CustomValidator : CompositeValidator
     {
         /// <summary>
-        /// Validated personal data.
+        /// Initializes a new instance of the <see cref="CustomValidator"/> class.
         /// </summary>
-        /// <param name="personalData">Personal data to validate.</param>
-        public void Validate(PersonalData personalData)
+        public CustomValidator()
+            : base(new IRecordValidator[]
+            {
+                new CustomFirstNameValidator(),
+                new CustomLastNameValidator(),
+                new CustomDateOfBirthValidator(),
+                new CustomSchoolGradeValidator(),
+                new CustomAverageMarkValidator(),
+                new CustomClassLetterValidator(),
+            })
         {
-            new CustomFirstNameValidator().Validate(personalData);
-            new CustomLastNameValidator().Validate(personalData);
-            new CustomDateOfBirthValidator().Validate(personalData);
-            new CustomSchoolGradeValidator().Validate(personalData);
-            new CustomAverageMarkValidator().Validate(personalData);
-            new CustomClassLetterValidator().Validate(personalData);
         }
     }
 }
