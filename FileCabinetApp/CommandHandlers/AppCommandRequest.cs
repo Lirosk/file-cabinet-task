@@ -1,9 +1,20 @@
 ﻿namespace FileCabinetApp.CommandHandlers
 {
+    /// <summary>
+    /// Represents request for command with given parameters.
+    /// </summary>
     public class AppCommandRequest
     {
-        public string Command { get; init; }
+        /// <summary>
+        /// Gets requested command.
+        /// </summary>
+        /// <value>Requested command.</value>
+        public string Command { get; init; } = string.Empty;
 
-        public string Parameters { get; init; }
+        /// <summary>
+        /// Gets parameters for requested command.
+        /// </summary>
+        /// <value>Parameters for requested command.</value>
+        public string Parameters { get; init; } = string.Empty;
     }
 }

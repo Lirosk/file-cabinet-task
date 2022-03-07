@@ -5,7 +5,7 @@ namespace FileCabinetApp.Validators
     /// <summary>
     /// Check first name for valid value.
     /// </summary>
-    public class DefaultFirstNameValidator : IRecordValidator
+    public class FirstNameValidator : IRecordValidator
     {
         /// <summary>
         /// Minimal valid first name length.
@@ -18,20 +18,20 @@ namespace FileCabinetApp.Validators
         private int firstNameMaxLen;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultFirstNameValidator"/> class.
+        /// Initializes a new instance of the <see cref="FirstNameValidator"/> class.
         /// </summary>
-        /// <param name="nameMinLen">Minimal valid name length.</param>
-        /// <param name="nameMaxLen">Maximum valid name length.</param>
-        public DefaultFirstNameValidator(int firstNameMinLen, int firstNameMaxLen)
+        /// <param name="firstNameMinLen">Minimal valid name length.</param>
+        /// <param name="firstNameMaxLen">Maximum valid name length.</param>
+        public FirstNameValidator(int firstNameMinLen, int firstNameMaxLen)
         {
             this.firstNameMinLen = firstNameMinLen;
             this.firstNameMaxLen = firstNameMaxLen;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultFirstNameValidator"/> class.
+        /// Initializes a new instance of the <see cref="FirstNameValidator"/> class.
         /// </summary>
-        public DefaultFirstNameValidator()
+        public FirstNameValidator()
         {
             this.firstNameMinLen = DefaultValidatorRules.FirstNameMinLen;
             this.firstNameMaxLen = DefaultValidatorRules.FirstNameMaxLen;

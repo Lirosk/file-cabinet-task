@@ -1,5 +1,8 @@
 ﻿namespace FileCabinetApp.Validators
 {
+    /// <summary>
+    /// Custom rules for validating.
+    /// </summary>
     public static class CustomValidatorRules
     {
         /// <summary>
@@ -48,12 +51,12 @@
         /// Gets or sets minimum valid date of birth value.
         /// </summary>
         /// <value>Minimum valid date of birth value.</value>
-        public static readonly DateTime DateOfBirthMinValue = new(1950, 1, 1);
+        public static readonly DateTime DateOfBirthMinValue = new (1950, 1, 1);
 
         /// <summary>
         /// Gets or sets maximum valid date of birth value.
         /// </summary>
         /// <value>Maximum valid date of birth value.</value>
-        public static readonly DateTime DateOfBirthMaxValue = new(2016, 1, 1);
+        public static readonly DateTime DateOfBirthMaxValue = new (2016, 1, 1);
     }
 }

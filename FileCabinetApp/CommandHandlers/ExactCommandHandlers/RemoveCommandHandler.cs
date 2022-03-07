@@ -2,13 +2,24 @@
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
+    /// <summary>
+    /// Handles the remove command.
+    /// </summary>
     public class RemoveCommandHandler : ServiceCommandHandlerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoveCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Service to work with.</param>
         public RemoveCommandHandler(IFileCabinetService service)
             : base(service)
         {
         }
 
+        /// <summary>
+        /// Handles the remove command request.
+        /// </summary>
+        /// /// <param name="request">Request with data to handle.</param>
         protected override void Handle(AppCommandRequest request)
         {
             this.Remove(request.Parameters);

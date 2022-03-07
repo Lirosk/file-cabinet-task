@@ -4,13 +4,24 @@ using Models;
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
+    /// <summary>
+    /// Handles the create command.
+    /// </summary>
     public class CreateCommandHandler : ServiceCommandHandlerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreateCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Service to work with.</param>
         public CreateCommandHandler(IFileCabinetService service)
             : base(service)
         {
         }
 
+        /// <summary>
+        /// Handles the create command request.
+        /// </summary>
+        /// <param name="request">Request with data to handle.</param>
         protected override void Handle(AppCommandRequest request)
         {
             this.Create(request.Parameters);

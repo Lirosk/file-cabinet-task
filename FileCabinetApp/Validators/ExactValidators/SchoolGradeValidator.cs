@@ -5,7 +5,7 @@ namespace FileCabinetApp.Validators
     /// <summary>
     /// Check school grade for valid value.
     /// </summary>
-    public class DefaultSchoolGradeValidator : IRecordValidator
+    public class SchoolGradeValidator : IRecordValidator
     {
         /// <summary>
         /// Minimum valid school grade value.
@@ -18,20 +18,20 @@ namespace FileCabinetApp.Validators
         private short schoolGradeMaxValue;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultSchoolGradeValidator"/> class.
+        /// Initializes a new instance of the <see cref="SchoolGradeValidator"/> class.
         /// </summary>
         /// <param name="schoolGradeMinValue">Minimal valid value.</param>
         /// <param name="schoolGradeMaxValue">Maximum valid value.</param>
-        public DefaultSchoolGradeValidator(short schoolGradeMinValue, short schoolGradeMaxValue)
+        public SchoolGradeValidator(short schoolGradeMinValue, short schoolGradeMaxValue)
         {
             this.schoolGradeMinValue = schoolGradeMinValue;
             this.schoolGradeMaxValue = schoolGradeMaxValue;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultSchoolGradeValidator"/> class.
+        /// Initializes a new instance of the <see cref="SchoolGradeValidator"/> class.
         /// </summary>
-        public DefaultSchoolGradeValidator()
+        public SchoolGradeValidator()
         {
             this.schoolGradeMinValue = DefaultValidatorRules.SchoolGradeMinValue;
             this.schoolGradeMaxValue = DefaultValidatorRules.SchoolGradeMaxValue;

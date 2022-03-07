@@ -1,10 +1,7 @@
-﻿using System.Globalization;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.CommandHandlers.ExactCommandHandlers;
 using FileCabinetApp.Extensions;
-using FileCabinetApp.RecordPrinters;
 using FileCabinetApp.Services;
 using FileCabinetApp.Validators;
 using Models;
@@ -16,8 +13,6 @@ namespace FileCabinetApp
     /// </summary>
     public static class Program
     {
-        public static Encoding EncodingUsed { get; private set; } = Encoding.Unicode;
-
         private const string DeveloperName = "Kirill Basenko";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
 
@@ -46,6 +41,12 @@ namespace FileCabinetApp
         private static bool isRunning = true;
 
         private static IRecordValidator? validator;
+
+        /// <summary>
+        /// Gets encodind used in this app.
+        /// </summary>
+        /// <value>Encodind used in this app.</value>
+        public static Encoding EncodingUsed { get; private set; } = Encoding.Unicode;
 
         /// <summary>
         /// Entry point.
@@ -137,7 +138,7 @@ namespace FileCabinetApp
             {
                 if ((index = consoleArg.IndexOf('=', StringComparison.Ordinal)) != -1)
                 {
-                    paramsAndArgs.Push(consoleArg[(index + 1)..]);
+                    paramsAndArgs.Push(consoleArg[(index + 1) ..]);
                     paramsAndArgs.Push(consoleArg[..index]);
                     continue;
                 }
@@ -194,14 +195,14 @@ namespace FileCabinetApp
 
         private static void SetMemoryService()
         {
-            fileCabinetService = new FileCabinetMemoryService(validationRules[usedValidationRuleIndex].Item2);
+            fileCabinetService = new FileCabinetMemoryService(validator!);
         }
 
         private static void SetFileSystemService()
         {
             var fileName = "cabinet-records.db";
             var fileStream = File.Open(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
-            fileCabinetService = new FileCabinetFileSystemService(fileStream, validationRules[usedValidationRuleIndex].Item2);
+            fileCabinetService = new FileCabinetFileSystemService(fileStream, validator!);
         }
 
         private static ICommandHandler CreateCommandHandlers()
@@ -219,7 +220,7 @@ namespace FileCabinetApp
             handlers.SetNext(new ExitCommandHandler(fileCabinetService!, (running) => isRunning = running));
             handlers.SetNext(new ExportCommandHandler(fileCabinetService!));
             handlers.SetNext(new FindCommandHandler(fileCabinetService!, printer));
-            handlers.SetNext(new HelpCommandHandler(fileCabinetService!));
+            handlers.SetNext(new HelpCommandHandler());
             handlers.SetNext(new ImportCommandHandler(fileCabinetService!));
             handlers.SetNext(new ListCommandHandler(fileCabinetService!, printer));
             handlers.SetNext(new PurgeCommandHandler(fileCabinetService!));

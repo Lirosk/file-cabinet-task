@@ -4,49 +4,91 @@ using Models;
 
 namespace FileCabinetApp.Helpers
 {
+    /// <summary>
+    /// Some help with working with records.
+    /// </summary>
     public static class RecordHelper
     {
+        /// <summary>
+        /// Reads record from console.
+        /// </summary>
+        /// <param name="dateTimeFormat">Format for input datetime values.</param>
+        /// <param name="personalData">Resulting personal data.</param>
         public static void ReadRecordDataFromConsole(string dateTimeFormat, out PersonalData personalData)
         {
             personalData = new ();
-            var usedValidationRule = Program.Validator;
-
 
             Console.Write("First name: ");
             personalData.FirstName =
-                //ReadInput(
-                //    StringConverter,
-                //    Validator<string>(usedValidationRule.ValidateFirstName));
+                ReadInput(
+                    StringConverter,
+                    Validator<string>((firstName) =>
+                    {
+                        new ValidatorBuilder()
+                            .ValidateFirstName(DefaultValidatorRules.FirstNameMinLen, DefaultValidatorRules.FirstNameMaxLen)
+                            .Create()
+                            .Validate(new () { FirstName = firstName });
+                    }));
 
             Console.Write("Last name: ");
             personalData.LastName =
                 ReadInput(
                     StringConverter,
-                    Validator<string>(usedValidationRule.ValidateLastName));
+                    Validator<string>((lastName) =>
+                    {
+                        new ValidatorBuilder()
+                            .ValidateLastName(DefaultValidatorRules.LastNameMinLen, DefaultValidatorRules.LastNameMaxLen)
+                            .Create()
+                            .Validate(new () { LastName = lastName });
+                    }));
 
             Console.Write("Date of birth: ");
             personalData.DateOfBirth =
                 ReadInput(
                     DateTimeConverter(dateTimeFormat),
-                    Validator<DateTime>(usedValidationRule.ValidateDateOfBirth));
+                    Validator<DateTime>((dateOfBirth) =>
+                    {
+                        new ValidatorBuilder()
+                            .ValidateDateOfBirth(DefaultValidatorRules.DateOfBirthMinValue, DefaultValidatorRules.DateOfBirthMaxValue)
+                            .Create()
+                            .Validate(new () { DateOfBirth = dateOfBirth });
+                    }));
 
             Console.Write("School grade: ");
             personalData.SchoolGrade =
                 ReadInput(
                     NumericConverter<short>,
-                    Validator<short>(usedValidationRule.ValidateSchoolGrade));
+                    Validator<short>((schoolGrade) =>
+                    {
+                        new ValidatorBuilder()
+                            .ValidateSchoolGrade(DefaultValidatorRules.SchoolGradeMinValue, DefaultValidatorRules.SchoolGradeMaxValue)
+                            .Create()
+                            .Validate(new () { SchoolGrade = schoolGrade });
+                    }));
 
             Console.Write("Average mark: ");
             personalData.AverageMark =
                 ReadInput(
                     NumericConverter<decimal>,
-                    Validator<decimal>(usedValidationRule.ValidateAverageMark));
+                    Validator<decimal>((averageMark) =>
+                    {
+                        new ValidatorBuilder()
+                            .ValidateAverageMark(DefaultValidatorRules.AverageMarkMinValue, DefaultValidatorRules.AverageMarkMaxValue)
+                            .Create()
+                            .Validate(new () { AverageMark = averageMark });
+                    }));
 
             Console.Write("Class letter: ");
             personalData.ClassLetter =
                 ReadInput(
                     NumericConverter<char>,
-                    Validator<char>(usedValidationRule.ValidateClassLetter));
+                    Validator<char>((classLetter) =>
+                    {
+                        new ValidatorBuilder()
+                            .ValidateAverageMark(DefaultValidatorRules.ClassLetterMinValue, DefaultValidatorRules.ClassLetterMaxValue)
+                            .Create()
+                            .Validate(new () { ClassLetter = classLetter });
+                    }));
         }
 
         private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
@@ -55,7 +97,7 @@ namespace FileCabinetApp.Helpers
             {
                 T value;
 
-                var input = Console.ReadLine()!;
+                var input = Console.ReadLine() !;
                 var conversionResult = converter(input);
 
                 if (!conversionResult.Item1)
@@ -80,7 +122,6 @@ namespace FileCabinetApp.Helpers
         }
 
         private static Func<T, Tuple<bool, string>> Validator<T>(Action<T> validate)
-        //private static Func<T, Tuple<bool, string>> Validator<T>(IRecordValidator validator)
         {
             return (T input) =>
             {

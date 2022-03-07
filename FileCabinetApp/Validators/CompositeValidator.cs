@@ -2,6 +2,9 @@
 
 namespace FileCabinetApp.Validators
 {
+    /// <summary>
+    /// Contains validators.
+    /// </summary>
     public class CompositeValidator : IRecordValidator
     {
         private readonly List<IRecordValidator> validators;

@@ -1,6 +1,6 @@
 ﻿using Models;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Validators
 {
     /// <summary>
     /// Interface for validation personal data.

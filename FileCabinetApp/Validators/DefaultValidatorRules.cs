@@ -1,5 +1,8 @@
 ﻿namespace FileCabinetApp.Validators
 {
+    /// <summary>
+    /// Default rules for validating.
+    /// </summary>
     public static class DefaultValidatorRules
     {
         /// <summary>
@@ -56,7 +59,7 @@
         /// Gets or sets minimum valid date of birth value.
         /// </summary>
         /// <value>Minimum valid date of birth value.</value>
-        public static DateTime DateOfBirthMinValue { get; set; } = new(1950, 1, 1);
+        public static DateTime DateOfBirthMinValue { get; set; } = new (1950, 1, 1);
 
         /// <summary>
         /// Gets maximum valid date of birth value.

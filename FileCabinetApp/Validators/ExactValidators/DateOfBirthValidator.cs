@@ -5,7 +5,7 @@ namespace FileCabinetApp.Validators
     /// <summary>
     /// Check date of birth for valid value.
     /// </summary>
-    public class DefaultDateOfBirthValidator : IRecordValidator
+    public class DateOfBirthValidator : IRecordValidator
     {
         /// <summary>
         /// Gets or sets minimum valid date of birth value.
@@ -20,20 +20,20 @@ namespace FileCabinetApp.Validators
         private DateTime dateOfBirthMaxValue;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultDateOfBirthValidator"/> class.
+        /// Initializes a new instance of the <see cref="DateOfBirthValidator"/> class.
         /// </summary>
         /// <param name="dateOfBirthMinValue">Minimal valid value.</param>
         /// <param name="dateOfBirthMaxValue">Maximum valid value.</param>
-        public DefaultDateOfBirthValidator(DateTime dateOfBirthMinValue, DateTime dateOfBirthMaxValue)
+        public DateOfBirthValidator(DateTime dateOfBirthMinValue, DateTime dateOfBirthMaxValue)
         {
             this.dateOfBirthMinValue = dateOfBirthMinValue;
             this.dateOfBirthMaxValue = dateOfBirthMaxValue;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultDateOfBirthValidator"/> class.
+        /// Initializes a new instance of the <see cref="DateOfBirthValidator"/> class.
         /// </summary>
-        public DefaultDateOfBirthValidator()
+        public DateOfBirthValidator()
         {
             this.dateOfBirthMinValue = DefaultValidatorRules.DateOfBirthMinValue;
             this.dateOfBirthMaxValue = DefaultValidatorRules.DateOfBirthMaxValue;

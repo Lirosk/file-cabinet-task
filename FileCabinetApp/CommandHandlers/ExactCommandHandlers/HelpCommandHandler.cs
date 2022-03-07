@@ -1,9 +1,11 @@
 ﻿using FileCabinetApp.Services;
 using Models;
-using System.Text.RegularExpressions;
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
+    /// <summary>
+    /// Handles the help command.
+    /// </summary>
     public class HelpCommandHandler : CommandHandlerBase
     {
         private const int CommandHelpIndex = 0;
@@ -25,10 +27,17 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
             new[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
-        public HelpCommandHandler(IFileCabinetService service)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HelpCommandHandler"/> class.
+        /// </summary>
+        public HelpCommandHandler()
         {
         }
 
+        /// <summary>
+        /// Handles the help command request.
+        /// </summary>
+        /// /// <param name="request">Request with data to handle.</param>
         protected override void Handle(AppCommandRequest request)
         {
             Help(request.Parameters);

@@ -2,8 +2,16 @@
 
 namespace FileCabinetApp.Extensions
 {
+    /// <summary>
+    /// Extensions for <see cref="ValidatorBuilder"/>.
+    /// </summary>
     public static class ValidatorBuilderExtensions
     {
+        /// <summary>
+        /// Creates validator with <see cref="DefaultValidatorRules"/> rules.
+        /// </summary>
+        /// <param name="builder">Builder to set validators.</param>
+        /// <returns>returns validator with <see cref="DefaultValidatorRules"/> rules.</returns>
         public static IRecordValidator CreateDefault(this ValidatorBuilder builder)
         {
             return new ValidatorBuilder()
@@ -16,6 +24,11 @@ namespace FileCabinetApp.Extensions
                 .Create();
         }
 
+        /// <summary>
+        /// Creates validator with <see cref="CustomValidatorRules"/> rules.
+        /// </summary>
+        /// <param name="builder">Builder to set validators.</param>
+        /// <returns>returns validator with <see cref="CustomValidatorRules"/> rules.</returns>
         public static IRecordValidator CreateCustom(this ValidatorBuilder builder)
         {
             return new ValidatorBuilder()

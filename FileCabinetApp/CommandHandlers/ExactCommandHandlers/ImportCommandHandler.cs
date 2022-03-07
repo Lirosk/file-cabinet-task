@@ -2,13 +2,24 @@
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
+    /// <summary>
+    /// Handles the import command.
+    /// </summary>
     public class ImportCommandHandler : ServiceCommandHandlerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImportCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Service to work with.</param>
         public ImportCommandHandler(IFileCabinetService service)
             : base(service)
         {
         }
 
+        /// <summary>
+        /// Handles the import command request.
+        /// </summary>
+        /// /// <param name="request">Request with data to handle.</param>
         protected override void Handle(AppCommandRequest request)
         {
             this.Import(request.Parameters);
@@ -24,7 +35,7 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
             }
 
             var extension = parameters[..spaceIndex];
-            var filePath = parameters[(spaceIndex + 1)..];
+            var filePath = parameters[(spaceIndex + 1) ..];
 
             if (!File.Exists(filePath))
             {

@@ -1,19 +1,32 @@
-﻿using FileCabinetApp.Services;
+﻿using System.Text.RegularExpressions;
+
+using FileCabinetApp.Services;
 using Models;
-using System.Text.RegularExpressions;
 
 namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 {
+    /// <summary>
+    /// Handles the find command.
+    /// </summary>
     public class FindCommandHandler : ServiceCommandHandlerBase
     {
         private Action<IEnumerable<FileCabinetRecord>> printer;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Service to work with.</param>
+        /// <param name="printer">Prints the records in its own way.</param>
         public FindCommandHandler(IFileCabinetService service, Action<IEnumerable<FileCabinetRecord>> printer)
             : base(service)
         {
             this.printer = printer;
         }
 
+        /// <summary>
+        /// Handles the find command request.
+        /// </summary>
+        /// /// <param name="request">Request with data to handle.</param>
         protected override void Handle(AppCommandRequest request)
         {
             this.Find(request.Parameters);
