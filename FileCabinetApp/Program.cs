@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.CommandHandlers.ExactCommandHandlers;
+using FileCabinetApp.Extensions;
 using FileCabinetApp.RecordPrinters;
 using FileCabinetApp.Services;
 using FileCabinetApp.Validators;
@@ -115,26 +116,12 @@ namespace FileCabinetApp
 
         private static void SetDefaultValidator()
         {
-            validator = new ValidatorBuilder()
-                .ValidateFirstName(DefaultValidatorRules.FirstNameMinLen, DefaultValidatorRules.FirstNameMaxLen)
-                .ValidateLastName(DefaultValidatorRules.LastNameMinLen, DefaultValidatorRules.LastNameMaxLen)
-                .ValidateDateOfBirth(DefaultValidatorRules.DateOfBirthMinValue, DefaultValidatorRules.DateOfBirthMaxValue)
-                .ValidateSchoolGrade(DefaultValidatorRules.SchoolGradeMinValue, DefaultValidatorRules.SchoolGradeMaxValue)
-                .ValidateAverageMark(DefaultValidatorRules.AverageMarkMinValue, DefaultValidatorRules.AverageMarkMaxValue)
-                .ValidateClassLetter(DefaultValidatorRules.ClassLetterMinValue, DefaultValidatorRules.ClassLetterMaxValue)
-                .Create();
+            validator = new ValidatorBuilder().CreateDefault();
         }
 
         private static void SetCustomValidator()
         {
-            validator = new ValidatorBuilder()
-                .ValidateFirstName(CustomValidatorRules.NameMinLen, CustomValidatorRules.NameMaxLen)
-                .ValidateLastName(CustomValidatorRules.NameMinLen, CustomValidatorRules.NameMaxLen)
-                .ValidateDateOfBirth(CustomValidatorRules.DateOfBirthMinValue, CustomValidatorRules.DateOfBirthMaxValue)
-                .ValidateSchoolGrade(CustomValidatorRules.SchoolGradeMinValue, CustomValidatorRules.SchoolGradeMaxValue)
-                .ValidateAverageMark(CustomValidatorRules.AverageMarkMinValue, CustomValidatorRules.AverageMarkMaxValue)
-                .ValidateClassLetter(CustomValidatorRules.ClassLetterMinValue, CustomValidatorRules.ClassLetterMaxValue)
-                .Create();
+            validator = new ValidatorBuilder().CreateCustom();
         }
 
         private static void PrintMissedCommandInfo(string command)
