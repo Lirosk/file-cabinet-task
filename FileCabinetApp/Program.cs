@@ -34,23 +34,17 @@ namespace FileCabinetApp
             new ("file", SetFileSystemService),
         };
 
-        private static Tuple<string, IRecordValidator>[] validationRules = new Tuple<string, IRecordValidator>[]
+        private static Tuple<string, Action>[] validationRules = new Tuple<string, Action>[]
         {
-            new ("default", new DefaultValidator()),
-            new ("custom", new CustomValidator()),
+            new ("default", SetDefaultValidator),
+            new ("custom", SetCustomValidator),
         };
 
         private static IFileCabinetService? fileCabinetService;
 
         private static bool isRunning = true;
 
-        internal static IRecordValidator Validator
-        {
-            get
-            {
-                return validationRules[usedValidationRuleIndex].Item2;
-            }
-        }
+        private static IRecordValidator? validator;
 
         /// <summary>
         /// Entry point.
@@ -117,6 +111,30 @@ namespace FileCabinetApp
                 Console.WriteLine();
             }
             while (isRunning);
+        }
+
+        private static void SetDefaultValidator()
+        {
+            validator = new ValidatorBuilder()
+                .ValidateFirstName(DefaultValidatorRules.FirstNameMinLen, DefaultValidatorRules.FirstNameMaxLen)
+                .ValidateLastName(DefaultValidatorRules.LastNameMinLen, DefaultValidatorRules.LastNameMaxLen)
+                .ValidateDateOfBirth(DefaultValidatorRules.DateOfBirthMinValue, DefaultValidatorRules.DateOfBirthMaxValue)
+                .ValidateSchoolGrade(DefaultValidatorRules.SchoolGradeMinValue, DefaultValidatorRules.SchoolGradeMaxValue)
+                .ValidateAverageMark(DefaultValidatorRules.AverageMarkMinValue, DefaultValidatorRules.AverageMarkMaxValue)
+                .ValidateClassLetter(DefaultValidatorRules.ClassLetterMinValue, DefaultValidatorRules.ClassLetterMaxValue)
+                .Create();
+        }
+
+        private static void SetCustomValidator()
+        {
+            validator = new ValidatorBuilder()
+                .ValidateFirstName(CustomValidatorRules.NameMinLen, CustomValidatorRules.NameMaxLen)
+                .ValidateLastName(CustomValidatorRules.NameMinLen, CustomValidatorRules.NameMaxLen)
+                .ValidateDateOfBirth(CustomValidatorRules.DateOfBirthMinValue, CustomValidatorRules.DateOfBirthMaxValue)
+                .ValidateSchoolGrade(CustomValidatorRules.SchoolGradeMinValue, CustomValidatorRules.SchoolGradeMaxValue)
+                .ValidateAverageMark(CustomValidatorRules.AverageMarkMinValue, CustomValidatorRules.AverageMarkMaxValue)
+                .ValidateClassLetter(CustomValidatorRules.ClassLetterMinValue, CustomValidatorRules.ClassLetterMaxValue)
+                .Create();
         }
 
         private static void PrintMissedCommandInfo(string command)
