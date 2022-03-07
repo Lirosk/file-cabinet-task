@@ -5,7 +5,7 @@ namespace FileCabinetApp.Validators
     /// <summary>
     /// Check class letter for valid value.
     /// </summary>
-    public class DefaultClassLetterValidator : IRecordValidator
+    public class ClassLetterValidator : IRecordValidator
     {
         /// <summary>
         /// Minimum valid class letter value.
@@ -18,20 +18,20 @@ namespace FileCabinetApp.Validators
         private char classLetterMaxValue;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultClassLetterValidator"/> class.
+        /// Initializes a new instance of the <see cref="ClassLetterValidator"/> class.
         /// </summary>
         /// <param name="classLetterMinValue">Minimal valid value.</param>
         /// <param name="classLetterMaxValue">Maximum valid value.</param>
-        public DefaultClassLetterValidator(char classLetterMinValue, char classLetterMaxValue)
+        public ClassLetterValidator(char classLetterMinValue, char classLetterMaxValue)
         {
             this.classLetterMinValue = classLetterMinValue;
             this.classLetterMaxValue = classLetterMaxValue;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultClassLetterValidator"/> class.
+        /// Initializes a new instance of the <see cref="ClassLetterValidator"/> class.
         /// </summary>
-        public DefaultClassLetterValidator()
+        public ClassLetterValidator()
         {
             this.classLetterMinValue = DefaultValidatorRules.ClassLetterMinValue;
             this.classLetterMaxValue = DefaultValidatorRules.ClassLetterMaxValue;

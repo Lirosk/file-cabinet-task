@@ -5,7 +5,7 @@ namespace FileCabinetApp.Validators
     /// <summary>
     /// Check average mark for valid value.
     /// </summary>
-    public class CustomAverageMarkValidator : IRecordValidator
+    public class AverageMarkValidator : IRecordValidator
     {
         /// <summary>
         /// Minimum valid average mark value.
@@ -18,23 +18,23 @@ namespace FileCabinetApp.Validators
         private decimal averageMarkMaxValue;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CustomAverageMarkValidator"/> class.
+        /// Initializes a new instance of the <see cref="AverageMarkValidator"/> class.
         /// </summary>
         /// <param name="averageMarkMinValue">Minimal valid value.</param>
         /// <param name="averageMarkMaxValue">Maximum valid value.</param>
-        public CustomAverageMarkValidator(decimal averageMarkMinValue, decimal averageMarkMaxValue)
+        public AverageMarkValidator(decimal averageMarkMinValue, decimal averageMarkMaxValue)
         {
             this.averageMarkMinValue = averageMarkMinValue;
             this.averageMarkMaxValue = averageMarkMaxValue;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CustomAverageMarkValidator"/> class.
+        /// Initializes a new instance of the <see cref="AverageMarkValidator"/> class.
         /// </summary>
-        public CustomAverageMarkValidator()
+        public AverageMarkValidator()
         {
-            this.averageMarkMinValue = CustomValidatorRules.AverageMarkMinValue;
-            this.averageMarkMaxValue = CustomValidatorRules.AverageMarkMaxValue;
+            this.averageMarkMinValue = DefaultValidatorRules.AverageMarkMinValue;
+            this.averageMarkMaxValue = DefaultValidatorRules.AverageMarkMaxValue;
         }
 
         /// <summary>

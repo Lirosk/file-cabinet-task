@@ -11,12 +11,12 @@
         public DefaultValidator()
             : base(new IRecordValidator[]
             {
-                new DefaultFirstNameValidator(),
-                new DefaultLastNameValidator(),
-                new DefaultDateOfBirthValidator(),
-                new DefaultSchoolGradeValidator(),
-                new DefaultAverageMarkValidator(),
-                new DefaultClassLetterValidator(),
+                new FirstNameValidator(),
+                new LastNameValidator(),
+                new DateOfBirthValidator(),
+                new SchoolGradeValidator(),
+                new AverageMarkValidator(),
+                new ClassLetterValidator(),
             })
         {
         }
