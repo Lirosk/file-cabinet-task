@@ -55,6 +55,7 @@ namespace FileCabinetApp
         public static void Main(string[] consoleArgs)
         {
             usedValidationRuleIndex = 0;
+            validationRules[usedValidationRuleIndex].Item2();
             SetMemoryService();
 
             try
@@ -216,16 +217,28 @@ namespace FileCabinetApp
             };
 
             ICommandHandler handlers = new CreateCommandHandler(fileCabinetService!);
-            handlers.SetNext(new EditCommandHandler(fileCabinetService!));
-            handlers.SetNext(new ExitCommandHandler(fileCabinetService!, (running) => isRunning = running));
-            handlers.SetNext(new ExportCommandHandler(fileCabinetService!));
-            handlers.SetNext(new FindCommandHandler(fileCabinetService!, printer));
-            handlers.SetNext(new HelpCommandHandler());
-            handlers.SetNext(new ImportCommandHandler(fileCabinetService!));
-            handlers.SetNext(new ListCommandHandler(fileCabinetService!, printer));
-            handlers.SetNext(new PurgeCommandHandler(fileCabinetService!));
-            handlers.SetNext(new RemoveCommandHandler(fileCabinetService!));
-            handlers.SetNext(new StatCommandHandler(fileCabinetService!));
+
+            var editHandler = new EditCommandHandler(fileCabinetService!);
+            var exitHandler = new ExitCommandHandler(fileCabinetService!, (running) => isRunning = running);
+            var exportHandler = new ExportCommandHandler(fileCabinetService!);
+            var findHandler = new FindCommandHandler(fileCabinetService!, printer);
+            var helpHandler = new HelpCommandHandler();
+            var importHandler = new ImportCommandHandler(fileCabinetService!);
+            var listHandler = new ListCommandHandler(fileCabinetService!, printer);
+            var purgeHandler = new PurgeCommandHandler(fileCabinetService!);
+            var removeHandler = new RemoveCommandHandler(fileCabinetService!);
+            var statHandler = new StatCommandHandler(fileCabinetService!);
+
+            handlers.SetNext(editHandler);
+            editHandler.SetNext(exitHandler);
+            exitHandler.SetNext(exportHandler);
+            exportHandler.SetNext(findHandler);
+            findHandler.SetNext(helpHandler);
+            helpHandler.SetNext(importHandler);
+            importHandler.SetNext(listHandler);
+            listHandler.SetNext(purgeHandler);
+            purgeHandler.SetNext(removeHandler);
+            removeHandler.SetNext(statHandler);
 
             return handlers;
         }

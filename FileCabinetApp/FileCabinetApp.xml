@@ -4,10 +4,310 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.CommandHandlers.AppCommandRequest">
+            <summary>
+            Represents request for command with given parameters.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.AppCommandRequest.Command">
+            <summary>
+            Gets requested command.
+            </summary>
+            <value>Requested command.</value>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.AppCommandRequest.Parameters">
+            <summary>
+            Gets parameters for requested command.
+            </summary>
+            <value>Parameters for requested command.</value>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.CommandHandlerBase">
+            <summary>
+            Abstract hadnler for command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.FileCabinetApp#CommandHandlers#ICommandHandler#Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the command request.
+            </summary>
+            /// <param name="request">Request with data to handle.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.SetNext(FileCabinetApp.CommandHandlers.ICommandHandler)">
+            <summary>
+            Sets next handler if current is unsuitable.
+            </summary>
+            <param name="handler">Handler to set.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the command in its own way.
+            </summary>
+            <param name="request">Request for command to handle.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.CreateCommandHandler">
+            <summary>
+            Handles the create command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.CreateCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.CreateCommandHandler"/> class.
+            </summary>
+            <param name="service">Service to work with.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.CreateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the create command request.
+            </summary>
+            <param name="request">Request with data to handle.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.EditCommandHandler">
+            <summary>
+            Handles the edit command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.EditCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.EditCommandHandler"/> class.
+            </summary>
+            <param name="service">Service to work with.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.EditCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the edit command request.
+            </summary>
+            /// <param name="request">Request with data to handle.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.ExitCommandHandler">
+            <summary>
+            Handles the exit command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.ExitCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService,System.Action{System.Boolean})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.ExitCommandHandler"/> class.
+            </summary>
+            <param name="service">Setvice to work with.</param>
+            <param name="setProgramRunning">For stopping program.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.ExitCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the exit command request.
+            </summary>
+            /// <param name="request">Request with data to handle.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.ExportCommandHandler">
+            <summary>
+            Handles the export command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.ExportCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.ExportCommandHandler"/> class.
+            </summary>
+            <param name="service">Service to work with.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.ExportCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the exit command request.
+            </summary>
+            /// <param name="request">Request with data to handle.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.FindCommandHandler">
+            <summary>
+            Handles the find command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.FindCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService,System.Action{System.Collections.Generic.IEnumerable{Models.FileCabinetRecord}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.FindCommandHandler"/> class.
+            </summary>
+            <param name="service">Service to work with.</param>
+            <param name="printer">Prints the records in its own way.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.FindCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the find command request.
+            </summary>
+            /// <param name="request">Request with data to handle.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.HelpCommandHandler">
+            <summary>
+            Handles the help command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.HelpCommandHandler.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.HelpCommandHandler"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.HelpCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the help command request.
+            </summary>
+            /// <param name="request">Request with data to handle.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.ImportCommandHandler">
+            <summary>
+            Handles the import command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.ImportCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.ImportCommandHandler"/> class.
+            </summary>
+            <param name="service">Service to work with.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.ImportCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the import command request.
+            </summary>
+            /// <param name="request">Request with data to handle.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.ListCommandHandler">
+            <summary>
+            Handles the list command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.ListCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService,System.Action{System.Collections.Generic.IEnumerable{Models.FileCabinetRecord}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.ListCommandHandler"/> class.
+            </summary>
+            <param name="service">Service to work with.</param>
+            <param name="printer">Prints the records in its own way.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.ListCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the list command request.
+            </summary>
+            /// <param name="request">Request with data to handle.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.PurgeCommandHandler">
+            <summary>
+            Handles the purge command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.PurgeCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.PurgeCommandHandler"/> class.
+            </summary>
+            <param name="service">Service to work with.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.PurgeCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the purge command request.
+            </summary>
+            /// <param name="request">Request with data to handle.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.RemoveCommandHandler">
+            <summary>
+            Handles the remove command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.RemoveCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.RemoveCommandHandler"/> class.
+            </summary>
+            <param name="service">Service to work with.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.RemoveCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the remove command request.
+            </summary>
+            /// <param name="request">Request with data to handle.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.StatCommandHandler">
+            <summary>
+            Handles the stat command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.StatCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ExactCommandHandlers.StatCommandHandler"/> class.
+            </summary>
+            <param name="service">Service to work with.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExactCommandHandlers.StatCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the stat command request.
+            </summary>
+            /// <param name="request">Request with data to handle.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ICommandHandler">
+            <summary>
+            Interface for command handle.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ICommandHandler.SetNext(FileCabinetApp.CommandHandlers.ICommandHandler)">
+            <summary>
+            Sets next handler if current is unsuitable.
+            </summary>
+            <param name="handler">Handler to set.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ICommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the command request.
+            </summary>
+            /// <param name="request">Request with data to handle.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase">
+            <summary>
+            Handles command which requires work with service.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.#ctor(FileCabinetApp.Services.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase"/> class.
+            </summary>
+            <param name="service">Service to work with.</param>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.Service">
+            <summary>
+            Gets service with which one this handler works.
+            </summary>
+            <value>Service with which one this handler works.</value>
+        </member>
+        <member name="T:FileCabinetApp.Extensions.ValidatorBuilderExtensions">
+            <summary>
+            Extensions for <see cref="T:FileCabinetApp.Validators.ValidatorBuilder"/>.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Extensions.ValidatorBuilderExtensions.CreateDefault(FileCabinetApp.Validators.ValidatorBuilder)">
+            <summary>
+            Creates validator with <see cref="T:FileCabinetApp.Validators.DefaultValidatorRules"/> rules.
+            </summary>
+            <param name="builder">Builder to set validators.</param>
+            <returns>returns validator with <see cref="T:FileCabinetApp.Validators.DefaultValidatorRules"/> rules.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Extensions.ValidatorBuilderExtensions.CreateCustom(FileCabinetApp.Validators.ValidatorBuilder)">
+            <summary>
+            Creates validator with <see cref="T:FileCabinetApp.Validators.CustomValidatorRules"/> rules.
+            </summary>
+            <param name="builder">Builder to set validators.</param>
+            <returns>returns validator with <see cref="T:FileCabinetApp.Validators.CustomValidatorRules"/> rules.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Helpers.RecordHelper">
+            <summary>
+            Some help with working with records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Helpers.RecordHelper.ReadRecordDataFromConsole(System.String,Models.PersonalData@)">
+            <summary>
+            Reads record from console.
+            </summary>
+            <param name="dateTimeFormat">Format for input datetime values.</param>
+            <param name="personalData">Resulting personal data.</param>
+        </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
             Interacts with user.
             </summary>
+        </member>
+        <member name="P:FileCabinetApp.Program.EncodingUsed">
+            <summary>
+            Gets encodind used in this app.
+            </summary>
+            <value>Encodind used in this app.</value>
         </member>
         <member name="M:FileCabinetApp.Program.Main(System.String[])">
             <summary>
@@ -20,7 +320,7 @@
             Stores records with personal information; manages the creation, editing, finding the records.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.#ctor(System.IO.FileStream,FileCabinetApp.IRecordValidator)">
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.#ctor(System.IO.FileStream,FileCabinetApp.Validators.IRecordValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetFileSystemService"/> class.
             </summary>
@@ -85,7 +385,7 @@
             Stores records with personal information; manages the creation, editing, finding the records.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.#ctor(FileCabinetApp.IRecordValidator)">
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.#ctor(FileCabinetApp.Validators.IRecordValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetMemoryService"/> class.
             </summary>
@@ -233,12 +533,6 @@
             Represents snapshot of once real records.
             </summary>
         </member>
-        <member name="P:FileCabinetApp.Services.FileCabinetServiceSnapshot.Records">
-            <summary>
-            Gets readonly collection of records.
-            </summary>
-            <value>Readonly collection of records.</value>
-        </member>
         <member name="M:FileCabinetApp.Services.FileCabinetServiceSnapshot.#ctor(Models.FileCabinetRecord[])">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetServiceSnapshot"/> class.
@@ -249,6 +543,12 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetServiceSnapshot"/> class.
             </summary>
+        </member>
+        <member name="P:FileCabinetApp.Services.FileCabinetServiceSnapshot.Records">
+            <summary>
+            Gets readonly collection of records.
+            </summary>
+            <value>Readonly collection of records.</value>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
             <summary>
@@ -361,260 +661,426 @@
             </summary>
             <returns>Count of deleted records.</returns>
         </member>
-        <member name="T:FileCabinetApp.Validators.CustomValidator">
+        <member name="T:FileCabinetApp.Validators.CompositeValidator">
             <summary>
-            Class for custom validation personal data.
+            Contains validators.
             </summary>
         </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidator.SchoolGradeMinValue">
+        <member name="M:FileCabinetApp.Validators.CompositeValidator.#ctor(System.Collections.Generic.IEnumerable{FileCabinetApp.Validators.IRecordValidator})">
             <summary>
-            Minimum valid school grade value.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.CompositeValidator"/> class.
             </summary>
+            <param name="validators">Validator for validating data.</param>
         </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidator.SchoolGradeMaxValue">
-            <summary>
-            Maximum valid school grade value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidator.AverageMarkMinValue">
-            <summary>
-            Minimum valid average mark value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidator.AverageMarkMaxValue">
-            <summary>
-            Maximum valid average mark value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidator.ClassLetterMinValue">
-            <summary>
-            Minimum valid class letter value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidator.ClassLetterMaxValue">
-            <summary>
-            Maximum valid class letter value.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.Validators.CustomValidator.NameMinLen">
-            <summary>
-            Gets or sets minimum length for name.
-            </summary>
-            <value>Minimum length for name.</value>
-        </member>
-        <member name="P:FileCabinetApp.Validators.CustomValidator.DateOfBirthMinValue">
-            <summary>
-            Gets or sets minimum valid date of birth value.
-            </summary>
-            <value>Minimum valid date of birth value.</value>
-        </member>
-        <member name="P:FileCabinetApp.Validators.CustomValidator.DateOfBirthMaxValue">
-            <summary>
-            Gets or sets maximum valid date of birth value.
-            </summary>
-            <value>Maximum valid date of birth value.</value>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateFirstName(System.String)">
-            <summary>
-            Check first name for valid value.
-            </summary>
-            <param name="firstName">Value to check.</param>
-            <exception cref="T:System.ArgumentNullException">If firstName param is null.</exception>
-            <exception cref="T:System.ArgumentException">If firstName has invalid length or contains invalid symbols.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateLastName(System.String)">
-            <summary>
-            Check last name for valid value.
-            </summary>
-            <param name="lastName">Value to check.</param>
-            <exception cref="T:System.ArgumentNullException">If <paramref name="lastName"/> is null.</exception>
-            <exception cref="T:System.ArgumentException">If <paramref name="lastName"/> has invalid length or contains invalid symbols.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateDateOfBirth(System.DateTime)">
-            <summary>
-            Check date of birth for valid value.
-            </summary>
-            <param name="dateOfBirth">Value to check.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="dateOfBirth"/> is less than <see cref="P:FileCabinetApp.Validators.CustomValidator.DateOfBirthMinValue"/> or more than <see cref="P:FileCabinetApp.Validators.CustomValidator.DateOfBirthMaxValue"/>.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateSchoolGrade(System.Int16)">
-            <summary>
-            Check school grade for valid value.
-            </summary>
-            <param name="schoolGrade">Value to check.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="schoolGrade"/> is less than <see cref="F:FileCabinetApp.Validators.CustomValidator.SchoolGradeMinValue"/> or more than <see cref="F:FileCabinetApp.Validators.CustomValidator.SchoolGradeMaxValue"/>.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateAverageMark(System.Decimal)">
-            <summary>
-            Check average mark for valid value.
-            </summary>
-            <param name="averageMark">Value to check.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="averageMark"/> is less than <see cref="F:FileCabinetApp.Validators.CustomValidator.AverageMarkMinValue"/> or more than <see cref="F:FileCabinetApp.Validators.CustomValidator.AverageMarkMaxValue"/>.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateClassLetter(System.Char)">
-            <summary>
-            Check class letter for valid value.
-            </summary>
-            <param name="classLetter">Value to check.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="classLetter"/> is not between <see cref="F:FileCabinetApp.Validators.CustomValidator.ClassLetterMinValue"/> and <see cref="F:FileCabinetApp.Validators.CustomValidator.ClassLetterMaxValue"/> values.</exception>
-        </member>
-        <member name="T:FileCabinetApp.Validators.DefaultValidator">
-            <summary>
-            Class for default validation personal data.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidator.FirstNameMinLen">
-            <summary>
-            Minimal valid first name length.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidator.FirstNameMaxLen">
-            <summary>
-            Maximun valid last name length.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidator.LastNameMinLen">
-            <summary>
-            Minimum valid last name length.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidator.LastNameMaxLen">
-            <summary>
-            Maximum valid last name length.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidator.SchoolGradeMinValue">
-            <summary>
-            Minimum valid school grade value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidator.SchoolGradeMaxValue">
-            <summary>
-            Maximum valid school grade value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidator.AverageMarkMinValue">
-            <summary>
-            Minimum valid average mark value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidator.AverageMarkMaxValue">
-            <summary>
-            Maximum valid average mark value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidator.ClassLetterMinValue">
-            <summary>
-            Minimum valid class letter value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidator.ClassLetterMaxValue">
-            <summary>
-            Maximum valid class letter value.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.Validators.DefaultValidator.DateOfBirthMinValue">
-            <summary>
-            Gets or sets minimum valid date of birth value.
-            </summary>
-            <value>Minimum valid date of birth value.</value>
-        </member>
-        <member name="P:FileCabinetApp.Validators.DefaultValidator.DateOfBirthMaxValue">
-            <summary>
-            Gets maximum valid date of birth value.
-            </summary>
-            <value>Maximum valid date of birth value.</value>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateFirstName(System.String)">
-            <summary>
-            Check first name for valid value.
-            </summary>
-            <param name="firstName">Value to check.</param>
-            <exception cref="T:System.ArgumentNullException">If firstName param is null.</exception>
-            <exception cref="T:System.ArgumentException">If firstName has invalid length or contains invalid symbols.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateLastName(System.String)">
-            <summary>
-            Check last name for valid value.
-            </summary>
-            <param name="lastName">Value to check.</param>
-            <exception cref="T:System.ArgumentNullException">If <paramref name="lastName"/> is null.</exception>
-            <exception cref="T:System.ArgumentException">If <paramref name="lastName"/> has invalid length or contains invalid symbols.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateDateOfBirth(System.DateTime)">
-            <summary>
-            Check date of birth for valid value.
-            </summary>
-            <param name="dateOfBirth">Value to check.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="dateOfBirth"/> is less than <see cref="P:FileCabinetApp.Validators.DefaultValidator.DateOfBirthMinValue"/> or more than <see cref="P:FileCabinetApp.Validators.DefaultValidator.DateOfBirthMaxValue"/>.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateSchoolGrade(System.Int16)">
-            <summary>
-            Check school grade for valid value.
-            </summary>
-            <param name="schoolGrade">Value to check.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="schoolGrade"/> is less than <see cref="F:FileCabinetApp.Validators.DefaultValidator.SchoolGradeMinValue"/> or more than <see cref="F:FileCabinetApp.Validators.DefaultValidator.SchoolGradeMaxValue"/>.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateAverageMark(System.Decimal)">
-            <summary>
-            Check average mark for valid value.
-            </summary>
-            <param name="averageMark">Value to check.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="averageMark"/> is less than <see cref="F:FileCabinetApp.Validators.DefaultValidator.AverageMarkMinValue"/> or more than <see cref="F:FileCabinetApp.Validators.DefaultValidator.AverageMarkMaxValue"/>.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateClassLetter(System.Char)">
-            <summary>
-            Check class letter for valid value.
-            </summary>
-            <param name="classLetter">Value to check.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="classLetter"/> is less than <see cref="F:FileCabinetApp.Validators.DefaultValidator.ClassLetterMinValue"/> or more than <see cref="F:FileCabinetApp.Validators.DefaultValidator.ClassLetterMaxValue"/>.</exception>
-        </member>
-        <member name="T:FileCabinetApp.IRecordValidator">
-            <summary>
-            Interface for validation personal data.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.IRecordValidator.ValidateParameters(Models.PersonalData)">
+        <member name="M:FileCabinetApp.Validators.CompositeValidator.Validate(Models.PersonalData)">
             <summary>
             Validated personal data.
             </summary>
             <param name="personalData">Personal data to validate.</param>
         </member>
-        <member name="M:FileCabinetApp.IRecordValidator.ValidateFirstName(System.String)">
+        <member name="T:FileCabinetApp.Validators.CustomValidatorRules">
             <summary>
-            Check first name for valid value.
+            Custom rules for validating.
             </summary>
-            <param name="firstName">Value to check.</param>
         </member>
-        <member name="M:FileCabinetApp.IRecordValidator.ValidateLastName(System.String)">
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.NameMinLen">
             <summary>
-            Check last name for valid value.
+            Gets or sets minimum length for name.
             </summary>
-            <param name="lastName">Value to check.</param>
+            <value>Minimum length for name.</value>
         </member>
-        <member name="M:FileCabinetApp.IRecordValidator.ValidateDateOfBirth(System.DateTime)">
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.NameMaxLen">
             <summary>
-            Check date of birth for valid value.
+            Gets or sets maximum length for name.
             </summary>
-            <param name="dateOfBirth">Value to check.</param>
+            <value>Maximum length for name.</value>
         </member>
-        <member name="M:FileCabinetApp.IRecordValidator.ValidateSchoolGrade(System.Int16)">
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.SchoolGradeMinValue">
             <summary>
-            Check school grade for valid value.
+            Minimum valid school grade value.
             </summary>
-            <param name="schoolGrade">Value to check.</param>
         </member>
-        <member name="M:FileCabinetApp.IRecordValidator.ValidateAverageMark(System.Decimal)">
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.SchoolGradeMaxValue">
+            <summary>
+            Maximum valid school grade value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.AverageMarkMinValue">
+            <summary>
+            Minimum valid average mark value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.AverageMarkMaxValue">
+            <summary>
+            Maximum valid average mark value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.ClassLetterMinValue">
+            <summary>
+            Minimum valid class letter value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.ClassLetterMaxValue">
+            <summary>
+            Maximum valid class letter value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.DateOfBirthMinValue">
+            <summary>
+            Gets or sets minimum valid date of birth value.
+            </summary>
+            <value>Minimum valid date of birth value.</value>
+        </member>
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.DateOfBirthMaxValue">
+            <summary>
+            Gets or sets maximum valid date of birth value.
+            </summary>
+            <value>Maximum valid date of birth value.</value>
+        </member>
+        <member name="T:FileCabinetApp.Validators.DefaultValidatorRules">
+            <summary>
+            Default rules for validating.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.FirstNameMinLen">
+            <summary>
+            Minimal valid first name length.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.FirstNameMaxLen">
+            <summary>
+            Maximun valid last name length.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.LastNameMinLen">
+            <summary>
+            Minimum valid last name length.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.LastNameMaxLen">
+            <summary>
+            Maximum valid last name length.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.SchoolGradeMinValue">
+            <summary>
+            Minimum valid school grade value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.SchoolGradeMaxValue">
+            <summary>
+            Maximum valid school grade value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.AverageMarkMinValue">
+            <summary>
+            Minimum valid average mark value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.AverageMarkMaxValue">
+            <summary>
+            Maximum valid average mark value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.ClassLetterMinValue">
+            <summary>
+            Minimum valid class letter value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.ClassLetterMaxValue">
+            <summary>
+            Maximum valid class letter value.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validators.DefaultValidatorRules.DateOfBirthMinValue">
+            <summary>
+            Gets or sets minimum valid date of birth value.
+            </summary>
+            <value>Minimum valid date of birth value.</value>
+        </member>
+        <member name="P:FileCabinetApp.Validators.DefaultValidatorRules.DateOfBirthMaxValue">
+            <summary>
+            Gets maximum valid date of birth value.
+            </summary>
+            <value>Maximum valid date of birth value.</value>
+        </member>
+        <member name="T:FileCabinetApp.Validators.AverageMarkValidator">
             <summary>
             Check average mark for valid value.
             </summary>
-            <param name="averageMark">Value to check.</param>
         </member>
-        <member name="M:FileCabinetApp.IRecordValidator.ValidateClassLetter(System.Char)">
+        <member name="F:FileCabinetApp.Validators.AverageMarkValidator.averageMarkMinValue">
+            <summary>
+            Minimum valid average mark value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.AverageMarkValidator.averageMarkMaxValue">
+            <summary>
+            Maximum valid average mark value.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.AverageMarkValidator.#ctor(System.Decimal,System.Decimal)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.AverageMarkValidator"/> class.
+            </summary>
+            <param name="averageMarkMinValue">Minimal valid value.</param>
+            <param name="averageMarkMaxValue">Maximum valid value.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.AverageMarkValidator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.AverageMarkValidator"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.AverageMarkValidator.Validate(Models.PersonalData)">
+            <summary>
+            Check average mark for valid value.
+            </summary>
+            <param name="personalData">Containg average mark to check.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">If <see cref="P:Models.PersonalData.AverageMark"/> is less than <see cref="F:FileCabinetApp.Validators.AverageMarkValidator.averageMarkMinValue"/> or more than <see cref="F:FileCabinetApp.Validators.AverageMarkValidator.averageMarkMaxValue"/>.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.ClassLetterValidator">
             <summary>
             Check class letter for valid value.
             </summary>
-            <param name="classLetter">Value to check.</param>
+        </member>
+        <member name="F:FileCabinetApp.Validators.ClassLetterValidator.classLetterMinValue">
+            <summary>
+            Minimum valid class letter value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.ClassLetterValidator.classLetterMaxValue">
+            <summary>
+            Maximum valid class letter value.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ClassLetterValidator.#ctor(System.Char,System.Char)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.ClassLetterValidator"/> class.
+            </summary>
+            <param name="classLetterMinValue">Minimal valid value.</param>
+            <param name="classLetterMaxValue">Maximum valid value.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ClassLetterValidator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.ClassLetterValidator"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ClassLetterValidator.Validate(Models.PersonalData)">
+            <summary>
+            Check class letter for valid value.
+            </summary>
+            <param name="personalData">Containg class letter to check.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">If <see cref="P:Models.PersonalData.ClassLetter"/> is less than <see cref="F:FileCabinetApp.Validators.ClassLetterValidator.classLetterMinValue"/> or more than <see cref="F:FileCabinetApp.Validators.ClassLetterValidator.classLetterMaxValue"/>.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.DateOfBirthValidator">
+            <summary>
+            Check date of birth for valid value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DateOfBirthValidator.dateOfBirthMinValue">
+            <summary>
+            Gets or sets minimum valid date of birth value.
+            </summary>
+            <value>Minimum valid date of birth value.</value>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DateOfBirthValidator.dateOfBirthMaxValue">
+            <summary>
+            Gets maximum valid date of birth value.
+            </summary>
+            <value>Maximum valid date of birth value.</value>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DateOfBirthValidator.#ctor(System.DateTime,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.DateOfBirthValidator"/> class.
+            </summary>
+            <param name="dateOfBirthMinValue">Minimal valid value.</param>
+            <param name="dateOfBirthMaxValue">Maximum valid value.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DateOfBirthValidator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.DateOfBirthValidator"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DateOfBirthValidator.Validate(Models.PersonalData)">
+            <summary>
+            Check date of birth for valid value.
+            </summary>
+            <param name="personalData">Containg date of birth to check.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">If <see cref="P:Models.PersonalData.DateOfBirth"/> is less than <see cref="F:FileCabinetApp.Validators.DateOfBirthValidator.dateOfBirthMinValue"/> or more than <see cref="F:FileCabinetApp.Validators.DateOfBirthValidator.dateOfBirthMaxValue"/>.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.FirstNameValidator">
+            <summary>
+            Check first name for valid value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.FirstNameValidator.firstNameMinLen">
+            <summary>
+            Minimal valid first name length.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.FirstNameValidator.firstNameMaxLen">
+            <summary>
+            Maximun valid last name length.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.FirstNameValidator.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.FirstNameValidator"/> class.
+            </summary>
+            <param name="firstNameMinLen">Minimal valid name length.</param>
+            <param name="firstNameMaxLen">Maximum valid name length.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.FirstNameValidator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.FirstNameValidator"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.FirstNameValidator.Validate(Models.PersonalData)">
+            <summary>
+            Check first name for valid value.
+            </summary>
+            <param name="personalData">Containg first name to check.</param>
+            <exception cref="T:System.ArgumentNullException">If <see cref="P:Models.PersonalData.FirstName"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">If <see cref="P:Models.PersonalData.FirstName"/> has invalid length or contains invalid symbols.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.LastNameValidator">
+            <summary>
+            Check last name for valid value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.LastNameValidator.lastNameMinLen">
+            <summary>
+            Minimum valid last name length.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.LastNameValidator.lastNameMaxLen">
+            <summary>
+            Maximum valid last name length.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.LastNameValidator.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.LastNameValidator"/> class.
+            </summary>
+            <param name="lastNameMinLen">Minimal valid name length.</param>
+            <param name="lastNameMaxLen">Maximum valid name length.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.LastNameValidator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.LastNameValidator"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.LastNameValidator.Validate(Models.PersonalData)">
+            <summary>
+            Check last name for valid value.
+            </summary>
+            <param name="personalData">Containg last name to check.</param>
+            <exception cref="T:System.ArgumentNullException">If <see cref="P:Models.PersonalData.LastName"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">If <see cref="P:Models.PersonalData.LastName"/> has invalid length or contains invalid symbols.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.SchoolGradeValidator">
+            <summary>
+            Check school grade for valid value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.SchoolGradeValidator.schoolGradeMinValue">
+            <summary>
+            Minimum valid school grade value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.SchoolGradeValidator.schoolGradeMaxValue">
+            <summary>
+            Maximum valid school grade value.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.SchoolGradeValidator.#ctor(System.Int16,System.Int16)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.SchoolGradeValidator"/> class.
+            </summary>
+            <param name="schoolGradeMinValue">Minimal valid value.</param>
+            <param name="schoolGradeMaxValue">Maximum valid value.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.SchoolGradeValidator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.SchoolGradeValidator"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.SchoolGradeValidator.Validate(Models.PersonalData)">
+            <summary>
+            Check school grade for valid value.
+            </summary>
+            <param name="personalData">Containg school grade to check.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">If <see cref="P:Models.PersonalData.SchoolGrade"/> is less than <see cref="F:FileCabinetApp.Validators.SchoolGradeValidator.schoolGradeMinValue"/> or more than <see cref="F:FileCabinetApp.Validators.SchoolGradeValidator.schoolGradeMaxValue"/>.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.IRecordValidator">
+            <summary>
+            Interface for validation personal data.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IRecordValidator.Validate(Models.PersonalData)">
+            <summary>
+            Validated personal data.
+            </summary>
+            <param name="personalData">Personal data to validate.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.ValidatorBuilder">
+            <summary>
+            Builder than creates validator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateFirstName(System.Int32,System.Int32)">
+            <summary>
+            Adds first name validating.
+            </summary>
+            <param name="firstNameMinLen">Minimal valid length of first name.</param>
+            <param name="firstNameMaxLen">Maximum valid length of first name.</param>
+            <returns>Returns itself.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateLastName(System.Int32,System.Int32)">
+            <summary>
+            Adds last name validating.
+            </summary>
+            <param name="lastNameMinLen">Minimal valid length of last name.</param>
+            <param name="lastNameMaxLen">Maximum valid length of last name.</param>
+            <returns>Returns itself.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateDateOfBirth(System.DateTime,System.DateTime)">
+            <summary>
+            Adds date of birth validating.
+            </summary>
+            <param name="dateOfBirthMinValue">Minimal date of birth valid value.</param>
+            <param name="dateOfBirthMaxValue">Maximum date of birth valid value.</param>
+            <returns>Returns itself.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateSchoolGrade(System.Int16,System.Int16)">
+            <summary>
+            Adds date of birth validating.
+            </summary>
+            <param name="schoolGradeMinValue">Minimal date of birth valid value.</param>
+            <param name="schoolGradeMaxValue">Maximum date of birth valid value.</param>
+            <returns>Returns itself.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateAverageMark(System.Decimal,System.Decimal)">
+            <summary>
+            Adds average mark validating.
+            </summary>
+            <param name="averageMarkMinValue">Minimal average mark valid value.</param>
+            <param name="averageMarkMaxValue">Maximum average mark valid value.</param>
+            <returns>Returns itself.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateClassLetter(System.Char,System.Char)">
+            <summary>
+            Adds class letter validating.
+            </summary>
+            <param name="classLetterMinValue">Minimal class letter valid value.</param>
+            <param name="classLetterMaxValue">Maximum class letter valid value.</param>
+            <returns>Returns itself.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.Create">
+            <summary>
+            Creates validator with setted parameters validators.
+            </summary>
+            <returns>Returns validator with setted parameters validators.</returns>
         </member>
     </members>
 </doc>

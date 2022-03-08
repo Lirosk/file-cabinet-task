@@ -85,7 +85,7 @@ namespace FileCabinetApp.Helpers
                     Validator<char>((classLetter) =>
                     {
                         new ValidatorBuilder()
-                            .ValidateAverageMark(DefaultValidatorRules.ClassLetterMinValue, DefaultValidatorRules.ClassLetterMaxValue)
+                            .ValidateClassLetter(DefaultValidatorRules.ClassLetterMinValue, DefaultValidatorRules.ClassLetterMaxValue)
                             .Create()
                             .Validate(new () { ClassLetter = classLetter });
                     }));
