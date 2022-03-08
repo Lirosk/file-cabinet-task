@@ -12,18 +12,6 @@ namespace FileCabinetApp.Services
         private FileCabinetRecord[] records;
 
         /// <summary>
-        /// Gets readonly collection of records.
-        /// </summary>
-        /// <value>Readonly collection of records.</value>
-        public ReadOnlyCollection<FileCabinetRecord> Records
-        {
-            get
-            {
-                return new ReadOnlyCollection<FileCabinetRecord>(this.records);
-            }
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
         /// </summary>
         /// <param name="records">Records to save.</param>
@@ -38,6 +26,18 @@ namespace FileCabinetApp.Services
         public FileCabinetServiceSnapshot()
         {
             this.records = Array.Empty<FileCabinetRecord>();
+        }
+
+        /// <summary>
+        /// Gets readonly collection of records.
+        /// </summary>
+        /// <value>Readonly collection of records.</value>
+        public ReadOnlyCollection<FileCabinetRecord> Records
+        {
+            get
+            {
+                return new ReadOnlyCollection<FileCabinetRecord>(this.records);
+            }
         }
 
         /// <summary>
