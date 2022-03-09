@@ -2,6 +2,7 @@
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.CommandHandlers.ExactCommandHandlers;
 using FileCabinetApp.Extensions;
+using FileCabinetApp.Meters;
 using FileCabinetApp.Services;
 using FileCabinetApp.Validators;
 using Microsoft.Extensions;
@@ -62,6 +63,7 @@ namespace FileCabinetApp
             try
             {
                 DoStartupStaff(consoleArgs);
+                fileCabinetService = new ServiceMeter(fileCabinetService!);
                 DoFileCabinetStaff();
             }
             catch (Exception)
