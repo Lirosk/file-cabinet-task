@@ -298,6 +298,39 @@
             <param name="dateTimeFormat">Format for input datetime values.</param>
             <param name="personalData">Resulting personal data.</param>
         </member>
+        <member name="M:FileCabinetApp.Meters.ServiceMeter.#ctor(FileCabinetApp.Services.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Meters.ServiceMeter"/> class.
+            </summary>
+            <param name="service">Service to work with.</param>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceMeter.CreateRecord(Models.PersonalData)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceMeter.EditRecord(System.Int32,Models.PersonalData)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceMeter.FindByField(System.String,System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceMeter.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceMeter.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceMeter.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceMeter.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceMeter.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceMeter.Restore(FileCabinetApp.Services.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
             Interacts with user.
@@ -684,132 +717,6 @@
             </summary>
             <param name="personalData">Personal data to validate.</param>
         </member>
-        <member name="T:FileCabinetApp.Validators.CustomValidatorRules">
-            <summary>
-            Custom rules for validating.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.NameMinLen">
-            <summary>
-            Gets or sets minimum length for name.
-            </summary>
-            <value>Minimum length for name.</value>
-        </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.NameMaxLen">
-            <summary>
-            Gets or sets maximum length for name.
-            </summary>
-            <value>Maximum length for name.</value>
-        </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.SchoolGradeMinValue">
-            <summary>
-            Minimum valid school grade value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.SchoolGradeMaxValue">
-            <summary>
-            Maximum valid school grade value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.AverageMarkMinValue">
-            <summary>
-            Minimum valid average mark value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.AverageMarkMaxValue">
-            <summary>
-            Maximum valid average mark value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.ClassLetterMinValue">
-            <summary>
-            Minimum valid class letter value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.ClassLetterMaxValue">
-            <summary>
-            Maximum valid class letter value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.DateOfBirthMinValue">
-            <summary>
-            Gets or sets minimum valid date of birth value.
-            </summary>
-            <value>Minimum valid date of birth value.</value>
-        </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.DateOfBirthMaxValue">
-            <summary>
-            Gets or sets maximum valid date of birth value.
-            </summary>
-            <value>Maximum valid date of birth value.</value>
-        </member>
-        <member name="T:FileCabinetApp.Validators.DefaultValidatorRules">
-            <summary>
-            Default rules for validating.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.FirstNameMinLen">
-            <summary>
-            Minimal valid first name length.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.FirstNameMaxLen">
-            <summary>
-            Maximun valid last name length.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.LastNameMinLen">
-            <summary>
-            Minimum valid last name length.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.LastNameMaxLen">
-            <summary>
-            Maximum valid last name length.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.SchoolGradeMinValue">
-            <summary>
-            Minimum valid school grade value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.SchoolGradeMaxValue">
-            <summary>
-            Maximum valid school grade value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.AverageMarkMinValue">
-            <summary>
-            Minimum valid average mark value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.AverageMarkMaxValue">
-            <summary>
-            Maximum valid average mark value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.ClassLetterMinValue">
-            <summary>
-            Minimum valid class letter value.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.ClassLetterMaxValue">
-            <summary>
-            Maximum valid class letter value.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.Validators.DefaultValidatorRules.DateOfBirthMinValue">
-            <summary>
-            Gets or sets minimum valid date of birth value.
-            </summary>
-            <value>Minimum valid date of birth value.</value>
-        </member>
-        <member name="P:FileCabinetApp.Validators.DefaultValidatorRules.DateOfBirthMaxValue">
-            <summary>
-            Gets maximum valid date of birth value.
-            </summary>
-            <value>Maximum valid date of birth value.</value>
-        </member>
         <member name="T:FileCabinetApp.Validators.AverageMarkValidator">
             <summary>
             Check average mark for valid value.
@@ -1017,6 +924,132 @@
             </summary>
             <param name="personalData">Containg school grade to check.</param>
             <exception cref="T:System.ArgumentOutOfRangeException">If <see cref="P:Models.PersonalData.SchoolGrade"/> is less than <see cref="F:FileCabinetApp.Validators.SchoolGradeValidator.schoolGradeMinValue"/> or more than <see cref="F:FileCabinetApp.Validators.SchoolGradeValidator.schoolGradeMaxValue"/>.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.CustomValidatorRules">
+            <summary>
+            Custom rules for validating.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.NameMinLen">
+            <summary>
+            Gets or sets minimum length for name.
+            </summary>
+            <value>Minimum length for name.</value>
+        </member>
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.NameMaxLen">
+            <summary>
+            Gets or sets maximum length for name.
+            </summary>
+            <value>Maximum length for name.</value>
+        </member>
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.SchoolGradeMinValue">
+            <summary>
+            Minimum valid school grade value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.SchoolGradeMaxValue">
+            <summary>
+            Maximum valid school grade value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.AverageMarkMinValue">
+            <summary>
+            Minimum valid average mark value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.AverageMarkMaxValue">
+            <summary>
+            Maximum valid average mark value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.ClassLetterMinValue">
+            <summary>
+            Minimum valid class letter value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.ClassLetterMaxValue">
+            <summary>
+            Maximum valid class letter value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.DateOfBirthMinValue">
+            <summary>
+            Gets or sets minimum valid date of birth value.
+            </summary>
+            <value>Minimum valid date of birth value.</value>
+        </member>
+        <member name="F:FileCabinetApp.Validators.CustomValidatorRules.DateOfBirthMaxValue">
+            <summary>
+            Gets or sets maximum valid date of birth value.
+            </summary>
+            <value>Maximum valid date of birth value.</value>
+        </member>
+        <member name="T:FileCabinetApp.Validators.DefaultValidatorRules">
+            <summary>
+            Default rules for validating.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.FirstNameMinLen">
+            <summary>
+            Minimal valid first name length.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.FirstNameMaxLen">
+            <summary>
+            Maximun valid last name length.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.LastNameMinLen">
+            <summary>
+            Minimum valid last name length.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.LastNameMaxLen">
+            <summary>
+            Maximum valid last name length.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.SchoolGradeMinValue">
+            <summary>
+            Minimum valid school grade value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.SchoolGradeMaxValue">
+            <summary>
+            Maximum valid school grade value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.AverageMarkMinValue">
+            <summary>
+            Minimum valid average mark value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.AverageMarkMaxValue">
+            <summary>
+            Maximum valid average mark value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.ClassLetterMinValue">
+            <summary>
+            Minimum valid class letter value.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.DefaultValidatorRules.ClassLetterMaxValue">
+            <summary>
+            Maximum valid class letter value.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validators.DefaultValidatorRules.DateOfBirthMinValue">
+            <summary>
+            Gets or sets minimum valid date of birth value.
+            </summary>
+            <value>Minimum valid date of birth value.</value>
+        </member>
+        <member name="P:FileCabinetApp.Validators.DefaultValidatorRules.DateOfBirthMaxValue">
+            <summary>
+            Gets maximum valid date of birth value.
+            </summary>
+            <value>Maximum valid date of birth value.</value>
         </member>
         <member name="T:FileCabinetApp.Validators.IRecordValidator">
             <summary>
