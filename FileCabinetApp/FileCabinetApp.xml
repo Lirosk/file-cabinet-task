@@ -309,6 +309,12 @@
             </summary>
             <value>Encodind used in this app.</value>
         </member>
+        <member name="P:FileCabinetApp.Program.ValidationRules">
+            <summary>
+            Gets validation rules used in this app.
+            </summary>
+            <value>Validation rules used in this app.</value>
+        </member>
         <member name="M:FileCabinetApp.Program.Main(System.String[])">
             <summary>
             Entry point.
