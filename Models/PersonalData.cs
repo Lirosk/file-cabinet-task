@@ -1,9 +1,11 @@
-﻿namespace Models
+﻿using System.Globalization;
+
+namespace Models
 {
     /// <summary>
     /// Represents parameter object for <see cref="FileCabinetRecord"/>.
     /// </summary>
-    public struct PersonalData
+    public class PersonalData
     {
         /// <summary>
         /// Gets or sets first name of a person in record.
@@ -40,5 +42,14 @@
         /// </summary>
         /// <value>Class letter of a person in record.</value>
         public char ClassLetter { get; set; }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return
+                $"{{ FirstName = {this.FirstName}, LastName = {this.LastName}, " +
+                $"DateOfBirth = {this.DateOfBirth.ToString(FileCabinetRecord.OutputDateTimeFormat, CultureInfo.InvariantCulture)}, " +
+                $"SchoolGrade = {this.SchoolGrade}, AverageMark = {this.AverageMark}, ClassLetter = {this.ClassLetter} }}";
+        }
     }
 }

@@ -298,6 +298,50 @@
             <param name="dateTimeFormat">Format for input datetime values.</param>
             <param name="personalData">Resulting personal data.</param>
         </member>
+        <member name="T:FileCabinetApp.Meters.ServiceLogger">
+            <summary>
+            Logs all method calls and their args.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceLogger.#ctor(FileCabinetApp.Services.IFileCabinetService,System.IO.TextWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Meters.ServiceLogger"/> class.
+            </summary>
+            <param name="service">Service to work with.</param>
+            <param name="writer">Writer to log all calls.</param>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceLogger.CreateRecord(Models.PersonalData)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceLogger.EditRecord(System.Int32,Models.PersonalData)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceLogger.FindByField(System.String,System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceLogger.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceLogger.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceLogger.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceLogger.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceLogger.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Meters.ServiceLogger.Restore(FileCabinetApp.Services.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.Meters.ServiceMeter">
+            <summary>
+            Measures how many ticks it took to method complete.
+            </summary>
+        </member>
         <member name="M:FileCabinetApp.Meters.ServiceMeter.#ctor(FileCabinetApp.Services.IFileCabinetService)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.Meters.ServiceMeter"/> class.

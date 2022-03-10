@@ -20,27 +20,33 @@ namespace FileCabinetApp
         private const string DeveloperName = "Kirill Basenko";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
 
-        private static readonly string ValidationRulesFile = "validation-rules.json";
+        private const string ValidationRulesFile = "validation-rules.json";
+        private const string LoggingFile = "logs.txt";
 
         private static string validationRulesNaming = "default";
 
         private static Tuple<string[], Action<string>>[] args = new Tuple<string[], Action<string>>[]
         {
-            new (new[] { "-v", "--validation-rules" }, SetValidationRules),
-            new (new[] { "-s", "--storage" }, SetStorage),
+            new (new[] { "-v", "--validation-rules" }, SetValidationRulesNaming),
+            new (new[] { "-s", "--storage" }, SetStorageName),
+            new (new[] { "-l", "--use-logger" }, SetLoggingStatus),
         };
 
-        private static Tuple<string, Action>[] storages = new Tuple<string, Action>[]
+        private static Tuple<string, Action>[] services = new Tuple<string, Action>[]
         {
             new ("memory", SetMemoryService),
             new ("file", SetFileSystemService),
         };
 
+        private static string storageName = services[0].Item1;
+
         private static IFileCabinetService? fileCabinetService;
+
+        private static IRecordValidator? validator;
 
         private static bool isRunning = true;
 
-        private static IRecordValidator? validator;
+        private static bool logging = true;
 
         /// <summary>
         /// Gets encodind used in this app.
@@ -63,7 +69,6 @@ namespace FileCabinetApp
             try
             {
                 DoStartupStaff(consoleArgs);
-                fileCabinetService = new ServiceMeter(fileCabinetService!);
                 DoFileCabinetStaff();
             }
             catch (Exception)
@@ -120,18 +125,27 @@ namespace FileCabinetApp
 
         private static void DoStartupStaff(string[] consoleArgs)
         {
-            SetDefaults();
-            ProceedConfiguration();
-
             try
             {
                 ProceedArgs(consoleArgs);
+                ProceedConfiguration();
                 SetValidator(ValidationRules!);
+                SetStorage();
             }
             catch (ArgumentException ex)
             {
                 Console.WriteLine($"Error: {ex.Message}{Environment.NewLine}");
                 return;
+            }
+
+            fileCabinetService = new ServiceMeter(fileCabinetService!);
+            if (logging)
+            {
+                fileCabinetService = new ServiceLogger(
+                    fileCabinetService!,
+                    new StreamWriter(
+                        File.Open(LoggingFile, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read),
+                        EncodingUsed));
             }
         }
 
@@ -158,10 +172,9 @@ namespace FileCabinetApp
             }
         }
 
-        private static void SetDefaults()
+        private static void SetLoggingStatus(string parameters)
         {
-            validationRulesNaming = "default";
-            SetMemoryService();
+            logging = true;
         }
 
         private static void SetValidator(ValidationRules rules)
@@ -218,22 +231,27 @@ namespace FileCabinetApp
             }
         }
 
-        private static void SetValidationRules(string rule)
+        private static void SetValidationRulesNaming(string rule)
         {
             validationRulesNaming = rule;
         }
 
-        private static void SetStorage(string storage)
+        private static void SetStorage()
         {
             int index;
-            if ((index = Array.FindIndex(storages, 0, storages.Length, i => i.Item1.Equals(storage, StringComparison.InvariantCultureIgnoreCase))) != -1)
+            if ((index = Array.FindIndex(services, 0, services.Length, i => i.Item1.Equals(storageName, StringComparison.InvariantCultureIgnoreCase))) != -1)
             {
-                storages[index].Item2();
+                services[index].Item2();
             }
             else
             {
-                throw new ArgumentException($"No defined storage \'{storage}\'");
+                throw new ArgumentException($"No defined storage \'{storageName}\'");
             }
+        }
+
+        private static void SetStorageName(string storage)
+        {
+            storageName = storage;
         }
 
         private static void SetMemoryService()

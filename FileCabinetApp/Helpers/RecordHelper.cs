@@ -170,9 +170,20 @@ namespace FileCabinetApp.Helpers
         private static Tuple<bool, string, T> NumericConverter<T>(string input)
             where T : struct
         {
-            var res = (T?)Convert.ChangeType(input, typeof(T), CultureInfo.InvariantCulture);
-            bool success = res is not null;
-            string message = success ? string.Empty : "Invalid value";
+            T? res;
+            bool success;
+            string message;
+
+            try
+            {
+                res = (T?)Convert.ChangeType(input, typeof(T), CultureInfo.InvariantCulture);
+                success = res is not null;
+                message = success ? string.Empty : "Invalid value";
+            }
+            catch (FormatException ex)
+            {
+                return new (false, ex.Message, default(T));
+            }
 
             return new (success, message, (T)res!);
         }

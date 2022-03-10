@@ -122,6 +122,9 @@
             </summary>
             <value>Class letter of a person in record.</value>
         </member>
+        <member name="M:Models.PersonalData.ToString">
+            <inheritdoc/>
+        </member>
         <member name="T:Models.RecordForXml">
             <summary>
             For serializing it right way.
