@@ -2,8 +2,12 @@
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.CommandHandlers.ExactCommandHandlers;
 using FileCabinetApp.Extensions;
+using FileCabinetApp.Meters;
 using FileCabinetApp.Services;
 using FileCabinetApp.Validators;
+using Microsoft.Extensions;
+using Microsoft.Extensions.Configuration;
+
 using Models;
 
 namespace FileCabinetApp
@@ -16,31 +20,33 @@ namespace FileCabinetApp
         private const string DeveloperName = "Kirill Basenko";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
 
-        private static int usedValidationRuleIndex;
+        private const string ValidationRulesFile = "validation-rules.json";
+        private const string LoggingFile = "logs.txt";
+
+        private static string validationRulesNaming = "default";
 
         private static Tuple<string[], Action<string>>[] args = new Tuple<string[], Action<string>>[]
         {
-            new (new[] { "-v", "--validation-rules" }, SetValidationRules),
-            new (new[] { "-s", "--storage" }, SetStorage),
+            new (new[] { "-v", "--validation-rules" }, SetValidationRulesNaming),
+            new (new[] { "-s", "--storage" }, SetStorageName),
+            new (new[] { "-l", "--use-logger" }, SetLoggingStatus),
         };
 
-        private static Tuple<string, Action>[] storages = new Tuple<string, Action>[]
+        private static Tuple<string, Action>[] services = new Tuple<string, Action>[]
         {
             new ("memory", SetMemoryService),
             new ("file", SetFileSystemService),
         };
 
-        private static Tuple<string, Action>[] validationRules = new Tuple<string, Action>[]
-        {
-            new ("default", SetDefaultValidator),
-            new ("custom", SetCustomValidator),
-        };
+        private static string storageName = services[0].Item1;
 
         private static IFileCabinetService? fileCabinetService;
 
+        private static IRecordValidator? validator;
+
         private static bool isRunning = true;
 
-        private static IRecordValidator? validator;
+        private static bool logging = true;
 
         /// <summary>
         /// Gets encodind used in this app.
@@ -49,32 +55,33 @@ namespace FileCabinetApp
         public static Encoding EncodingUsed { get; private set; } = Encoding.Unicode;
 
         /// <summary>
+        /// Gets validation rules used in this app.
+        /// </summary>
+        /// <value>Validation rules used in this app.</value>
+        public static ValidationRules? ValidationRules { get; private set; }
+
+        /// <summary>
         /// Entry point.
         /// </summary>
         /// <param name="consoleArgs">Arguments passed via console.</param>
         public static void Main(string[] consoleArgs)
         {
-            usedValidationRuleIndex = 0;
-            validationRules[usedValidationRuleIndex].Item2();
-            SetMemoryService();
-
             try
             {
-                ProceedArgs(consoleArgs);
-            }
-            catch (ArgumentException ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}{Environment.NewLine}");
-                return;
+                DoStartupStaff(consoleArgs);
+                DoFileCabinetStaff();
             }
             catch (Exception)
             {
-                Console.WriteLine($"Error: Invalid args input.{Environment.NewLine}");
+                Console.WriteLine($"Oops, internal error. Exiting app.{Environment.NewLine}");
                 return;
             }
+        }
 
+        private static void DoFileCabinetStaff()
+        {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
-            Console.WriteLine($"Using {validationRules[usedValidationRuleIndex].Item1} validation rules.");
+            Console.WriteLine($"Using {validationRulesNaming} validation rules.");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -116,14 +123,70 @@ namespace FileCabinetApp
             while (isRunning);
         }
 
-        private static void SetDefaultValidator()
+        private static void DoStartupStaff(string[] consoleArgs)
         {
-            validator = new ValidatorBuilder().CreateDefault();
+            try
+            {
+                ProceedArgs(consoleArgs);
+                ProceedConfiguration();
+                SetValidator(ValidationRules!);
+                SetStorage();
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}{Environment.NewLine}");
+                return;
+            }
+
+            fileCabinetService = new ServiceMeter(fileCabinetService!);
+            if (logging)
+            {
+                fileCabinetService = new ServiceLogger(
+                    fileCabinetService!,
+                    new StreamWriter(
+                        File.Open(LoggingFile, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read),
+                        EncodingUsed));
+            }
         }
 
-        private static void SetCustomValidator()
+        private static void ProceedConfiguration()
         {
-            validator = new ValidatorBuilder().CreateCustom();
+            var currentDirectory = Directory.GetCurrentDirectory();
+
+            if (!File.Exists(Path.Combine(currentDirectory, ValidationRulesFile)))
+            {
+                throw new FileNotFoundException(ValidationRulesFile);
+            }
+
+            var config = new ConfigurationBuilder()
+                .SetBasePath(currentDirectory)
+                .AddJsonFile(ValidationRulesFile)
+                .Build();
+
+            var configuration = config.GetSection(validationRulesNaming);
+            ValidationRules = configuration.Get<ValidationRules>();
+
+            if (ValidationRules is null)
+            {
+                throw new InvalidOperationException("Invalid configuration file for validation rules.");
+            }
+        }
+
+        private static void SetLoggingStatus(string parameters)
+        {
+            logging = true;
+        }
+
+        private static void SetValidator(ValidationRules rules)
+        {
+            validator = new ValidatorBuilder()
+                .ValidateFirstName(rules.FirstName.Min, rules.FirstName.Max)
+                .ValidateLastName(rules.LastName.Min, rules.LastName.Max)
+                .ValidateDateOfBirth(rules.DateOfBirth.Min, rules.DateOfBirth.Max)
+                .ValidateSchoolGrade(rules.SchoolGrade.Min, rules.SchoolGrade.Max)
+                .ValidateAverageMark(rules.AverageMark.Min, rules.AverageMark.Max)
+                .ValidateClassLetter(rules.ClassLetter.Min, rules.ClassLetter.Max)
+                .Create();
         }
 
         private static void PrintMissedCommandInfo(string command)
@@ -168,30 +231,27 @@ namespace FileCabinetApp
             }
         }
 
-        private static void SetValidationRules(string rule)
+        private static void SetValidationRulesNaming(string rule)
+        {
+            validationRulesNaming = rule;
+        }
+
+        private static void SetStorage()
         {
             int index;
-            if ((index = Array.FindIndex(validationRules, 0, validationRules.Length, i => i.Item1.Equals(rule, StringComparison.InvariantCultureIgnoreCase))) != -1)
+            if ((index = Array.FindIndex(services, 0, services.Length, i => i.Item1.Equals(storageName, StringComparison.InvariantCultureIgnoreCase))) != -1)
             {
-                usedValidationRuleIndex = index;
+                services[index].Item2();
             }
             else
             {
-                throw new ArgumentException($"No defined rule \'{rule}\'.");
+                throw new ArgumentException($"No defined storage \'{storageName}\'");
             }
         }
 
-        private static void SetStorage(string storage)
+        private static void SetStorageName(string storage)
         {
-            int index;
-            if ((index = Array.FindIndex(storages, 0, storages.Length, i => i.Item1.Equals(storage, StringComparison.InvariantCultureIgnoreCase))) != -1)
-            {
-                storages[index].Item2();
-            }
-            else
-            {
-                throw new ArgumentException($"No defined storage \'{storage}\'");
-            }
+            storageName = storage;
         }
 
         private static void SetMemoryService()
