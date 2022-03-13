@@ -30,6 +30,7 @@ namespace FileCabinetApp.Services
 
         private readonly FileStream fileStream;
         private readonly IRecordValidator validator;
+        private readonly SortedDictionary<(string fieldName, string value), List<long>> index = new ();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFileSystemService"/> class.
@@ -40,6 +41,7 @@ namespace FileCabinetApp.Services
         {
             this.fileStream = fileStream;
             this.validator = validator;
+            this.SetIndex();
         }
 
         /// <summary>
@@ -53,6 +55,9 @@ namespace FileCabinetApp.Services
             var binaryWriter = new BinaryWriter(this.fileStream, Program.EncodingUsed);
 
             var id = this.GetStat().have + 1;
+
+            // after GetStat() fileStream's position in the end.
+            this.AddToIndex(personalData, this.fileStream.Position);
 
             byte[] buffer = BitConverter.GetBytes((short)0);
             binaryWriter.Write(buffer);
@@ -105,6 +110,10 @@ namespace FileCabinetApp.Services
             var offset = this.FindRecordOffset(id);
 
             this.fileStream.Seek(offset + StatusSize + IdSize, SeekOrigin.Begin);
+
+            this.RemoveFromIndex(offset);
+            this.AddToIndex(newData, offset);
+
             var binaryWriter = new BinaryWriter(this.fileStream, Program.EncodingUsed);
 
             byte[] buffer;
@@ -134,34 +143,29 @@ namespace FileCabinetApp.Services
         /// <param name="fieldName">Name of field to search.</param>
         /// <param name="value">Value of <paramref name="fieldName"/> field to search.</param>
         /// <returns>Array of found records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByField(string fieldName, object value)
+        public ReadOnlyCollection<FileCabinetRecord> FindByField(string fieldName, string value)
         {
-            this.fileStream.Seek(0, SeekOrigin.Begin);
-            var binaryReader = new BinaryReader(this.fileStream, Program.EncodingUsed);
+            var key = (fieldName.ToUpperInvariant(), value);
 
-            var property = typeof(FileCabinetRecord).GetProperty(fieldName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-
-            if (property is null)
+            if (!this.index.TryGetValue(key, out var positions))
             {
                 return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
             }
 
-            var buffer = new byte[RecordSize];
+            var reader = new BinaryReader(this.fileStream, Program.EncodingUsed);
+            var res = new List<FileCabinetRecord>();
 
-            var list = new List<FileCabinetRecord>();
-
-            while (binaryReader.Read(buffer, 0, RecordSize) == RecordSize)
+            foreach (var position in positions)
             {
-                var record = RecordFromBytes(buffer);
-                var recordFieldValue = property.GetValue(record);
+                this.fileStream.Position = position;
 
-                if (value.Equals(recordFieldValue))
+                if (TryReadRecord(reader, out var record))
                 {
-                    list.Add(record!);
+                    res.Add(record);
                 }
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(list);
+            return new ReadOnlyCollection<FileCabinetRecord>(res);
         }
 
         /// <summary>
@@ -173,54 +177,14 @@ namespace FileCabinetApp.Services
             this.fileStream.Seek(0, SeekOrigin.Begin);
 
             var list = new List<FileCabinetRecord>();
-            var binaryReader = new BinaryReader(this.fileStream, Program.EncodingUsed);
+            var reader = new BinaryReader(this.fileStream, Program.EncodingUsed);
 
-            while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+            while (reader.BaseStream.Position < reader.BaseStream.Length)
             {
-                var status = binaryReader.ReadInt16();
-                if (IsDeleted(status))
+                if (TryReadRecord(reader, out var record))
                 {
-                    binaryReader.BaseStream.Position += RecordSize - StatusSize;
-                    continue;
+                    list.Add(record);
                 }
-
-                var id = binaryReader.ReadInt32();
-
-                int index;
-
-                var firstName = Program.EncodingUsed.GetString(binaryReader.ReadBytes(FirstNameSize));
-                if ((index = firstName.IndexOf((char)0, StringComparison.Ordinal)) != -1)
-                {
-                    firstName = firstName.Substring(0, index);
-                }
-
-                var lastName = Program.EncodingUsed.GetString(binaryReader.ReadBytes(LastNameSize));
-                if ((index = lastName.IndexOf((char)0, StringComparison.Ordinal)) != -1)
-                {
-                    lastName = lastName.Substring(0, index);
-                }
-
-                var year = binaryReader.ReadInt32();
-                var month = binaryReader.ReadInt32();
-                var day = binaryReader.ReadInt32();
-
-                var dateOfBirth = new DateTime(year, month, day);
-
-                var schoolGrade = binaryReader.ReadInt16();
-                var averageMark = binaryReader.ReadDecimal();
-                var classLetter = binaryReader.ReadChar();
-
-                var personalData = new PersonalData()
-                {
-                    FirstName = firstName,
-                    LastName = lastName,
-                    DateOfBirth = dateOfBirth,
-                    SchoolGrade = schoolGrade,
-                    AverageMark = averageMark,
-                    ClassLetter = classLetter,
-                };
-
-                list.Add(new (id, personalData));
             }
 
             return new ReadOnlyCollection<FileCabinetRecord>(list);
@@ -238,7 +202,6 @@ namespace FileCabinetApp.Services
             this.fileStream.Seek(0, SeekOrigin.Begin);
 
             var binaryReader = new BinaryReader(this.fileStream, Program.EncodingUsed);
-            var binaryWriter = new BinaryWriter(this.fileStream, Program.EncodingUsed);
 
             while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
             {
@@ -342,6 +305,9 @@ namespace FileCabinetApp.Services
                 if (id == recordId)
                 {
                     binaryWriter.BaseStream.Position -= StatusSize + IdSize;
+
+                    this.RemoveFromIndex(this.fileStream.Position);
+
                     binaryWriter.Write(status | (int)FileCabinetRecordStatus.Deleted);
 
                     return true;
@@ -389,69 +355,45 @@ namespace FileCabinetApp.Services
             return purged;
         }
 
-        private static bool IsDeleted(short status)
+        private static bool TryReadRecord(BinaryReader reader, out FileCabinetRecord record)
         {
-            return (status & (short)FileCabinetRecordStatus.Deleted) > 0;
-        }
-
-        private static FileCabinetRecord? RecordFromBytes(byte[] bytes)
-        {
-            int offset = 0;
-
-            var status = BitConverter.ToInt16(bytes, 0);
+            var status = reader.ReadInt16();
             if (IsDeleted(status))
             {
-                return null;
+                reader.BaseStream.Position += RecordSize - StatusSize;
+                record = new ();
+                return false;
             }
 
-            var id = BitConverter.ToInt32(bytes, offset);
+            var id = reader.ReadInt32();
 
             int index;
 
-            offset += IdSize;
-            var firstName = Program.EncodingUsed.GetString(bytes, offset, FirstNameSize);
+            var firstName = Program.EncodingUsed.GetString(reader.ReadBytes(FirstNameSize));
             if ((index = firstName.IndexOf((char)0, StringComparison.Ordinal)) != -1)
             {
                 firstName = firstName.Substring(0, index);
             }
 
-            offset += FirstNameSize;
-            var lastName = Program.EncodingUsed.GetString(bytes, offset, LastNameSize);
+            var lastName = Program.EncodingUsed.GetString(reader.ReadBytes(LastNameSize));
             if ((index = lastName.IndexOf((char)0, StringComparison.Ordinal)) != -1)
             {
                 lastName = lastName.Substring(0, index);
             }
 
-            offset += LastNameSize;
-            var year = BitConverter.ToInt32(bytes, offset);
-
-            offset += YearSize;
-            var month = BitConverter.ToInt32(bytes, offset);
-
-            offset += MonthSize;
-            var day = BitConverter.ToInt32(bytes, offset);
+            var year = reader.ReadInt32();
+            var month = reader.ReadInt32();
+            var day = reader.ReadInt32();
 
             var dateOfBirth = new DateTime(year, month, day);
 
-            offset += DaySize;
-            var schoolGrade = BitConverter.ToInt16(bytes, offset);
+            var schoolGrade = reader.ReadInt16();
+            var averageMark = reader.ReadDecimal();
+            var classLetter = reader.ReadChar();
 
-            offset += schoolGrade;
-            var i1 = BitConverter.ToInt32(bytes, offset);
-            offset += AverageMarkSize / sizeof(int);
-            var i2 = BitConverter.ToInt32(bytes, offset);
-            offset += AverageMarkSize / sizeof(int);
-            var i3 = BitConverter.ToInt32(bytes, offset);
-            offset += AverageMarkSize / sizeof(int);
-            var i4 = BitConverter.ToInt32(bytes, offset);
-            offset += AverageMarkSize / sizeof(int);
-
-            var averageMark = new decimal(new[] { i1, i2, i3, i4 });
-
-            var classLetter = BitConverter.ToChar(bytes, offset);
-
-            var personalData = new PersonalData()
+            record = new ()
             {
+                Id = id,
                 FirstName = firstName,
                 LastName = lastName,
                 DateOfBirth = dateOfBirth,
@@ -460,7 +402,12 @@ namespace FileCabinetApp.Services
                 ClassLetter = classLetter,
             };
 
-            return new FileCabinetRecord(id, personalData);
+            return true;
+        }
+
+        private static bool IsDeleted(short status)
+        {
+            return (status & (short)FileCabinetRecordStatus.Deleted) > 0;
         }
 
         private int[] IdsOfStoredRecords()
@@ -510,6 +457,83 @@ namespace FileCabinetApp.Services
             }
 
             throw new ArgumentException($"No record with {id} id.");
+        }
+
+        private void AddToIndex(PersonalData data, long position)
+        {
+            var properties = data.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            string fieldName;
+            object value;
+
+            var culture = (CultureInfo)CultureInfo.InvariantCulture.Clone();
+            culture.DateTimeFormat.ShortDatePattern = FileCabinetRecord.OutputDateTimeFormat;
+            culture.DateTimeFormat.LongTimePattern = string.Empty;
+            culture.NumberFormat.NumberDecimalSeparator = ".";
+
+            foreach (var property in properties)
+            {
+                fieldName = property.Name;
+                if (fieldName.Equals("Id", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                value = property.GetValue(data) !;
+
+                var key = (fieldName.ToUpperInvariant(), Convert.ToString(value, culture) !.Trim());
+
+                if (this.index.ContainsKey(key))
+                {
+                    this.index[key].Add(position);
+                }
+                else
+                {
+                    this.index.Add(key, new List<long> { position });
+                }
+            }
+        }
+
+        private void RemoveFromIndex(long position)
+        {
+            foreach (var (key, positions) in this.index)
+            {
+                if (positions.Contains(position))
+                {
+                    positions.Remove(position);
+                    if (positions.Count == 0)
+                    {
+                        this.index.Remove(key);
+                    }
+                }
+            }
+        }
+
+        private void SetIndex()
+        {
+            this.fileStream.Position = 0;
+
+            var buffer = new byte[RecordSize];
+
+            var reader = new BinaryReader(this.fileStream, Program.EncodingUsed);
+
+            while (this.fileStream.Position < this.fileStream.Length)
+            {
+                if (TryReadRecord(reader, out var record))
+                {
+                    this.AddToIndex(
+                        new ()
+                        {
+                            FirstName = record.FirstName,
+                            LastName = record.LastName,
+                            DateOfBirth = record.DateOfBirth,
+                            SchoolGrade = record.SchoolGrade,
+                            AverageMark = record.AverageMark,
+                            ClassLetter = record.ClassLetter,
+                        },
+                        this.fileStream.Position - RecordSize);
+                }
+            }
         }
     }
 }
