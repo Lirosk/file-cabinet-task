@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Reflection;
 using System.Text;
+using FileCabinetApp.Iterators;
 using FileCabinetApp.Validators;
 using Models;
 
@@ -143,29 +144,28 @@ namespace FileCabinetApp.Services
         /// <param name="fieldName">Name of field to search.</param>
         /// <param name="value">Value of <paramref name="fieldName"/> field to search.</param>
         /// <returns>Array of found records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByField(string fieldName, string value)
+        public IRecordIterator FindByField(string fieldName, string value)
         {
             var key = (fieldName.ToUpperInvariant(), value);
 
+            var reader = new BinaryReader(this.fileStream);
+
             if (!this.index.TryGetValue(key, out var positions))
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+                return new FileSystemIterator(
+                    reader,
+                    new ReadOnlyCollection<long>(Array.Empty<long>()),
+                    (_) => new ());
             }
 
-            var reader = new BinaryReader(this.fileStream, Program.EncodingUsed);
-            var res = new List<FileCabinetRecord>();
-
-            foreach (var position in positions)
-            {
-                this.fileStream.Position = position;
-
-                if (TryReadRecord(reader, out var record))
+            return new FileSystemIterator(
+                reader,
+                new ReadOnlyCollection<long>(positions),
+                (position) =>
                 {
-                    res.Add(record);
-                }
-            }
-
-            return new ReadOnlyCollection<FileCabinetRecord>(res);
+                    TryReadRecord(reader, position, out var record);
+                    return record;
+                });
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace FileCabinetApp.Services
 
             while (reader.BaseStream.Position < reader.BaseStream.Length)
             {
-                if (TryReadRecord(reader, out var record))
+                if (TryReadRecord(reader, reader.BaseStream.Position, out var record))
                 {
                     list.Add(record);
                 }
@@ -262,6 +262,8 @@ namespace FileCabinetApp.Services
 
                 if (!haveRecordsWithIds.Contains(record.Id))
                 {
+                    this.AddToIndex(record, this.fileStream.Position);
+
                     binaryWriter.Write((short)0);
                     binaryWriter.Write(record.Id);
 
@@ -355,52 +357,63 @@ namespace FileCabinetApp.Services
             return purged;
         }
 
-        private static bool TryReadRecord(BinaryReader reader, out FileCabinetRecord record)
+        private static bool TryReadRecord(BinaryReader reader, long position, out FileCabinetRecord record)
         {
-            var status = reader.ReadInt16();
-            if (IsDeleted(status))
+            try
             {
-                reader.BaseStream.Position += RecordSize - StatusSize;
+                reader.BaseStream.Position = position;
+
+                var status = reader.ReadInt16();
+                if (IsDeleted(status))
+                {
+                    reader.BaseStream.Position += RecordSize - StatusSize;
+                    record = new ();
+                    return false;
+                }
+
+                var id = reader.ReadInt32();
+
+                int index;
+
+                var firstName = Program.EncodingUsed.GetString(reader.ReadBytes(FirstNameSize));
+                if ((index = firstName.IndexOf((char)0, StringComparison.Ordinal)) != -1)
+                {
+                    firstName = firstName.Substring(0, index);
+                }
+
+                var lastName = Program.EncodingUsed.GetString(reader.ReadBytes(LastNameSize));
+                if ((index = lastName.IndexOf((char)0, StringComparison.Ordinal)) != -1)
+                {
+                    lastName = lastName.Substring(0, index);
+                }
+
+                var year = reader.ReadInt32();
+                var month = reader.ReadInt32();
+                var day = reader.ReadInt32();
+
+                var dateOfBirth = new DateTime(year, month, day);
+
+                var schoolGrade = reader.ReadInt16();
+                var averageMark = reader.ReadDecimal();
+                var classLetter = reader.ReadChar();
+
+                record = new ()
+                {
+                    Id = id,
+                    FirstName = firstName,
+                    LastName = lastName,
+                    DateOfBirth = dateOfBirth,
+                    SchoolGrade = schoolGrade,
+                    AverageMark = averageMark,
+                    ClassLetter = classLetter,
+                };
+            }
+            catch (Exception)
+            {
+                reader.BaseStream.Position = position + RecordSize;
                 record = new ();
                 return false;
             }
-
-            var id = reader.ReadInt32();
-
-            int index;
-
-            var firstName = Program.EncodingUsed.GetString(reader.ReadBytes(FirstNameSize));
-            if ((index = firstName.IndexOf((char)0, StringComparison.Ordinal)) != -1)
-            {
-                firstName = firstName.Substring(0, index);
-            }
-
-            var lastName = Program.EncodingUsed.GetString(reader.ReadBytes(LastNameSize));
-            if ((index = lastName.IndexOf((char)0, StringComparison.Ordinal)) != -1)
-            {
-                lastName = lastName.Substring(0, index);
-            }
-
-            var year = reader.ReadInt32();
-            var month = reader.ReadInt32();
-            var day = reader.ReadInt32();
-
-            var dateOfBirth = new DateTime(year, month, day);
-
-            var schoolGrade = reader.ReadInt16();
-            var averageMark = reader.ReadDecimal();
-            var classLetter = reader.ReadChar();
-
-            record = new ()
-            {
-                Id = id,
-                FirstName = firstName,
-                LastName = lastName,
-                DateOfBirth = dateOfBirth,
-                SchoolGrade = schoolGrade,
-                AverageMark = averageMark,
-                ClassLetter = classLetter,
-            };
 
             return true;
         }
@@ -459,9 +472,9 @@ namespace FileCabinetApp.Services
             throw new ArgumentException($"No record with {id} id.");
         }
 
-        private void AddToIndex(PersonalData data, long position)
+        private void AddToIndex(FileCabinetRecord record, long position)
         {
-            var properties = data.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var properties = record.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             string fieldName;
             object value;
@@ -479,9 +492,9 @@ namespace FileCabinetApp.Services
                     continue;
                 }
 
-                value = property.GetValue(data) !;
+                value = property.GetValue(record)!;
 
-                var key = (fieldName.ToUpperInvariant(), Convert.ToString(value, culture) !.Trim());
+                var key = (fieldName.ToUpperInvariant(), Convert.ToString(value, culture)!.Trim());
 
                 if (this.index.ContainsKey(key))
                 {
@@ -492,6 +505,11 @@ namespace FileCabinetApp.Services
                     this.index.Add(key, new List<long> { position });
                 }
             }
+        }
+
+        private void AddToIndex(PersonalData data, long position)
+        {
+            this.AddToIndex(new FileCabinetRecord(-1, data), position);
         }
 
         private void RemoveFromIndex(long position)
@@ -519,18 +537,10 @@ namespace FileCabinetApp.Services
 
             while (this.fileStream.Position < this.fileStream.Length)
             {
-                if (TryReadRecord(reader, out var record))
+                if (TryReadRecord(reader, this.fileStream.Position, out var record))
                 {
                     this.AddToIndex(
-                        new ()
-                        {
-                            FirstName = record.FirstName,
-                            LastName = record.LastName,
-                            DateOfBirth = record.DateOfBirth,
-                            SchoolGrade = record.SchoolGrade,
-                            AverageMark = record.AverageMark,
-                            ClassLetter = record.ClassLetter,
-                        },
+                        record,
                         this.fileStream.Position - RecordSize);
                 }
             }

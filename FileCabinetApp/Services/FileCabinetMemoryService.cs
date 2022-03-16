@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Reflection;
-
+using FileCabinetApp.Iterators;
 using FileCabinetApp.Validators;
 
 using Models;
@@ -90,14 +90,14 @@ namespace FileCabinetApp.Services
         /// <param name="fieldName">Name of field to search.</param>
         /// <param name="value">Value of <paramref name="fieldName"/> field to search.</param>
         /// <returns>Array of found records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByField(string fieldName, string value)
+        public IRecordIterator FindByField(string fieldName, string value)
         {
             if (this.index.TryGetValue((fieldName.ToUpperInvariant(), value.ToString()), out var res))
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(res);
+                return new MemoryIterator(new ReadOnlyCollection<FileCabinetRecord>(res));
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            return new MemoryIterator(new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>()));
         }
 
         /// <summary>
@@ -149,6 +149,7 @@ namespace FileCabinetApp.Services
                 if (!this.list.Any(rec => rec.Id == record.Id))
                 {
                     this.list.Add(record);
+                    this.AddToIndex(record);
                     imported++;
                 }
             }

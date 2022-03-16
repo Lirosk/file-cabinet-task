@@ -1,5 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-
+using FileCabinetApp.Iterators;
 using Models;
 
 namespace FileCabinetApp.Services
@@ -30,7 +30,7 @@ namespace FileCabinetApp.Services
         /// <param name="fieldName">Name of field to search.</param>
         /// <param name="value">Value of <paramref name="fieldName"/> field to search.</param>
         /// <returns>Array of found records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByField(string fieldName, string value);
+        public IRecordIterator FindByField(string fieldName, string value);
 
         /// <summary>
         /// Get all stored records.

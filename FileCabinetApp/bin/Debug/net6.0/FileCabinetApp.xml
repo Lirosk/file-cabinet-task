@@ -316,7 +316,7 @@
         <member name="M:FileCabinetApp.Meters.ServiceLogger.EditRecord(System.Int32,Models.PersonalData)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Meters.ServiceLogger.FindByField(System.String,System.Object)">
+        <member name="M:FileCabinetApp.Meters.ServiceLogger.FindByField(System.String,System.String)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Meters.ServiceLogger.GetRecords">
@@ -354,7 +354,7 @@
         <member name="M:FileCabinetApp.Meters.ServiceMeter.EditRecord(System.Int32,Models.PersonalData)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Meters.ServiceMeter.FindByField(System.String,System.Object)">
+        <member name="M:FileCabinetApp.Meters.ServiceMeter.FindByField(System.String,System.String)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Meters.ServiceMeter.GetRecords">
@@ -425,7 +425,7 @@
             <param name="newData">New personal data for record.</param>
             <exception cref="T:System.ArgumentException">No record matching given id.</exception>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.FindByField(System.String,System.Object)">
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.FindByField(System.String,System.String)">
             <summary>
             Find record by value of given field.
             </summary>
@@ -495,7 +495,7 @@
             <param name="newData">New personal data for record.</param>
             <exception cref="T:System.ArgumentException">No record matching given id.</exception>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.FindByField(System.String,System.Object)">
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.FindByField(System.String,System.String)">
             <summary>
             Find record by value of given field.
             </summary>
@@ -699,7 +699,7 @@
             <param name="newData">New personal data for record.</param>
             <exception cref="T:System.ArgumentException">No record matching given id.</exception>
         </member>
-        <member name="M:FileCabinetApp.Services.IFileCabinetService.FindByField(System.String,System.Object)">
+        <member name="M:FileCabinetApp.Services.IFileCabinetService.FindByField(System.String,System.String)">
             <summary>
             Find record by value of given field.
             </summary>

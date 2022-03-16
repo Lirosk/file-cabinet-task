@@ -113,9 +113,9 @@ namespace FileCabinetApp
                             Parameters = parameters,
                         });
                 }
-                catch (InvalidOperationException)
+                catch (ArgumentException ex)
                 {
-                    PrintMissedCommandInfo(command);
+                    Console.WriteLine(ex.Message);
                 }
 
                 Console.WriteLine();
