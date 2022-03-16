@@ -58,7 +58,7 @@ namespace FileCabinetApp
         /// Gets validation rules used in this app.
         /// </summary>
         /// <value>Validation rules used in this app.</value>
-        public static ValidationRules? ValidationRules { get; private set; }
+        public static ValidationValuesBounds? ValidationRules { get; private set; }
 
         /// <summary>
         /// Entry point.
@@ -164,7 +164,7 @@ namespace FileCabinetApp
                 .Build();
 
             var configuration = config.GetSection(validationRulesNaming);
-            ValidationRules = configuration.Get<ValidationRules>();
+            ValidationRules = configuration.Get<ValidationValuesBounds>();
 
             if (ValidationRules is null)
             {
@@ -177,7 +177,7 @@ namespace FileCabinetApp
             logging = true;
         }
 
-        private static void SetValidator(ValidationRules rules)
+        private static void SetValidator(ValidationValuesBounds rules)
         {
             validator = new ValidatorBuilder()
                 .ValidateFirstName(rules.FirstName.Min, rules.FirstName.Max)

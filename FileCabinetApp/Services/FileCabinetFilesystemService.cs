@@ -486,9 +486,9 @@ namespace FileCabinetApp.Services
                     continue;
                 }
 
-                value = property.GetValue(record)!;
+                value = property.GetValue(record) !;
 
-                var key = (fieldName.ToUpperInvariant(), Convert.ToString(value, culture)!.Trim());
+                var key = (fieldName.ToUpperInvariant(), Convert.ToString(value, culture) !.Trim());
 
                 if (this.index.ContainsKey(key))
                 {
