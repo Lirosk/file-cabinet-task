@@ -1,8 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Reflection;
-using System.Text;
-using FileCabinetApp.Iterators;
 using FileCabinetApp.Validators;
 using Models;
 
@@ -152,20 +150,16 @@ namespace FileCabinetApp.Services
 
             if (!this.index.TryGetValue(key, out var positions))
             {
-                return new FileSystemEnumerable(
-                    reader,
-                    new ReadOnlyCollection<long>(Array.Empty<long>()),
-                    (_) => new ());
+                yield break;
             }
 
-            return new FileSystemEnumerable(
-                reader,
-                new ReadOnlyCollection<long>(positions),
-                (position) =>
+            foreach (var position in positions)
+            {
+                if (TryReadRecord(reader, position, out var record))
                 {
-                    TryReadRecord(reader, position, out var record);
-                    return record;
-                });
+                    yield return record;
+                }
+            }
         }
 
         /// <summary>
