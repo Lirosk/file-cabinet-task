@@ -144,7 +144,7 @@ namespace FileCabinetApp.Services
         /// <param name="fieldName">Name of field to search.</param>
         /// <param name="value">Value of <paramref name="fieldName"/> field to search.</param>
         /// <returns>Array of found records.</returns>
-        public IRecordIterator FindByField(string fieldName, string value)
+        public IEnumerable<FileCabinetRecord> FindByField(string fieldName, string value)
         {
             var key = (fieldName.ToUpperInvariant(), value);
 
@@ -152,13 +152,13 @@ namespace FileCabinetApp.Services
 
             if (!this.index.TryGetValue(key, out var positions))
             {
-                return new FileSystemIterator(
+                return new FileSystemEnumerable(
                     reader,
                     new ReadOnlyCollection<long>(Array.Empty<long>()),
                     (_) => new ());
             }
 
-            return new FileSystemIterator(
+            return new FileSystemEnumerable(
                 reader,
                 new ReadOnlyCollection<long>(positions),
                 (position) =>

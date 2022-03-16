@@ -65,7 +65,7 @@ namespace FileCabinetApp.Meters
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByField(string fieldName, string value)
+        public IEnumerable<FileCabinetRecord> FindByField(string fieldName, string value)
         {
             this.writer.WriteLine(
                 "{0}UTC - Calling FindByField() with fieldName = {1}, value = {2}.",

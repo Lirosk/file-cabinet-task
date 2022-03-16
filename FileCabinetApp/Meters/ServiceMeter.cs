@@ -42,7 +42,7 @@ namespace FileCabinetApp.Meters
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByField(string fieldName, string value)
+        public IEnumerable<FileCabinetRecord> FindByField(string fieldName, string value)
         {
             this.StartMeasurement();
             var res = this.service.FindByField(fieldName, value);

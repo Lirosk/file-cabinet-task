@@ -57,12 +57,9 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
 
                 var found = this.Service.FindByField(fieldName, stringValue);
 
-                if (found.HasNext())
+                if (found.Any())
                 {
-                    while (found.HasNext())
-                    {
-                        this.printer(new[] { found.GetNext() });
-                    }
+                    this.printer(found);
                 }
                 else
                 {

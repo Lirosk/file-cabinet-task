@@ -30,7 +30,7 @@ namespace FileCabinetApp.Services
         /// <param name="fieldName">Name of field to search.</param>
         /// <param name="value">Value of <paramref name="fieldName"/> field to search.</param>
         /// <returns>Array of found records.</returns>
-        public IRecordIterator FindByField(string fieldName, string value);
+        public IEnumerable<FileCabinetRecord> FindByField(string fieldName, string value);
 
         /// <summary>
         /// Get all stored records.
