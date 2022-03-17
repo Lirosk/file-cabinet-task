@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
-
 using FileCabinetApp.Services;
 using Models;
 
@@ -42,7 +41,7 @@ namespace FileCabinetApp.Meters
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByField(string fieldName, object value)
+        public IEnumerable<FileCabinetRecord> FindByField(string fieldName, string value)
         {
             this.StartMeasurement();
             var res = this.service.FindByField(fieldName, value);

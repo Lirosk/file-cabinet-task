@@ -316,7 +316,7 @@
         <member name="M:FileCabinetApp.Meters.ServiceLogger.EditRecord(System.Int32,Models.PersonalData)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Meters.ServiceLogger.FindByField(System.String,System.Object)">
+        <member name="M:FileCabinetApp.Meters.ServiceLogger.FindByField(System.String,System.String)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Meters.ServiceLogger.GetRecords">
@@ -354,7 +354,7 @@
         <member name="M:FileCabinetApp.Meters.ServiceMeter.EditRecord(System.Int32,Models.PersonalData)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Meters.ServiceMeter.FindByField(System.String,System.Object)">
+        <member name="M:FileCabinetApp.Meters.ServiceMeter.FindByField(System.String,System.String)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Meters.ServiceMeter.GetRecords">
@@ -425,7 +425,7 @@
             <param name="newData">New personal data for record.</param>
             <exception cref="T:System.ArgumentException">No record matching given id.</exception>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.FindByField(System.String,System.Object)">
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.FindByField(System.String,System.String)">
             <summary>
             Find record by value of given field.
             </summary>
@@ -495,7 +495,7 @@
             <param name="newData">New personal data for record.</param>
             <exception cref="T:System.ArgumentException">No record matching given id.</exception>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.FindByField(System.String,System.Object)">
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.FindByField(System.String,System.String)">
             <summary>
             Find record by value of given field.
             </summary>
@@ -699,7 +699,7 @@
             <param name="newData">New personal data for record.</param>
             <exception cref="T:System.ArgumentException">No record matching given id.</exception>
         </member>
-        <member name="M:FileCabinetApp.Services.IFileCabinetService.FindByField(System.String,System.Object)">
+        <member name="M:FileCabinetApp.Services.IFileCabinetService.FindByField(System.String,System.String)">
             <summary>
             Find record by value of given field.
             </summary>
@@ -1105,6 +1105,72 @@
             Validated personal data.
             </summary>
             <param name="personalData">Personal data to validate.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.ValidationValuesBounds">
+            <summary>
+            Bounds for values to validate.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidationValuesBounds.FirstName">
+            <summary>
+            Gets or sets valid first name minimum and maximum lengths.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidationValuesBounds.LastName">
+            <summary>
+            Gets or sets valid last name minimum and maximum lengths.
+            </summary>
+            <value>Valid last name minimum and maximum lengths.</value>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidationValuesBounds.DateOfBirth">
+            <summary>
+            Gets or sets valid date of birth minimum and maximum values.
+            </summary>
+            <value>Valid date of birth minimum and maximum values.</value>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidationValuesBounds.SchoolGrade">
+            <summary>
+            Gets or sets valid school grade minimum and maximum values.
+            </summary>
+            <value>Valid school grade minimum and maximum values.</value>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidationValuesBounds.AverageMark">
+            <summary>
+            Gets or sets valid average mark minimum and maximum values.
+            </summary>
+            <value>Valid average mark minimum and maximum values.</value>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidationValuesBounds.ClassLetter">
+            <summary>
+            Gets or sets valid class letter minimum and maximum values.
+            </summary>
+            <value>Valid class letter minimum and maximum values.</value>
+        </member>
+        <member name="T:FileCabinetApp.Validators.ValidationValuesBounds.Bounds`1">
+            <summary>
+            Represents bound for value to validate.
+            </summary>
+            <typeparam name="T">Type of value.</typeparam>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidationValuesBounds.Bounds`1.#ctor(`0,`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.ValidationValuesBounds.Bounds`1"/> struct.
+            </summary>
+            <param name="min">Minimal valid value.</param>
+            <param name="max">Maximum valid value.</param>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidationValuesBounds.Bounds`1.Min">
+            <summary>
+            Gets or sets minimal valid value.
+            </summary>
+            <value>Minimal valid value.</value>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidationValuesBounds.Bounds`1.Max">
+            <summary>
+            Gets or sets maximum valid value.
+            </summary>
+            <value>Maximum valid value.</value>
         </member>
         <member name="T:FileCabinetApp.Validators.ValidatorBuilder">
             <summary>

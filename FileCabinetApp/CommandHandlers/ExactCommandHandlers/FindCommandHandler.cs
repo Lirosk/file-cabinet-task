@@ -56,7 +56,8 @@ namespace FileCabinetApp.CommandHandlers.ExactCommandHandlers
                 stringValue = match.Groups[secondGroupMatchIndex].Value;
 
                 var found = this.Service.FindByField(fieldName, stringValue);
-                if (found.Count > 0)
+
+                if (found.Any())
                 {
                     this.printer(found);
                 }

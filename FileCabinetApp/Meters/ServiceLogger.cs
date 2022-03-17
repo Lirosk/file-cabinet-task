@@ -64,7 +64,7 @@ namespace FileCabinetApp.Meters
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByField(string fieldName, object value)
+        public IEnumerable<FileCabinetRecord> FindByField(string fieldName, string value)
         {
             this.writer.WriteLine(
                 "{0}UTC - Calling FindByField() with fieldName = {1}, value = {2}.",
@@ -75,9 +75,8 @@ namespace FileCabinetApp.Meters
             var res = this.service.FindByField(fieldName, value);
 
             this.writer.WriteLine(
-                "{0}UTC - FindByField() returned collection with {0} elements.",
-                DateTime.UtcNow.ToString(this.dateTimeFormat, CultureInfo.InvariantCulture),
-                res.Count);
+                "{0}UTC - FindByField() completed.",
+                DateTime.UtcNow.ToString(this.dateTimeFormat, CultureInfo.InvariantCulture));
 
             this.writer.Flush();
             return res;
